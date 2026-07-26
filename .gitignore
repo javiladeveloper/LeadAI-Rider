@@ -1,0 +1,27 @@
+# Gradle
+.gradle/
+build/
+*/build/
+local.properties
+
+# IDE
+.idea/
+*.iml
+.kotlin/
+
+# iOS
+iosApp/Pods/
+iosApp/build/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+
+# Varios
+.DS_Store
+captures/
+*.log
+.superpowers/
+
+# Firebase (Task 8): Jonathan lo baja manualmente, ver composeApp/FIREBASE.md.
+
+# Reglas de AI del IDE local (no son del repo)
+.github/instructions/codacy.instructions.md

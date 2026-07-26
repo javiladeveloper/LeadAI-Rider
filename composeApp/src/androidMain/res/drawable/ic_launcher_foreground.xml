@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- El RAYO de la marca (mismo path de IconoRayo del panel web), blanco
+         sobre el teal #006B5D. Antes había una campana — el logo real de
+         LeadAI es el rayito (Jonathan, 2026-07-23). Escalado al ~58% del
+         lienzo (safe zone del ícono adaptativo). -->
+    <group
+        android:scaleX="2.6"
+        android:scaleY="2.6"
+        android:translateX="22.8"
+        android:translateY="22.8">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M13,2 L4.5,13.5 L11,13.5 L10,22 L19.5,10 L13,10 L13,2 Z"/>
+    </group>
+</vector>
