@@ -1,4 +1,4 @@
-# Carreras multi-tipo: delivery, mandado, encomienda y pasajero
+# Carreras multi-tipo: delivery, encomienda y pasajero
 
 **Fecha:** 2026-07-27
 **Estado:** backend + app modo conductor IMPLEMENTADOS (2026-07-28). Pendiente: modo pasajero.
@@ -11,26 +11,40 @@
 Hoy la app del rider solo sirve un caso: pedidos de restaurante. Una "carrera"
 es literalmente un `Pedido` en estado `listo` con `modalidad: 'delivery'`.
 
-Se extiende a cuatro tipos:
+Se extiende a tres tipos, con **dos orígenes** distintos:
 
-| Tipo | Origen | Quién la crea |
+| Origen | Tipos | Cómo nace |
 |---|---|---|
-| `pedido` | Local del negocio | El negocio cliente de LeadAI, al marcar el pedido como listo (ya funciona) |
-| `mandado` | Negocio **ajeno** o dirección libre | Un usuario desde la app |
-| `encomienda` | Dirección libre | Un usuario desde la app |
-| `pasajero` | Dirección libre | Un usuario desde la app |
+| **Desde el negocio** | `pedido` | El restaurante marca un pedido listo en la app de negocios (ya funciona) |
+| **Desde el cliente** | `encomienda`, `pasajero` | Un usuario los pide desde la app |
 
-### El caso `mandado`
+| Tipo | Qué es |
+|---|---|
+| `pedido` | Delivery de un negocio cliente de LeadAI |
+| `encomienda` | Llevar o **traer** algo — incluye comprar en un negocio ajeno |
+| `pasajero` | Llevar a una persona |
 
-"Tráeme un chifa del Salón Cantón." El cliente le pide al rider que le **compre**
-algo en un negocio que no usa LeadAI. No existe `Pedido`, no hay `Tenant`, nadie
-marca "listo" — la carrera nace del usuario, con el negocio como texto libre.
+Esa distinción de origen es también la de las notificaciones al rider: "nueva
+carrera en tu zona" cuando un cliente pide, y "un negocio necesita rider"
+cuando sale un pedido de la app de negocios.
 
-Es la diferencia clave con `pedido`: ahí LeadAI conoce al negocio y el monto ya
-está arreglado. Acá el negocio es ajeno y **el rider adelanta la plata de la
-compra**, que después le devuelve el cliente junto con el flete.
+### El caso `encomienda`
 
-Por eso `mandado` necesita dos montos separados:
+Una encomienda cubre los dos casos, porque para el rider son el mismo trabajo:
+
+- **Solo transportar**: "llevá esta caja de acá para allá".
+- **Comprar y traer**: "tráeme un chifa del Salón Cantón" — el rider **compra**
+  en un negocio que no usa LeadAI y **adelanta la plata**.
+
+La diferencia entre ambos es un solo campo: si hay algo que comprar, el cliente
+declara cuánto cuesta. Si no, va vacío. No hacen falta dos tipos.
+
+La diferencia con `pedido` sí es de fondo: ahí LeadAI conoce al negocio y el
+monto ya está arreglado entre negocio y rider. En una encomienda el negocio es
+ajeno (o no hay negocio), y **el rider puede tener que adelantar plata** que
+después le devuelve el cliente junto con el flete.
+
+Por eso `encomienda` necesita dos montos separados:
 
 - `montoOfrecido` — el **flete**: lo que el cliente le paga al rider por ir.
   Sobre este se calcula la comisión.
@@ -45,7 +59,7 @@ exige tener S/60 disponibles.
 
 **Riesgo asumido:** si el cliente no le paga, el rider pierde el adelanto.
 LeadAI no garantiza ni intermedia esa plata — igual que no intermedia el flete.
-La app lo advierte al aceptar un mandado con compra alta.
+La app lo advierte al aceptar una encomienda con compra alta.
 
 Y la app pasa de ser solo-rider a tener **dos modos** (pasajero / conductor),
 como inDrive.
@@ -69,19 +83,17 @@ servicio de transporte.
 | Tipo | Comisión |
 |---|---|
 | `pedido` | S/1 fijo |
-| `encomienda` | S/1 fijo |
-| `mandado` | `max(S/1, 10% del flete)` — **nunca sobre el monto de compra** |
+| `encomienda` | `max(S/1, 10% del flete)` — **nunca sobre el monto de compra** |
 | `pasajero` | `max(S/1, 10% del monto ofrecido)` |
 
-Por qué el delivery y la encomienda no llevan porcentaje: en delivery el monto
-lo arregla el negocio con el rider por fuera y no pasa por el sistema — un %
-sobre un dato que no se puede verificar es ficticio. En encomienda el ticket es
-bajo y el piso de S/1 ya domina.
+Por qué el delivery no lleva porcentaje: el monto lo arregla el negocio con el
+rider por fuera y no pasa por el sistema — un % sobre un dato que no se puede
+verificar es ficticio.
 
-**En `mandado` la comisión se calcula SOLO sobre el flete.** El monto de compra
-es plata que el rider adelanta y recupera, no ganancia suya. Cobrarle un % sobre
-los S/60 del chifa sería cobrarle por prestarle plata al cliente — lo dejaría
-trabajando a pérdida en cualquier compra grande.
+**En `encomienda` la comisión se calcula SOLO sobre el flete.** El monto de
+compra es plata que el rider adelanta y recupera, no ganancia suya. Cobrarle un
+% sobre los S/60 del chifa sería cobrarle por prestarle plata al cliente — lo
+dejaría trabajando a pérdida en cualquier compra grande.
 
 Por qué al rider y no al comercio (modelo inDrive, no Rappi): Rappi cobra 18-30%
 al restaurante porque le *aporta demanda*. LeadAI no le lleva clientes nuevos al
@@ -190,7 +202,7 @@ delicada de la migración.
 ```prisma
 model Carrera {
   id   String @id @default(cuid())
-  tipo String // 'pedido' | 'mandado' | 'encomienda' | 'pasajero'
+  tipo String // 'pedido' | 'encomienda' | 'pasajero'
 
   // Solo tipo 'pedido': enlaza al Pedido del restaurante.
   pedidoId String? @unique
@@ -207,7 +219,7 @@ model Carrera {
   kmEstimado     Float?
   montoSugerido  Int?    // centavos — flete propuesto por el sistema
   montoOfrecido  Int?    // centavos — flete definido por el solicitante
-  // Solo 'mandado': lo que cuesta lo que el rider va a COMPRAR. Es plata que
+  // Solo 'encomienda': lo que cuesta lo que el rider va a COMPRAR. Es plata que
   // adelanta y recupera del cliente — la comisión NUNCA se calcula sobre esto.
   montoCompraEstimado Int?
   notas          String  @default("") // "caja mediana", "chifa combinado sin verduras"
@@ -274,12 +286,11 @@ creado no debe ver ninguna pantalla nueva. Su experiencia queda idéntica.
 El pool acepta los cuatro tipos. La card de carrera cambia según el tipo:
 
 - `pedido` — como hoy: `🍽️ Negocio · S/45.00`
-- `mandado` — `🛍️ Mandado`, negocio de origen, destino, **flete y monto de
-  compra por separado y bien diferenciados**
-- `encomienda` — `📦 Encomienda`, origen, destino, monto ofrecido
+- `encomienda` — `📦 Encomienda`, origen, destino, monto ofrecido y —cuando
+  hay algo que comprar— **el monto de compra por separado y bien diferenciado**
 - `pasajero` — `🚕 Pasajero`, origen, destino, monto ofrecido
 
-**El mandado exige claridad visual sobre el dinero.** El rider tiene que ver de
+**La encomienda con compra exige claridad visual sobre el dinero.** El rider tiene que ver de
 un vistazo cuánto gana y cuánta plata necesita llevar. Nunca mostrar un total
 combinado: un `S/68` donde S/60 es adelanto y S/8 es ganancia se lee como una
 carrera muy rentable y no lo es. Antes de aceptar, la card muestra
@@ -341,8 +352,8 @@ Construir la oferta antes que la demanda evita el arranque en frío.
 | Riesgo | Mitigación |
 |---|---|
 | Migrar el pool de `Pedido` a `Carrera` rompe los deliveries en producción | Proyección con doble escritura y verificación antes de cortar; la Cocina sigue leyendo `Pedido` |
-| En un `mandado`, el cliente no le paga al rider lo que adelantó | LeadAI no garantiza esa plata (igual que no garantiza el flete). La app lo advierte al aceptar mandados con compra alta y muestra los montos separados. Si aparece como problema real, evaluar tope de compra o adelanto por la app |
-| El rider acepta un mandado sin plata suficiente para la compra | El monto de compra se muestra destacado antes de aceptar, nunca sumado al flete |
+| En una `encomienda` con compra, el cliente no le paga al rider lo que adelantó | LeadAI no garantiza esa plata (igual que no garantiza el flete). La app lo advierte al aceptar encomiendas con compra alta y muestra los montos separados. Si aparece como problema real, evaluar tope de compra o adelanto por la app |
+| El rider acepta una encomienda sin plata suficiente para la compra | El monto de compra se muestra destacado antes de aceptar, nunca sumado al flete |
 | El rider evade declarando montos bajos (pago en efectivo, no verificable) | El piso de S/1 hace que evadir solo rinda hasta ese punto; el 10% recién pesa arriba de S/10 |
 | La sugerencia queda mal calibrada para Tacna | `montoSugerido` vs `montoOfrecido` persistidos; constantes configurables sin deploy |
 | Nominatim (1 req/s) no aguanta el volumen de geocodificación | Cachear pines por dirección; evaluar proveedor pago si el volumen lo justifica |
@@ -358,8 +369,8 @@ Construir la oferta antes que la demanda evita el arranque en frío.
 | Quién paga la comisión | El rider | El restaurante (Rappi) |
 | Comisión pasajero | `max(S/1, 10%)` | % puro sin piso; S/1 fijo |
 | Comisión delivery/encomienda | S/1 fijo | % (el monto no es verificable) |
-| Base de comisión en `mandado` | Solo el flete | El total (flete + compra) — cobraría por plata que el rider adelanta |
-| Negocios ajenos (`mandado`) | Texto libre, sin `Tenant` | Exigir que el negocio sea cliente de LeadAI |
+| Base de comisión en `encomienda` | Solo el flete | El total (flete + compra) — cobraría por plata que el rider adelanta |
+| Negocios ajenos (`encomienda`) | Texto libre, sin `Tenant` | Exigir que el negocio sea cliente de LeadAI |
 | Estructura de la app | Una app, dos modos (inDrive) | Dos apps (Uber/Uber Driver) |
 | Modelo de datos | Tabla `Carrera` nueva | Extender `Pedido` con nullables |
 | Subasta de ofertas | No por ahora | Contraofertas estilo inDrive |
