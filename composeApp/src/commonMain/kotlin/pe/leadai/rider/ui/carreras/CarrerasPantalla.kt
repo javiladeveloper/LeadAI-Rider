@@ -214,8 +214,9 @@ private fun ContenidoRider(
         // los datos van compactos abajo — como Google Maps en navegación.
         Column(modifier = Modifier.fillMaxSize()) {
             Text(
-                // El título dice en qué tramo va (2026-07-24).
-                if (miCarrera.recogido) "🛵 Llevando el pedido" else "📦 Recoge en el local",
+                // El título dice en qué tramo va y con las palabras del tipo:
+                // a un pasajero no se lo "recoge", se lo pasa a buscar.
+                tituloTramo(miCarrera),
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 10.dp),
@@ -257,6 +258,15 @@ private fun ContenidoRider(
                             ).joinToString(" · "),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    // MANDADO: la plata que ADELANTA para comprar, en su propia
+                    // línea y en ámbar. Nunca sumada al flete de arriba.
+                    if (esMandado(miCarrera)) {
+                        Text(
+                            "💵 Llevas ${centavosASoles(miCarrera.montoCompraEstimado ?: 0)} para la compra",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = TokensExtra.espera,
                         )
                     }
                 }
@@ -302,7 +312,12 @@ private fun ContenidoRider(
                     CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
                 } else {
                     Text(
-                        if (miCarrera.recogido) "✅ Entregado" else "📦 Ya recogí el pedido",
+                        when {
+                            miCarrera.recogido -> "✅ Entregado"
+                            miCarrera.tipo == "pasajero" -> "🚕 Ya subió"
+                            miCarrera.tipo == "mandado" -> "🛍️ Ya compré"
+                            else -> "📦 Ya recogí el pedido"
+                        },
                         style = MaterialTheme.typography.labelLarge,
                     )
                 }
@@ -555,7 +570,7 @@ private fun FilaEntrega(entrega: CarreraEntregadaDto) {
     }
 }
 
-/** Una carrera disponible: negocio, entrega y el botón que gana el primero. */
+/** Una carrera disponible: el tipo, de dónde a dónde, cuánto gana y el botón que gana el primero. */
 @Composable
 private fun CardCarrera(
     carrera: CarreraDto,
@@ -569,36 +584,86 @@ private fun CardCarrera(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            // Tipo + lo que GANA (el flete). Nunca el total con la compra.
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "🍽️ ${carrera.negocio}",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    etiquetaTipo(carrera.tipo),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f),
                 )
                 Text(
-                    centavosASoles(carrera.totalCentavos),
-                    style = MaterialTheme.typography.titleSmall,
+                    centavosASoles(carrera.montoOfrecido),
+                    style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
             }
-            if (!carrera.direccion.isNullOrBlank()) {
-                Spacer(Modifier.height(4.dp))
+
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "📍 ${carrera.origenTexto ?: carrera.negocio}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            val destino = carrera.destinoTexto ?: carrera.direccion
+            if (!destino.isNullOrBlank()) {
+                Spacer(Modifier.height(2.dp))
                 Text(
-                    "🏠 ${carrera.direccion}",
+                    "🏁 $destino",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            // Despacho por proximidad v1: el feed llega ordenado por cercanía.
-            if (carrera.kmAlNegocio != null) {
+
+            if (carrera.notas.isNotBlank()) {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "📝 ${carrera.notas}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            // MANDADO: cuánta plata tiene que llevar encima. En ámbar y
+            // SEPARADO de lo que gana — un total combinado (S/8 + S/60 = S/68)
+            // se lee como una carrera muy rentable y no lo es.
+            if (esMandado(carrera)) {
+                Spacer(Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            color = TokensExtra.espera.copy(alpha = 0.14f),
+                            shape = RoundedCornerShape(10.dp),
+                        )
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        "💵 Llevas ${centavosASoles(carrera.montoCompraEstimado ?: 0)} para la compra",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = TokensExtra.espera,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
                 Spacer(Modifier.height(2.dp))
                 Text(
-                    "📍 A ${carrera.kmAlNegocio} km de ti",
+                    "El cliente te lo devuelve al entregar",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            // Despacho por proximidad: el feed llega ordenado por cercanía.
+            if (carrera.kmAlNegocio != null) {
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    "🛵 A ${carrera.kmAlNegocio} km de ti",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
             }
+
             Spacer(Modifier.height(12.dp))
             Button(
                 onClick = onAceptar,
