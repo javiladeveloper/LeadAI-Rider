@@ -43,5 +43,7 @@ val moduloApp = module {
     viewModel { RegistroViewModel(get()) }
     viewModel { AltaRiderViewModel(get()) }
     viewModel { CarrerasViewModel(get(), get(), monederoApi = get()) }
-    viewModel { ClienteViewModel(get(), get()) }
+    // El tercer get() es MotorizadosApi: el cliente registra su token push por
+    // el mismo endpoint que el rider (`POST /motorizados/dispositivo`).
+    viewModel { ClienteViewModel(get(), get(), get()) }
 }

@@ -11,7 +11,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import pe.leadai.rider.datos.CarreraClienteDto
 import pe.leadai.rider.datos.CarrerasClienteApi
+import pe.leadai.rider.datos.MotorizadosApi
 import pe.leadai.rider.datos.Resultado
+import pe.leadai.rider.push.tokenPushActual
 import pe.leadai.rider.ui.carreras.UbicacionRider
 import pe.leadai.rider.ui.carreras.obtenerUbicacionActual
 import pe.leadai.rider.ui.comunes.AvisosGlobales
@@ -66,13 +68,24 @@ private const val MENSAJE_ERROR_CARGAR = "No pudimos cargar tu carrera. Intenta 
 class ClienteViewModel(
     private val api: CarrerasClienteApi,
     private val avisos: AvisosGlobales,
+    /**
+     * Solo para registrar el token push del CLIENTE. `POST
+     * /motorizados/dispositivo` sirve igual acá: asocia `usuarioId` + token y
+     * no exige perfil de motorizado.
+     */
+    private val motorizadosApi: MotorizadosApi,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
     /** GPS inyectable (mismo patrón que `CarrerasViewModel`) — en tests, `null`. */
     private val obtenerUbicacion: suspend () -> UbicacionRider? = { obtenerUbicacionActual() },
+    /** Token FCM inyectable (mismo patrón que `CarrerasViewModel`). */
+    private val obtenerTokenPush: suspend () -> String? = { tokenPushActual() },
 ) : ViewModel() {
 
     private val _estado = MutableStateFlow(ClienteUiState())
     val estado: StateFlow<ClienteUiState> = _estado.asStateFlow()
+
+    /** El registro del token va UNA vez por sesión de pantalla, no en cada `cargar()`. */
+    private var pushRegistrado = false
 
     fun cargar() {
         _estado.update { it.copy(cargando = true, error = null) }
@@ -84,7 +97,24 @@ class ClienteViewModel(
                 }
             }
         }
+        registrarPush()
         usarMiUbicacion()
+    }
+
+    /**
+     * Push del cliente ("un rider tomó tu carrera"): una vez por sesión de
+     * pantalla y silencioso. Sin token no pasa nada — el endpoint es el mismo
+     * del rider, que solo asocia `usuarioId` + token.
+     *
+     * Sin esto el backend manda el aviso al vacío: el cliente nunca registró
+     * su teléfono y solo se enteraría con la app abierta, por el polling.
+     */
+    private fun registrarPush() {
+        if (pushRegistrado) return
+        pushRegistrado = true
+        viewModelScope.launch(dispatcher) {
+            obtenerTokenPush()?.let { token -> motorizadosApi.registrarDispositivo(token) }
+        }
     }
 
     /** Refresco silencioso: un fallo puntual no debe borrar lo que ya se ve. */

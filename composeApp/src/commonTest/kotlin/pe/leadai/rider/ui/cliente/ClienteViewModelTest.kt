@@ -20,6 +20,7 @@ import okio.FileSystem
 import okio.Path.Companion.toPath
 import pe.leadai.rider.datos.ApiCliente
 import pe.leadai.rider.datos.CarrerasClienteApi
+import pe.leadai.rider.datos.MotorizadosApi
 import pe.leadai.rider.datos.SesionRepositorio
 import pe.leadai.rider.esperarCondicion
 import pe.leadai.rider.ui.comunes.AvisosGlobales
@@ -52,13 +53,22 @@ class ClienteViewModelTest {
         Dispatchers.resetMain()
     }
 
-    /** El VM de siempre: MockEngine inyectado, dispatcher de test y SIN GPS. */
-    private fun vmDePrueba(engine: MockEngine) = ClienteViewModel(
-        api = CarrerasClienteApi(ApiCliente(sesion = SesionRepositorio(dataStoreDePrueba()), engine = engine)),
-        avisos = AvisosGlobales(),
-        dispatcher = testDispatcher,
-        obtenerUbicacion = { null },
-    )
+    /**
+     * El VM de siempre: MockEngine inyectado, dispatcher de test y SIN GPS.
+     * `tokenPush` simula el token FCM sin tocar el `expect/actual` real —
+     * mismo patrón que `RegistroPushRepositorio.obtenerToken`.
+     */
+    private fun vmDePrueba(engine: MockEngine, tokenPush: String? = null): ClienteViewModel {
+        val apiCliente = ApiCliente(sesion = SesionRepositorio(dataStoreDePrueba()), engine = engine)
+        return ClienteViewModel(
+            api = CarrerasClienteApi(apiCliente),
+            avisos = AvisosGlobales(),
+            motorizadosApi = MotorizadosApi(apiCliente),
+            dispatcher = testDispatcher,
+            obtenerUbicacion = { null },
+            obtenerTokenPush = { tokenPush },
+        )
+    }
 
     @Test
     fun sin_carrera_activa_muestra_el_formulario() = runTest {
@@ -254,6 +264,49 @@ class ClienteViewModelTest {
 
         assertTrue(cuerpoDelPedido.contains("\"montoOfrecidoCentavos\":800"), cuerpoDelPedido)
         assertTrue(!cuerpoDelPedido.contains("montoCompraEstimadoCentavos"), cuerpoDelPedido)
+    }
+
+    @Test
+    fun al_cargar_registra_el_token_de_push() = runTest {
+        val rutasLlamadas = mutableListOf<String>()
+        val engine = MockEngine { peticion ->
+            rutasLlamadas.add(peticion.url.encodedPath)
+            respond(
+                content = """{"carrera":null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val vm = vmDePrueba(engine, tokenPush = "token-fcm-123")
+
+        vm.cargar()
+        advanceUntilIdle()
+        // El POST viaja con I/O real (MockEngine + DataStore): se espera con el
+        // mismo perro guardián de 5s que el resto de los tests del repo.
+        flow { while (true) { emit(rutasLlamadas.toList()); delay(10) } }
+            .esperarCondicion { rutas -> rutas.any { it.contains("dispositivo") } }
+
+        assertTrue(rutasLlamadas.any { it.contains("dispositivo") }, rutasLlamadas.toString())
+    }
+
+    @Test
+    fun sin_token_de_push_no_llama_al_backend() = runTest {
+        val rutasLlamadas = mutableListOf<String>()
+        val engine = MockEngine { peticion ->
+            rutasLlamadas.add(peticion.url.encodedPath)
+            respond(
+                content = """{"carrera":null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val vm = vmDePrueba(engine, tokenPush = null)
+
+        vm.cargar()
+        vm.estado.esperarCondicion { !it.cargando }
+        advanceUntilIdle()
+
+        assertTrue(rutasLlamadas.none { it.contains("dispositivo") }, rutasLlamadas.toString())
     }
 
     @Test
