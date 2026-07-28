@@ -1,7 +1,7 @@
 # Carreras multi-tipo: delivery, encomienda y pasajero
 
 **Fecha:** 2026-07-27
-**Estado:** backend + app modo conductor IMPLEMENTADOS (2026-07-28). Pendiente: modo pasajero.
+**Estado:** COMPLETO (2026-07-28) — backend, modo conductor y modo cliente. Ver PENDIENTES.md para lo diferido.
 **Repos afectados:** `leadia` (backend), `LeadAI-Rider` (app)
 
 ---
