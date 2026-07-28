@@ -25,6 +25,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import org.koin.compose.koinInject
@@ -55,6 +57,7 @@ import pe.leadai.rider.datos.SesionRepositorio
 import pe.leadai.rider.ui.comunes.AvisosGlobales
 import pe.leadai.rider.ui.comunes.EstadoError
 import pe.leadai.rider.ui.comunes.PantallaCargando
+import pe.leadai.rider.ui.permisos.PermisosPantalla
 import pe.leadai.rider.ui.tema.TokensExtra
 import pe.leadai.rider.ui.tema.centavosASoles
 
@@ -103,6 +106,8 @@ fun CarrerasPantalla(
     var confirmandoCierre by remember { mutableStateOf(false) }
     // Recarga del monedero: elige paquete → abre la página de pago (Culqi).
     var eligiendoPaquete by remember { mutableStateOf(false) }
+    // Los permisos del sistema, a demanda desde "⚙️ Permisos".
+    var viendoPermisos by remember { mutableStateOf(false) }
     val abridorPago = LocalUriHandler.current
 
     LaunchedEffect(Unit) {
@@ -159,6 +164,7 @@ fun CarrerasPantalla(
                     onRecogido = viewModel::marcarRecogido,
                     onRecargar = { eligiendoPaquete = true },
                     onCambiarDistrito = alCambiarDistrito,
+                    onVerPermisos = { viendoPermisos = true },
                     onCerrarSesion = { confirmandoCierre = true },
                 )
                 else -> EstadoError(mensaje = "No pudimos cargar tu perfil.", onReintentar = viewModel::cargar)
@@ -179,6 +185,20 @@ fun CarrerasPantalla(
             },
             onCancelar = { eligiendoPaquete = false },
         )
+    }
+
+    if (viendoPermisos) {
+        // Como diálogo y no como ruta de navegación: el rider entra, toca
+        // "Configurar", el sistema lo saca a Configuración y al volver sigue
+        // en su pantalla de carreras sin haber perdido el hilo.
+        Dialog(onDismissRequest = { viendoPermisos = false }) {
+            Surface(
+                shape = RoundedCornerShape(24.dp),
+                color = MaterialTheme.colorScheme.surface,
+            ) {
+                PermisosPantalla(alVolver = { viendoPermisos = false })
+            }
+        }
     }
 
     if (confirmandoCierre) {
@@ -206,6 +226,7 @@ private fun ContenidoRider(
     onRecogido: () -> Unit,
     onRecargar: () -> Unit,
     onCambiarDistrito: () -> Unit,
+    onVerPermisos: () -> Unit,
     onCerrarSesion: () -> Unit,
 ) {
     // 1) Carrera EN CURSO: pantalla enfocada en el viaje.
@@ -502,6 +523,18 @@ private fun ContenidoRider(
             shape = RoundedCornerShape(16.dp),
         ) {
             Text("✏️ Editar mi perfil", style = MaterialTheme.typography.labelLarge)
+        }
+        Spacer(Modifier.height(8.dp))
+        // El permiso de ubicación "todo el tiempo" no se puede pedir por
+        // diálogo desde Android 11: hay que mandar al rider a Configuración,
+        // y conviene que pueda volver ahí cuando quiera (si lo negó una vez,
+        // el sistema ya no vuelve a preguntar).
+        OutlinedButton(
+            onClick = onVerPermisos,
+            modifier = Modifier.fillMaxWidth().height(48.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Text("⚙️ Permisos", style = MaterialTheme.typography.labelLarge)
         }
         TextButton(
             onClick = onCerrarSesion,
