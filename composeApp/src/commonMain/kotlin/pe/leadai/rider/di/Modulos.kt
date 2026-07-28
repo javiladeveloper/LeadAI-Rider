@@ -5,6 +5,7 @@ import org.koin.dsl.module
 import pe.leadai.rider.datos.ApiCliente
 import pe.leadai.rider.datos.AuthApi
 import pe.leadai.rider.datos.CarrerasClienteApi
+import pe.leadai.rider.datos.ModoRepositorio
 import pe.leadai.rider.datos.MonederoApi
 import pe.leadai.rider.datos.MotorizadosApi
 import pe.leadai.rider.datos.SesionRepositorio
@@ -28,6 +29,7 @@ import pe.leadai.rider.ui.registro.RegistroViewModel
 val moduloApp = module {
     single { crearDataStore() }
     single { SesionRepositorio(get()) }
+    single { ModoRepositorio(get()) }
     single { ApiCliente(sesion = get()) }
     single { AuthApi(get(), get()) }
     single { MotorizadosApi(get()) }
