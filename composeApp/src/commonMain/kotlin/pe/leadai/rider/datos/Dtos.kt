@@ -249,3 +249,68 @@ data class PerfilMotorizadoDto(
 data class MiPerfilMotorizadoDto(
     val perfil: PerfilMotorizadoDto? = null,
 )
+
+// ── Modo CLIENTE: pedir una moto ────────────────────────────────────────
+
+/** Un punto del mapa resuelto por el backend (GPS del cliente o geocodificado). */
+@Serializable
+data class UbicacionDto(
+    val texto: String = "",
+    val lat: Double? = null,
+    val lng: Double? = null,
+)
+
+/** `POST /carreras/sugerir` → cuánto conviene ofrecer, antes de crear nada. */
+@Serializable
+data class SugerenciaDto(
+    val kmEstimado: Double? = null,
+    val montoSugerido: Long = 0,
+    val origen: UbicacionDto = UbicacionDto(),
+    val destino: UbicacionDto = UbicacionDto(),
+)
+
+/** `POST /carreras` → la carrera recién pedida. */
+@Serializable
+data class CarreraCreadaDto(
+    val ok: Boolean = false,
+    val id: String = "",
+    val montoSugerido: Long = 0,
+    val montoOfrecido: Long = 0,
+    val expiraEnMinutos: Int = 15,
+)
+
+/**
+ * `GET /carreras/mia` → la carrera activa del cliente. Los campos `rider*`
+ * llegan `null` mientras nadie la tomó.
+ */
+@Serializable
+data class CarreraClienteDto(
+    val id: String,
+    val tipo: String = "pasajero",
+    /** `disponible` | `aceptada` | `recogida` | `entregada` | `cancelada` | `expirada`. */
+    val estado: String = "disponible",
+    val origenTexto: String = "",
+    val destinoTexto: String = "",
+    /** El FLETE: lo que el cliente paga por el servicio. */
+    val montoOfrecido: Long = 0,
+    /**
+     * Solo cuando el rider tiene que comprar algo: lo que le devuelve el
+     * cliente además del flete. NUNCA se suma al monto ofrecido.
+     */
+    val montoCompraEstimado: Long? = null,
+    val kmEstimado: Double? = null,
+    val notas: String = "",
+    val recogido: Boolean = false,
+    val creadoEn: String = "",
+    val expiraEn: String? = null,
+    val riderNombre: String? = null,
+    val riderTelefono: String? = null,
+    val riderPlaca: String? = null,
+    val riderVehiculo: String? = null,
+)
+
+/** `GET /carreras/mia` → `{"carrera": null | {...}}`. */
+@Serializable
+data class MiCarreraClienteDto(
+    val carrera: CarreraClienteDto? = null,
+)

@@ -4,6 +4,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import pe.leadai.rider.datos.ApiCliente
 import pe.leadai.rider.datos.AuthApi
+import pe.leadai.rider.datos.CarrerasClienteApi
 import pe.leadai.rider.datos.MonederoApi
 import pe.leadai.rider.datos.MotorizadosApi
 import pe.leadai.rider.datos.SesionRepositorio
@@ -31,6 +32,7 @@ val moduloApp = module {
     single { AuthApi(get(), get()) }
     single { MotorizadosApi(get()) }
     single { MonederoApi(get()) }
+    single { CarrerasClienteApi(get()) }
     single { RegistroPushRepositorio(get()) }
     single { AvisosGlobales() }
 
