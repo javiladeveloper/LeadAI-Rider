@@ -142,7 +142,7 @@ data class CarreraDto(
     val pedidoId: String,
     /** Id real de la Carrera en el backend. */
     val carreraId: String? = null,
-    /** `pedido` | `mandado` | `encomienda` | `pasajero`. */
+    /** `pedido` | `encomienda` | `pasajero`. */
     val tipo: String = "pedido",
     val negocio: String = "",
     val negocioDistrito: String? = null,
@@ -158,9 +158,10 @@ data class CarreraDto(
      */
     val montoOfrecido: Long = 0,
     /**
-     * Solo en `mandado`: lo que cuesta lo que va a COMPRAR. Es plata que el
-     * rider adelanta y recupera del cliente — NUNCA se suma al flete, porque
-     * un total combinado se lee como una carrera muy rentable y no lo es.
+     * Solo en `encomienda` con compra: lo que cuesta lo que va a COMPRAR. Es
+     * plata que el rider adelanta y recupera del cliente — NUNCA se suma al
+     * flete, porque un total combinado se lee como una carrera muy rentable y
+     * no lo es. Si viene null la encomienda es de solo transporte.
      */
     val montoCompraEstimado: Long? = null,
     val kmEstimado: Double? = null,

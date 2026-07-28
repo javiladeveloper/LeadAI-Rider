@@ -260,9 +260,10 @@ private fun ContenidoRider(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                    // MANDADO: la plata que ADELANTA para comprar, en su propia
-                    // línea y en ámbar. Nunca sumada al flete de arriba.
-                    if (esMandado(miCarrera)) {
+                    // ENCOMIENDA CON COMPRA: la plata que ADELANTA para
+                    // comprar, en su propia línea y en ámbar. Nunca sumada al
+                    // flete de arriba.
+                    if (requiereCompra(miCarrera)) {
                         Text(
                             "💵 Llevas ${centavosASoles(miCarrera.montoCompraEstimado ?: 0)} para la compra",
                             style = MaterialTheme.typography.bodyMedium,
@@ -315,7 +316,9 @@ private fun ContenidoRider(
                         when {
                             miCarrera.recogido -> "✅ Entregado"
                             miCarrera.tipo == "pasajero" -> "🚕 Ya subió"
-                            miCarrera.tipo == "mandado" -> "🛍️ Ya compré"
+                            // Lo que cambia el texto no es el tipo sino si hay
+                            // que comprar: "Ya compré" solo si adelantó plata.
+                            requiereCompra(miCarrera) -> "🛍️ Ya compré"
                             else -> "📦 Ya recogí el pedido"
                         },
                         style = MaterialTheme.typography.labelLarge,
@@ -624,10 +627,10 @@ private fun CardCarrera(
                 )
             }
 
-            // MANDADO: cuánta plata tiene que llevar encima. En ámbar y
-            // SEPARADO de lo que gana — un total combinado (S/8 + S/60 = S/68)
-            // se lee como una carrera muy rentable y no lo es.
-            if (esMandado(carrera)) {
+            // ENCOMIENDA CON COMPRA: cuánta plata tiene que llevar encima. En
+            // ámbar y SEPARADO de lo que gana — un total combinado
+            // (S/8 + S/60 = S/68) se lee como una carrera muy rentable y no lo es.
+            if (requiereCompra(carrera)) {
                 Spacer(Modifier.height(10.dp))
                 Row(
                     modifier = Modifier

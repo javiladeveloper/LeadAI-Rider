@@ -13,7 +13,6 @@ import pe.leadai.rider.datos.CarreraDto
 /** La etiqueta que identifica el tipo en la card del pool. */
 fun etiquetaTipo(tipo: String): String = when (tipo) {
     "pedido" -> "🍽️ Delivery"
-    "mandado" -> "🛍️ Mandado"
     "encomienda" -> "📦 Encomienda"
     "pasajero" -> "🚕 Pasajero"
     else -> "🛵 Carrera"
@@ -26,14 +25,15 @@ fun etiquetaTipo(tipo: String): String = when (tipo) {
  */
 fun tituloTramo(carrera: CarreraDto): String = when (carrera.tipo) {
     "pasajero" -> if (carrera.recogido) "🚕 Llevando al pasajero" else "🚕 Pasa a buscarlo"
-    "mandado" -> if (carrera.recogido) "🛵 Llevando la compra" else "🛍️ Ve a comprar"
     "encomienda" -> if (carrera.recogido) "🛵 Llevando la encomienda" else "📦 Recoge la encomienda"
     else -> if (carrera.recogido) "🛵 Llevando el pedido" else "📦 Recoge en el local"
 }
 
 /**
- * Si esta carrera exige que el rider ADELANTE plata para comprar. Un mandado
- * sin monto declarado no cuenta: mostrar "llevas S/0" confunde más que ayuda.
+ * Si esta carrera exige que el rider ADELANTE plata para comprar. No depende
+ * del tipo sino del dato que importa: si hay monto de compra, hay que comprar
+ * y adelantar plata. Una carrera sin monto declarado no cuenta — mostrar
+ * "llevas S/0" confunde más que ayuda.
  */
-fun esMandado(carrera: CarreraDto): Boolean =
-    carrera.tipo == "mandado" && (carrera.montoCompraEstimado ?: 0) > 0
+fun requiereCompra(carrera: CarreraDto): Boolean =
+    (carrera.montoCompraEstimado ?: 0) > 0

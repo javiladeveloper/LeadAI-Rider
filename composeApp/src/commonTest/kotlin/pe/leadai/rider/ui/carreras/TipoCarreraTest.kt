@@ -27,7 +27,6 @@ class TipoCarreraTest {
     @Test
     fun cada_tipo_tiene_su_etiqueta() {
         assertEquals("🍽️ Delivery", etiquetaTipo("pedido"))
-        assertEquals("🛍️ Mandado", etiquetaTipo("mandado"))
         assertEquals("📦 Encomienda", etiquetaTipo("encomienda"))
         assertEquals("🚕 Pasajero", etiquetaTipo("pasajero"))
     }
@@ -52,16 +51,18 @@ class TipoCarreraTest {
     }
 
     @Test
-    fun el_mandado_dice_que_hay_que_comprar() {
-        assertEquals("🛍️ Ve a comprar", tituloTramo(carrera(tipo = "mandado")))
-        assertEquals("🛵 Llevando la compra", tituloTramo(carrera(tipo = "mandado", recogido = true)))
+    fun la_encomienda_dice_que_hay_que_recogerla() {
+        assertEquals("📦 Recoge la encomienda", tituloTramo(carrera(tipo = "encomienda")))
+        assertEquals("🛵 Llevando la encomienda", tituloTramo(carrera(tipo = "encomienda", recogido = true)))
     }
 
     @Test
-    fun solo_es_mandado_si_tiene_monto_de_compra() {
-        assertTrue(esMandado(carrera(tipo = "mandado", montoCompraEstimado = 6000)))
-        // Un mandado sin monto declarado no debe mostrar "llevas S/0".
-        assertFalse(esMandado(carrera(tipo = "mandado", montoCompraEstimado = null)))
-        assertFalse(esMandado(carrera(tipo = "pasajero", montoCompraEstimado = 6000)))
+    fun solo_requiere_compra_si_tiene_monto_de_compra() {
+        // Lo que manda es el MONTO, no el tipo: una encomienda con monto
+        // declarado obliga al rider a adelantar plata.
+        assertTrue(requiereCompra(carrera(tipo = "encomienda", montoCompraEstimado = 6000)))
+        // Una encomienda de solo transporte no debe mostrar "llevas S/0".
+        assertFalse(requiereCompra(carrera(tipo = "encomienda", montoCompraEstimado = null)))
+        assertFalse(requiereCompra(carrera(tipo = "encomienda", montoCompraEstimado = 0)))
     }
 }

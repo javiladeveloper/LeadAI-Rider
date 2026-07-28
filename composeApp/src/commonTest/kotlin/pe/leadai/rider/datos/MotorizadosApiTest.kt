@@ -174,7 +174,7 @@ class MotorizadosApiTest {
                      "origenTexto":"El Pollon","destinoTexto":"Jose Olaya 110","direccion":"Jose Olaya 110",
                      "totalCentavos":5400,"montoOfrecido":5400,"montoCompraEstimado":null,
                      "kmEstimado":3.0,"notas":"","creadoEn":"2026-07-28T10:00:00.000Z","recogido":false},
-                    {"pedidoId":"c2","carreraId":"c2","tipo":"mandado","negocio":"Chifa Salon Canton",
+                    {"pedidoId":"c2","carreraId":"c2","tipo":"encomienda","negocio":"Chifa Salon Canton",
                      "origenTexto":"Chifa Salon Canton","destinoTexto":"Jose Olaya 110","direccion":"Jose Olaya 110",
                      "totalCentavos":800,"montoOfrecido":800,"montoCompraEstimado":6000,
                      "kmEstimado":3.0,"notas":"combinado sin verduras","creadoEn":"2026-07-28T10:00:00.000Z","recogido":false}
@@ -191,8 +191,8 @@ class MotorizadosApiTest {
         assertEquals(2, carreras.size)
         assertEquals("pedido", carreras[0].tipo)
         assertEquals(null, carreras[0].montoCompraEstimado)
-        // El mandado: flete S/8 y compra S/60 llegan SEPARADOS.
-        assertEquals("mandado", carreras[1].tipo)
+        // La encomienda con compra: flete S/8 y compra S/60 llegan SEPARADOS.
+        assertEquals("encomienda", carreras[1].tipo)
         assertEquals(800L, carreras[1].montoOfrecido)
         assertEquals(6000L, carreras[1].montoCompraEstimado)
         assertEquals("combinado sin verduras", carreras[1].notas)
