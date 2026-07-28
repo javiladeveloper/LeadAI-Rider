@@ -129,21 +129,50 @@ data class RecargaResponseDto(
     val saldoCentavos: Long = 0,
 )
 
-/** Una carrera del POOL v0 (`GET /motorizados/carreras`): pedido "listo" de un negocio de la zona del rider. */
+/**
+ * Una carrera del POOL: puede ser el delivery de un negocio cliente, un
+ * MANDADO (comprar en un negocio ajeno), una encomienda o un pasajero.
+ *
+ * Todos los campos nuevos llevan default: si el backend los omite, la app
+ * sigue funcionando en vez de reventar la deserialización.
+ */
 @Serializable
 data class CarreraDto(
+    /** Identificador que usa la app. Es el id del Pedido, o el de la Carrera si no hay Pedido. */
     val pedidoId: String,
-    val negocio: String,
+    /** Id real de la Carrera en el backend. */
+    val carreraId: String? = null,
+    /** `pedido` | `mandado` | `encomienda` | `pasajero`. */
+    val tipo: String = "pedido",
+    val negocio: String = "",
     val negocioDistrito: String? = null,
+    /** De dónde sale: el local del negocio, o una dirección libre. */
+    val origenTexto: String? = null,
+    /** A dónde va. */
+    val destinoTexto: String? = null,
     val direccion: String? = null,
     val totalCentavos: Long = 0,
+    /**
+     * El FLETE: lo que el rider gana por hacer la carrera. Sobre este monto
+     * se calcula la comisión.
+     */
+    val montoOfrecido: Long = 0,
+    /**
+     * Solo en `mandado`: lo que cuesta lo que va a COMPRAR. Es plata que el
+     * rider adelanta y recupera del cliente — NUNCA se suma al flete, porque
+     * un total combinado se lee como una carrera muy rentable y no lo es.
+     */
+    val montoCompraEstimado: Long? = null,
+    val kmEstimado: Double? = null,
+    /** Detalle del pedido: "combinado sin verduras", "caja mediana". */
+    val notas: String = "",
     val creadoEn: String,
     /** Datos del CLIENTE — solo vienen en `miCarrera` (la aceptada), nunca en el feed abierto. */
     val clienteNombre: String? = null,
     val clienteContacto: String? = null,
-    /** Distancia del rider al negocio (despacho por proximidad v1) — null sin GPS fresco. */
+    /** Distancia del rider al ORIGEN — null sin GPS fresco. */
     val kmAlNegocio: Double? = null,
-    /** Dos tramos: `false` = va al LOCAL a recoger; `true` = ya recogió, va al cliente. */
+    /** Dos tramos: `false` = va al origen a recoger; `true` = ya recogió, va al destino. */
     val recogido: Boolean = false,
 )
 

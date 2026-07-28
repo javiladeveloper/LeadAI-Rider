@@ -164,4 +164,60 @@ class MotorizadosApiTest {
         assertIs<Resultado.Error>(resultado)
         assertEquals("distrito es requerido", resultado.mensaje)
     }
+
+    @Test
+    fun carreras_deserializa_los_cuatro_tipos_con_sus_montos() = runTest {
+        val engine = MockEngine {
+            respond(
+                content = """{"carreras":[
+                    {"pedidoId":"p1","carreraId":"c1","tipo":"pedido","negocio":"El Pollon",
+                     "origenTexto":"El Pollon","destinoTexto":"Jose Olaya 110","direccion":"Jose Olaya 110",
+                     "totalCentavos":5400,"montoOfrecido":5400,"montoCompraEstimado":null,
+                     "kmEstimado":3.0,"notas":"","creadoEn":"2026-07-28T10:00:00.000Z","recogido":false},
+                    {"pedidoId":"c2","carreraId":"c2","tipo":"mandado","negocio":"Chifa Salon Canton",
+                     "origenTexto":"Chifa Salon Canton","destinoTexto":"Jose Olaya 110","direccion":"Jose Olaya 110",
+                     "totalCentavos":800,"montoOfrecido":800,"montoCompraEstimado":6000,
+                     "kmEstimado":3.0,"notas":"combinado sin verduras","creadoEn":"2026-07-28T10:00:00.000Z","recogido":false}
+                ],"miCarrera":null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val api = MotorizadosApi(ApiCliente(sesion = SesionRepositorio(dataStoreDePrueba()), engine = engine))
+
+        val resultado = api.carreras()
+
+        val carreras = (resultado as Resultado.Ok).valor.carreras
+        assertEquals(2, carreras.size)
+        assertEquals("pedido", carreras[0].tipo)
+        assertEquals(null, carreras[0].montoCompraEstimado)
+        // El mandado: flete S/8 y compra S/60 llegan SEPARADOS.
+        assertEquals("mandado", carreras[1].tipo)
+        assertEquals(800L, carreras[1].montoOfrecido)
+        assertEquals(6000L, carreras[1].montoCompraEstimado)
+        assertEquals("combinado sin verduras", carreras[1].notas)
+    }
+
+    @Test
+    fun carreras_de_backend_viejo_sin_campos_nuevos_no_rompe() = runTest {
+        // Compatibilidad: si el backend omite los campos nuevos, los defaults
+        // mantienen la app funcionando en vez de reventar la deserialización.
+        val engine = MockEngine {
+            respond(
+                content = """{"carreras":[
+                    {"pedidoId":"p1","negocio":"El Pollon","direccion":"Jose Olaya 110",
+                     "totalCentavos":5400,"creadoEn":"2026-07-28T10:00:00.000Z"}
+                ],"miCarrera":null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val api = MotorizadosApi(ApiCliente(sesion = SesionRepositorio(dataStoreDePrueba()), engine = engine))
+
+        val carreras = (api.carreras() as Resultado.Ok).valor.carreras
+
+        assertEquals("pedido", carreras[0].tipo) // default
+        assertEquals(0L, carreras[0].montoOfrecido)
+        assertEquals(null, carreras[0].montoCompraEstimado)
+    }
 }
