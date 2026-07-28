@@ -1,7 +1,7 @@
 # Carreras multi-tipo: delivery, mandado, encomienda y pasajero
 
 **Fecha:** 2026-07-27
-**Estado:** diseño aprobado, pendiente de plan de implementación
+**Estado:** backend IMPLEMENTADO (2026-07-27). Pendiente: app y modo pasajero.
 **Repos afectados:** `leadia` (backend), `LeadAI-Rider` (app)
 
 ---

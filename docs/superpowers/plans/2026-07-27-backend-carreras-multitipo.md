@@ -51,8 +51,13 @@ model Carrera {
 
   // Solo tipo 'pedido': el Pedido del restaurante que originó esta carrera.
   pedidoId String? @unique
-  // Solo encomienda/pasajero: el usuario que la pidió.
+  // Solo mandado/encomienda/pasajero: el usuario que la pidió.
   solicitanteId String?
+  // Teléfono de contacto del solicitante. Se guarda ACÁ y no se lee de
+  // Usuario: el modelo Usuario no tiene teléfono (solo email y nombre), y
+  // además quien pide puede querer dar un número distinto al de su cuenta.
+  // El rider solo lo ve cuando la carrera ya es suya.
+  solicitanteContacto String @default("")
 
   origenTexto  String  @default("")
   origenLat    Float?
@@ -994,6 +999,7 @@ export async function crearCarreraLibre(args: {
   kmEstimado?: number | null;
   montoOfrecidoCentavos?: number | null;
   montoCompraEstimadoCentavos?: number | null;
+  solicitanteContacto?: string;
   notas?: string;
 }): Promise<{ id: string; montoSugerido: number; montoOfrecido: number }> {
   const montoSugerido = sugerirMontoCentavos(args.kmEstimado ?? 0);
@@ -1017,6 +1023,7 @@ export async function crearCarreraLibre(args: {
       // nada, así que un monto de compra ahí sería un dato sin significado.
       montoCompraEstimado:
         args.tipo === 'mandado' ? args.montoCompraEstimadoCentavos ?? null : null,
+      solicitanteContacto: args.solicitanteContacto ?? '',
       notas: args.notas ?? '',
     },
   });
@@ -1233,16 +1240,18 @@ Reemplazar el cuerpo de `app.get('/motorizados/carreras', ...)` (líneas 151-210
           clienteContacto: cliente?.contactoExterno ?? null,
         };
       } else {
+        // Mandado/encomienda/pasajero: el nombre sale de Usuario, pero el
+        // teléfono vive en la Carrera (Usuario no tiene campo telefono).
         const solicitante = enCurso.solicitanteId
           ? await prisma.usuario.findUnique({
               where: { id: enCurso.solicitanteId },
-              select: { nombre: true, telefono: true },
+              select: { nombre: true },
             })
           : null;
         miCarrera = {
           ...base,
           clienteNombre: solicitante?.nombre ?? null,
-          clienteContacto: solicitante?.telefono ?? null,
+          clienteContacto: enCurso.solicitanteContacto || null,
         };
       }
     }
