@@ -130,8 +130,9 @@ data class RecargaResponseDto(
 )
 
 /**
- * Una carrera del POOL: puede ser el delivery de un negocio cliente, un
- * MANDADO (comprar en un negocio ajeno), una encomienda o un pasajero.
+ * Una carrera del POOL: puede ser el delivery de un negocio cliente, una
+ * ENCOMIENDA (llevar o traer algo, comprándolo o solo transportándolo) o un
+ * pasajero.
  *
  * Todos los campos nuevos llevan default: si el backend los omite, la app
  * sigue funcionando en vez de reventar la deserialización.
