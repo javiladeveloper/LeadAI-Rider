@@ -41,6 +41,8 @@ data class AltaRiderUiState(
     val telefono: String = "",
     /** Placa del vehículo — opcional (contrato: `POST /motorizados/mi-perfil {distrito, telefono?, placa?}`). */
     val placa: String = "",
+    /** `moto` | `auto` — de qué depende cuánto se sugiere cobrar por km. */
+    val tipoVehiculo: String = "moto",
     val cargando: Boolean = false,
     val error: String? = null,
 )
@@ -173,6 +175,7 @@ class AltaRiderViewModel(
                             distrito = distrito,
                             telefono = perfil.telefono.orEmpty(),
                             placa = perfil.placa.orEmpty(),
+                            tipoVehiculo = perfil.tipoVehiculo,
                         )
                     }
                     perfil.dni?.let { dni -> cambiarDni(dni) }
@@ -238,6 +241,15 @@ class AltaRiderViewModel(
     }
 
     /**
+     * En qué se mueve el rider: `moto` o `auto`. El backend lo usa para
+     * sugerir el monto — un auto consume ~3x más que una moto, así que su
+     * tarifa por km es mayor.
+     */
+    fun elegirTipoVehiculo(tipo: String) {
+        _estado.update { it.copy(tipoVehiculo = tipo, error = null) }
+    }
+
+    /**
      * Intenta dar de alta (o actualizar) el perfil de motorizado:
      * `POST /motorizados/mi-perfil`. [alExito] no recibe parámetros: el
      * llamador siempre navega a la sala de espera del rider.
@@ -258,6 +270,7 @@ class AltaRiderViewModel(
                     telefono = actual.telefono,
                     placa = actual.placa.ifBlank { null },
                     dni = actual.dni,
+                    tipoVehiculo = actual.tipoVehiculo,
                 )
             ) {
                 is Resultado.Ok -> {

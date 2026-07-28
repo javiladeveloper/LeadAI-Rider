@@ -2,6 +2,7 @@ package pe.leadai.rider.ui.alta
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -114,6 +116,7 @@ fun AltaRiderPantalla(
                     nombreOficialDni = estado.nombreOficialDni,
                     telefono = estado.telefono,
                     placa = estado.placa,
+                    tipoVehiculo = estado.tipoVehiculo,
                     habilitado = !estado.cargando,
                     onDepartamentoElegido = viewModel::elegirDepartamento,
                     onDistritoElegido = viewModel::elegirDistrito,
@@ -121,6 +124,7 @@ fun AltaRiderPantalla(
                     onDniCambia = viewModel::cambiarDni,
                     onTelefonoCambia = viewModel::cambiarTelefono,
                     onPlacaCambia = viewModel::cambiarPlaca,
+                    onTipoVehiculoElegido = viewModel::elegirTipoVehiculo,
                 )
 
                 val mensajeError = estado.error
@@ -182,6 +186,7 @@ private fun FormularioMotorizado(
     nombreOficialDni: String?,
     telefono: String,
     placa: String,
+    tipoVehiculo: String,
     habilitado: Boolean,
     onDepartamentoElegido: (String) -> Unit,
     onDistritoElegido: (String) -> Unit,
@@ -189,6 +194,7 @@ private fun FormularioMotorizado(
     onDniCambia: (String) -> Unit,
     onTelefonoCambia: (String) -> Unit,
     onPlacaCambia: (String) -> Unit,
+    onTipoVehiculoElegido: (String) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         SelectorUbicacion(
@@ -239,6 +245,38 @@ private fun FormularioMotorizado(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             modifier = Modifier.fillMaxWidth(),
         )
+
+        Spacer(Modifier.height(16.dp))
+
+        // En qué se mueve: el backend sugiere el monto según el vehículo —
+        // un auto consume ~3x más que una moto, así que cobra más por km.
+        Text(
+            "¿En qué te mueves?",
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(8.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            listOf("moto" to "🛵 Moto", "auto" to "🚗 Auto").forEach { (valor, etiqueta) ->
+                val elegido = tipoVehiculo == valor
+                OutlinedButton(
+                    onClick = { onTipoVehiculoElegido(valor) },
+                    enabled = habilitado,
+                    modifier = Modifier.weight(1f).height(48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = if (elegido) {
+                        ButtonDefaults.outlinedButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer,
+                            contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                        )
+                    } else {
+                        ButtonDefaults.outlinedButtonColors()
+                    },
+                ) {
+                    Text(etiqueta, style = MaterialTheme.typography.labelLarge)
+                }
+            }
+        }
 
         Spacer(Modifier.height(16.dp))
 

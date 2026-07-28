@@ -234,6 +234,8 @@ data class PerfilMotorizadoDto(
     val distrito: String,
     val telefono: String? = null,
     val placa: String? = null,
+    /** `moto` | `auto` — la sugerencia de monto depende del vehículo. */
+    val tipoVehiculo: String = "moto",
     /** DNI del rider (fila 16) — puede ser null en perfiles de antes del campo. */
     val dni: String? = null,
     val estado: String,

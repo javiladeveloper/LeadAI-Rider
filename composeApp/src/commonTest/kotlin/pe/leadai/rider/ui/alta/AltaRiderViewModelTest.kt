@@ -400,6 +400,60 @@ class AltaRiderViewModelTest {
         assertEquals("JONATHAN JOAN AVILA HUAMOLLE", vm.estado.value.nombreOficialDni)
     }
 
+    // ---- tipo de vehículo: la sugerencia de monto depende de él ----
+
+    @Test
+    fun el_tipo_de_vehiculo_arranca_en_moto() = runTest {
+        val vm = vmDePrueba(engineExitoso(RegistroRequests()), repoConSesion(), testDispatcher)
+
+        assertEquals("moto", vm.estado.value.tipoVehiculo)
+    }
+
+    @Test
+    fun se_puede_elegir_auto() = runTest {
+        val vm = vmDePrueba(engineExitoso(RegistroRequests()), repoConSesion(), testDispatcher)
+
+        vm.elegirTipoVehiculo("auto")
+
+        assertEquals("auto", vm.estado.value.tipoVehiculo)
+    }
+
+    @Test
+    fun guardar_manda_el_tipo_de_vehiculo() = runTest {
+        // El backend usa `tipoVehiculo` para sugerir el monto: un auto
+        // consume ~3x más que una moto, así que su tarifa por km es mayor.
+        val requests = RegistroRequests()
+        val vm = vmDePrueba(engineExitoso(requests), repoConSesion(), testDispatcher)
+        vm.elegirDepartamento("Tacna")
+        vm.elegirDistrito("Tacna")
+        vm.cambiarDni("44247191")
+        vm.cambiarTelefono("952123456")
+        vm.elegirTipoVehiculo("auto")
+
+        vm.guardar { }
+        vm.estado.esperarCondicion { !it.cargando }
+        advanceUntilIdle()
+
+        val post = requests.snapshot().last {
+            it.url.encodedPath == "/motorizados/mi-perfil" && it.method == HttpMethod.Post
+        }
+        val cuerpo = post.body.toByteArray().decodeToString()
+        assertTrue(cuerpo.contains("\"tipoVehiculo\":\"auto\""))
+    }
+
+    @Test
+    fun preparar_edicion_prellena_el_tipo_de_vehiculo_del_perfil() = runTest {
+        val vm = vmDePrueba(engineExitoso(RegistroRequests()), repoConSesion(), testDispatcher)
+
+        vm.prepararEdicion()
+        advanceUntilIdle()
+        vm.estado.esperarCondicion { it.distrito != null }
+
+        // El fixture de `/mi-perfil` no trae `tipoVehiculo` (perfil viejo):
+        // el default del DTO mantiene "moto" en vez de reventar.
+        assertEquals("moto", vm.estado.value.tipoVehiculo)
+    }
+
     @Test
     fun cambiar_departamento_limpia_el_distrito_elegido() = runTest {
         val vm = vmDePrueba(engineExitoso(RegistroRequests()), repoConSesion(), testDispatcher)

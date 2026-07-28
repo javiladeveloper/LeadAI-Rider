@@ -45,6 +45,8 @@ class MotorizadosApi(private val api: ApiCliente) {
         telefono: String?,
         placa: String?,
         dni: String? = null,
+        /** `moto` | `auto` — el backend sugiere el monto según el vehículo. */
+        tipoVehiculo: String = "moto",
     ): Resultado<PerfilMotorizadoDto> =
         when (
             val respuesta = api.post<JsonObject, MiPerfilMotorizadoDto>(
@@ -54,6 +56,7 @@ class MotorizadosApi(private val api: ApiCliente) {
                     if (!telefono.isNullOrBlank()) put("telefono", telefono)
                     if (!placa.isNullOrBlank()) put("placa", placa)
                     if (!dni.isNullOrBlank()) put("dni", dni)
+                    put("tipoVehiculo", tipoVehiculo)
                 },
                 requiereSesion = true,
             )
