@@ -143,9 +143,13 @@ class CarrerasViewModel(
     }
 
     /**
-     * Reporte de GPS bajo demanda — lo llama el pulso rápido de la pantalla
-     * (cada 5s con carrera en curso). SUSPEND a propósito: el loop espera el
-     * fix antes de pedir el siguiente, así dos lecturas nunca se pisan.
+     * Reporte de GPS bajo demanda.
+     *
+     * El pulso rápido de 5s ya NO vive acá: lo lleva `ServicioCarreraActiva`,
+     * el foreground service, porque un loop en la pantalla se suspende cuando
+     * el rider bloquea el teléfono. Esto queda como disparo puntual — sin
+     * llamador en producción hoy, pero es el gancho para forzar un reporte sin
+     * esperar la vuelta del service.
      */
     suspend fun reportarPosicionAhora() = reportarPosicion()
 
