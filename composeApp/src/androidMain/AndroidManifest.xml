@@ -5,11 +5,23 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Ubicación del rider: alimenta el despacho por cercanía ("A X km de
          ti"), el odómetro de km reales y el mapa público /track/:pedidoId que
-         ve el cliente. Solo en primer plano — no hay
-         ACCESS_BACKGROUND_LOCATION a propósito: la app se usa con la pantalla
-         encendida mientras se reparte. -->
+         ve el cliente. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Ubicación con la app en segundo plano: el rider maneja con el celular
+         en el bolsillo o la pantalla bloqueada. Sin esto, al bloquear el
+         teléfono el cliente ve la moto CONGELADA en el mapa. Desde Android 11
+         este permiso no se puede pedir por diálogo — hay que mandar al
+         usuario a Configuración (ver ui/permisos/). -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- El foreground service que mantiene vivo ese reporte mientras dura la
+         carrera. FOREGROUND_SERVICE_LOCATION es obligatorio desde Android 14
+         para el tipo "location". -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <!-- Xiaomi/Oppo y compañía matan la app "para ahorrar batería" en plena
+         carrera; con esto el rider puede eximirla desde Configuración. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <application
         android:name=".LeadAIRiderApp"
@@ -36,6 +48,14 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <!-- Reporta el GPS mientras hay carrera, aunque el teléfono esté
+             bloqueado. foregroundServiceType="location" NO es opcional:
+             sin él Android 14+ mata el service apenas arranca. -->
+        <service
+            android:name=".ui.carreras.ServicioCarreraActiva"
+            android:exported="false"
+            android:foregroundServiceType="location" />
     </application>
 
 </manifest>

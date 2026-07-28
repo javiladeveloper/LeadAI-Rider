@@ -28,6 +28,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -59,15 +60,6 @@ import pe.leadai.rider.ui.tema.centavosASoles
 
 /** Mismo ritmo de polling que la Cocina: el feed del rider se refresca solo. */
 private const val INTERVALO_POLLING_MS = 15_000L
-
-/**
- * Pulso RÁPIDO del GPS con carrera en curso (pedido de Jonathan 2026-07-24:
- * "tildar su ubicación cada menos tiempo, 5 seg quizás"): desacoplado del
- * feed de 15s para que la motito del mapa del cliente se mueva fluida sin
- * triplicar las consultas de carreras. Si el fix del GPS tarda más de 5s,
- * el loop se auto-regula (la corrutina espera el fix antes de la siguiente).
- */
-private const val INTERVALO_GPS_MS = 5_000L
 
 /** Base del mapa embebido — el mismo host de `ApiCliente` (default de prod). */
 private const val URL_BASE_TRACKING = "https://api.leadai-pe.com"
@@ -121,14 +113,23 @@ fun CarrerasPantalla(
         }
     }
 
-    // Pulso rápido del GPS: solo vive mientras hay carrera en curso (el
-    // LaunchedEffect se cancela solo cuando miCarrera vuelve a null).
-    val hayCarreraEnCurso = estado.miCarrera != null
-    LaunchedEffect(hayCarreraEnCurso) {
-        while (isActive && hayCarreraEnCurso) {
-            viewModel.reportarPosicionAhora()
-            delay(INTERVALO_GPS_MS)
+    // El pulso del GPS lo lleva un FOREGROUND SERVICE, no la pantalla: un
+    // LaunchedEffect se SUSPENDE cuando el rider bloquea el teléfono o cambia
+    // de app, y el cliente veía la moto congelada en el mapa mientras el
+    // rider manejaba con el celular en el bolsillo. El service vive solo
+    // mientras hay carrera: arranca al aceptar, para al entregar.
+    val carreraEnCurso = estado.miCarrera
+    LaunchedEffect(carreraEnCurso?.pedidoId) {
+        if (carreraEnCurso != null) {
+            iniciarServicioCarrera(carreraEnCurso.destinoTexto ?: carreraEnCurso.direccion.orEmpty())
+        } else {
+            detenerServicioCarrera()
         }
+    }
+    // Si el rider sale de la pantalla (cerrar sesión, cambiar de modo) el
+    // service no debe quedar huérfano reportando para siempre.
+    DisposableEffect(Unit) {
+        onDispose { detenerServicioCarrera() }
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
