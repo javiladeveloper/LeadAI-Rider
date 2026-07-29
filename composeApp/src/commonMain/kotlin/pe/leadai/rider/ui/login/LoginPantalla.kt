@@ -253,24 +253,19 @@ private fun TextoConLinkRegistro(onClick: () -> Unit, habilitado: Boolean) {
 }
 
 /**
- * "LeadAI Rider": misma marca que la app de negocios (Lead en tinta, AI en
- * teal) con el sufijo del rol en gris, para que quien tenga las DOS apps
- * instaladas sepa de una cuál abrió.
+ * "Jala": la marca de cara al usuario. NO dice "LeadAI" a propósito — esa es
+ * la marca B2B que le vendemos a los negocios, y no le dice nada a un
+ * motorizado ni a alguien pidiendo una moto en Tacna. Tampoco dice "Rider":
+ * la misma app la usan los clientes para pedir.
  */
 @Composable
 private fun LogoLeadAI() {
     Text(
         text = buildAnnotatedString {
-            withStyle(SpanStyle(color = MaterialTheme.colorScheme.onSurface)) {
-                append("Lead")
-            }
             withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
-                append("AI")
-            }
-            withStyle(SpanStyle(color = MaterialTheme.colorScheme.onSurfaceVariant)) {
-                append(" Rider")
+                append("Jala")
             }
         },
-        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold),
+        style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.ExtraBold),
     )
 }

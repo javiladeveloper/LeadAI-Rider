@@ -83,15 +83,14 @@ actual suspend fun obtenerIdTokenGoogle(): String? {
             DiagnosticoGoogle.ultimoDetalle = "${e.type}: ${e.message ?: "sin mensaje"}"
         } catch (e: GetCredentialException) {
             DiagnosticoGoogle.ultimoDetalle = "${e.type}: ${e.message ?: "sin mensaje"}"
-            // "Account reauth failed" viene disfrazado de USER_CANCELED:
-            // Credential Manager no pudo renovar la sesión de la cuenta en
-            // ESTE equipo (celular real 2026-07-23; las otras apps del
-            // teléfono entraban porque usan el SDK clásico). Para ese caso
-            // puntual sí se cae al SDK clásico. Una cancelación GENUINA del
-            // usuario no trae "reauth" — ahí no se reabre nada.
-            if (e.message?.contains("reauth", ignoreCase = true) == true) {
-                return intentarConSdkClasico(activity)
-            }
+            // Una cancelación GENUINA del usuario (tocó "atrás" o cerró el
+            // selector) NO debe reabrir nada: encadenar el SDK clásico ahí
+            // muestra un SEGUNDO selector de cuentas, que se lee como que la
+            // app está rota. Solo el "reauth failed" —que viene disfrazado de
+            // USER_CANCELED cuando Credential Manager no pudo renovar la
+            // sesión en este equipo— justifica el fallback.
+            val esReauth = e.message?.contains("reauth", ignoreCase = true) == true
+            if (esReauth) return intentarConSdkClasico(activity)
             return null
         } catch (e: GoogleIdTokenParsingException) {
             DiagnosticoGoogle.ultimoDetalle = "token ilegible: ${e.message ?: "sin mensaje"}"
@@ -136,7 +135,17 @@ private suspend fun intentarConSdkClasico(activity: android.app.Activity): Strin
                 }
                 cont.resume(cuenta.idToken)
             } catch (e: ApiException) {
-                DiagnosticoGoogle.ultimoDetalle = "clasico ${e.statusCode}: ${e.message ?: "sin mensaje"}"
+                // Los códigos crudos ("10", "12501") no le dicen nada a nadie
+                // — ni a Jonathan mirando el celular, ni a quien lea el
+                // reporte después. Se traducen a lo que realmente significan.
+                val queSignifica = when (e.statusCode) {
+                    10 -> "config: la huella de este build no está en Firebase"
+                    12501 -> "cancelado por el usuario"
+                    12500 -> "falló el flujo de Google (revisar Play Services)"
+                    7 -> "sin conexión"
+                    else -> "código ${e.statusCode}"
+                }
+                DiagnosticoGoogle.ultimoDetalle = "clasico — $queSignifica"
                 cont.resume(null)
             }
         }
