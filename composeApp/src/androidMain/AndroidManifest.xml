@@ -27,7 +27,7 @@
         android:name=".LeadAIRiderApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="LeadAI Rider"
+        android:label="Jala"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:name=".MainActivity"
