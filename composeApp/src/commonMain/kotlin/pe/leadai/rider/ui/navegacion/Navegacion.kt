@@ -24,6 +24,7 @@ import pe.leadai.rider.ui.carreras.CarrerasPantalla
 import pe.leadai.rider.ui.cliente.ClientePantalla
 import pe.leadai.rider.ui.login.LoginPantalla
 import pe.leadai.rider.ui.modo.ElegirModoPantalla
+import pe.leadai.rider.ui.permisos.PermisosPantalla
 import pe.leadai.rider.ui.registro.RegistroPantalla
 
 /**
@@ -73,6 +74,9 @@ object Rutas {
 
     /** Elegir si viene a pedir una moto o a manejar. */
     const val ELEGIR_MODO = "elegir_modo"
+
+    /** Permisos que el rider necesita para trabajar (ubicación, batería, avisos). */
+    const val PERMISOS = "permisos"
 
     /** Modo cliente: pedir una moto y seguir el viaje. */
     const val CLIENTE = "cliente"
@@ -245,8 +249,21 @@ fun NavegacionRaiz(navController: NavHostController = rememberNavController()) {
                 alElegirConductor = {
                     scope.launch {
                         modoRepositorio.guardar(ModoRepositorio.CONDUCTOR)
-                        navController.navigate(Rutas.ALTA) { popUpTo(0) { inclusive = true } }
+                        // Los permisos ANTES del alta: sin ubicación en todo
+                        // momento el rider deja de reportar posición al
+                        // guardar el teléfono, y sin notificaciones no se
+                        // entera de las carreras. Pedirlos acá —cuando acaba
+                        // de decir "manejo"— es cuando tienen sentido
+                        // evidente; al abrir la app, sin contexto, se niegan.
+                        navController.navigate(Rutas.PERMISOS) { popUpTo(0) { inclusive = true } }
                     }
+                },
+            )
+        }
+        composable(Rutas.PERMISOS) {
+            PermisosPantalla(
+                alVolver = {
+                    navController.navigate(Rutas.ALTA) { popUpTo(0) { inclusive = true } }
                 },
             )
         }

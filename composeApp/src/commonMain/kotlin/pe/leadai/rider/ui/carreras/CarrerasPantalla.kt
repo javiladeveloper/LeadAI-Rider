@@ -354,22 +354,21 @@ private fun ContenidoRider(
     // 2) y 3): lista de carreras disponibles, o la sala de espera de siempre.
     Column(modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp)) {
         Spacer(Modifier.height(24.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column(modifier = Modifier.padding(end = 12.dp)) {
-                Text(
-                    text = if (nombreUsuario.isNotBlank()) "Hola, $nombreUsuario 🛵" else "Hola 🛵",
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-                Text(
-                    text = perfil.distrito,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-            Spacer(Modifier.weight(1f))
-            BadgeEstadoMotorizado(perfil.estado)
-        }
+        // El saludo y el badge NO comparten fila: "Pendiente de verificación"
+        // es texto largo y con un nombre normal los dos quedaban apretados
+        // contra los bordes. El badge va debajo, con su ancho natural.
+        Text(
+            text = if (nombreUsuario.isNotBlank()) "Hola, $nombreUsuario 🛵" else "Hola 🛵",
+            style = MaterialTheme.typography.headlineSmall,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Text(
+            text = perfil.distrito,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Spacer(Modifier.height(10.dp))
+        BadgeEstadoMotorizado(perfil.estado)
 
         Spacer(Modifier.height(16.dp))
 
