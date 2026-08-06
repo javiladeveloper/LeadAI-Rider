@@ -59,7 +59,9 @@ import pe.leadai.rider.ui.comunes.EstadoError
 import pe.leadai.rider.ui.comunes.PantallaCargando
 import pe.leadai.rider.ui.permisos.PermisosPantalla
 import pe.leadai.rider.ui.carreras.componentes.CardCarrera
+import pe.leadai.rider.ui.carreras.componentes.ChipMontoSobreMapa
 import pe.leadai.rider.ui.carreras.componentes.EncabezadoRider
+import pe.leadai.rider.ui.carreras.componentes.HojaCarreraActiva
 import pe.leadai.rider.ui.carreras.componentes.CardSaldo
 import pe.leadai.rider.ui.carreras.componentes.colorDeEstadoRider
 import pe.leadai.rider.ui.comunes.BadgeEstado
@@ -304,122 +306,36 @@ private fun ContenidoRider(
 ) {
     // 1) Carrera EN CURSO: pantalla enfocada en el viaje.
     if (miCarrera != null) {
-        // El mapa MANDA (feedback de Jonathan 2026-07-24): a SANGRE COMPLETA
-        // — sin márgenes laterales ni esquinas, ocupando todo el alto libre;
-        // los datos van compactos abajo — como Google Maps en navegación.
-        Column(modifier = Modifier.fillMaxSize()) {
-            Text(
-                // El título dice en qué tramo va y con las palabras del tipo:
-                // a un pasajero no se lo "recoge", se lo pasa a buscar.
-                tituloTramo(miCarrera),
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 10.dp),
-            )
+        // El MAPA manda: ocupa toda la pantalla y la información flota encima.
+        // El rider está manejando — lo único que necesita es ver por dónde va
+        // y tocar un botón grande al llegar.
+        val telefonoCliente = telefonoDeContacto(miCarrera.clienteContacto)
+        val abridor = LocalUriHandler.current
 
-            // El MISMO mapa en vivo que ve el cliente; en modo embebido la
-            // cámara encuadra la zona y luego SIGUE a la moto (modo rider).
+        Box(modifier = Modifier.fillMaxSize()) {
             MapaEmbebido(
                 url = "$URL_BASE_TRACKING/track/${miCarrera.pedidoId}?embebido=1",
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier.fillMaxSize(),
             )
-            Spacer(Modifier.height(10.dp))
 
-            val telefonoCliente = telefonoDeContacto(miCarrera.clienteContacto)
-            Card(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth().padding(14.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    Text(
-                        "🍽️ ${miCarrera.negocio} · ${centavosASoles(miCarrera.totalCentavos)}",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Text(
-                        "🏠 ${miCarrera.direccion ?: "entrega por confirmar con el negocio"}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                    if (!miCarrera.clienteNombre.isNullOrBlank() || telefonoCliente != null) {
-                        Text(
-                            listOfNotNull(
-                                miCarrera.clienteNombre?.takeIf { it.isNotBlank() }?.let { "👤 $it" },
-                                telefonoCliente?.let { "📱 +$it" },
-                            ).joinToString(" · "),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    // ENCOMIENDA CON COMPRA: la plata que ADELANTA para
-                    // comprar, en su propia línea y en ámbar. Nunca sumada al
-                    // flete de arriba.
-                    if (requiereCompra(miCarrera)) {
-                        Text(
-                            "💵 Llevas ${centavosASoles(miCarrera.montoCompraEstimado ?: 0)} para la compra",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = ColoresJala.actuales.espera,
-                        )
-                    }
-                }
-            }
+            // Cuánto gana, flotando arriba a la derecha.
+            ChipMontoSobreMapa(
+                montoCentavos = miCarrera.montoOfrecido,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp),
+            )
 
-            // Contacto directo con el cliente (solo si el contacto es un
-            // TELÉFONO — los leads de pruebas usan ids). Sin botón "Navegar":
-            // el mapa de arriba YA dibuja la mejor ruta y la recalcula solo
-            // cuando el rider se desvía (decisión de Jonathan 2026-07-24).
-            if (telefonoCliente != null) {
-                val abridor = LocalUriHandler.current
-                Spacer(Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    OutlinedButton(
-                        onClick = { abridor.openUri("https://wa.me/$telefonoCliente") },
-                        modifier = Modifier.weight(1f).height(44.dp),
-                        shape = RoundedCornerShape(14.dp),
-                    ) {
-                        Text("💬 WhatsApp", style = MaterialTheme.typography.labelLarge)
-                    }
-                    OutlinedButton(
-                        onClick = { abridor.openUri("tel:+$telefonoCliente") },
-                        modifier = Modifier.weight(1f).height(44.dp),
-                        shape = RoundedCornerShape(14.dp),
-                    ) {
-                        Text("📞 Llamar", style = MaterialTheme.typography.labelLarge)
-                    }
-                }
-            }
-            Spacer(Modifier.height(8.dp))
-            // DOS TRAMOS (2026-07-24): primero va al LOCAL a recoger; recién
-            // ahí el botón pasa a "Entregado".
-            Button(
-                onClick = if (miCarrera.recogido) onEntregar else onRecogido,
-                enabled = accionEnCurso == null,
-                modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 16.dp, bottom = 16.dp).height(52.dp),
-                shape = RoundedCornerShape(16.dp),
-            ) {
-                if (accionEnCurso != null) {
-                    CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-                } else {
-                    Text(
-                        when {
-                            miCarrera.recogido -> "✅ Entregado"
-                            miCarrera.tipo == "pasajero" -> "🚕 Ya subió"
-                            // Lo que cambia el texto no es el tipo sino si hay
-                            // que comprar: "Ya compré" solo si adelantó plata.
-                            requiereCompra(miCarrera) -> "🛍️ Ya compré"
-                            else -> "📦 Ya recogí el pedido"
-                        },
-                        style = MaterialTheme.typography.labelLarge,
-                    )
-                }
-            }
+            HojaCarreraActiva(
+                carrera = miCarrera,
+                accionEnCurso = accionEnCurso != null,
+                onRecogido = onRecogido,
+                onEntregar = onEntregar,
+                onWhatsApp = { abridor.openUri("https://wa.me/$it") },
+                onLlamar = { abridor.openUri("tel:+$it") },
+                telefonoCliente = telefonoCliente,
+                modifier = Modifier.align(Alignment.BottomCenter),
+            )
         }
         return
     }

@@ -275,10 +275,22 @@ private fun FormularioMotorizado(
 
         Spacer(Modifier.height(16.dp))
 
-        // En qué se mueve: el backend sugiere el monto según el vehículo —
-        // un auto consume ~3x más que una moto, así que cobra más por km.
+        // El diseño separa el alta en dos bloques: datos personales arriba y
+        // el vehículo acá. El título hace de corte visual — un formulario
+        // largo sin secciones se lee como una lista interminable.
         Text(
-            "¿En qué te mueves?",
+            "Tu Vehículo 🛵",
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = androidx.compose.ui.text.font.FontWeight.Bold,
+            ),
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        Spacer(Modifier.height(12.dp))
+
+        // El backend sugiere el monto según el vehículo — un auto consume ~3x
+        // más que una moto, así que cobra más por km.
+        Text(
+            "Tipo de vehículo",
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )
