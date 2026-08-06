@@ -58,6 +58,10 @@ import pe.leadai.rider.ui.comunes.AvisosGlobales
 import pe.leadai.rider.ui.comunes.EstadoError
 import pe.leadai.rider.ui.comunes.PantallaCargando
 import pe.leadai.rider.ui.permisos.PermisosPantalla
+import pe.leadai.rider.ui.carreras.componentes.CardCarrera
+import pe.leadai.rider.ui.carreras.componentes.CardSaldo
+import pe.leadai.rider.ui.carreras.componentes.colorDeEstadoRider
+import pe.leadai.rider.ui.comunes.BadgeEstado
 import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.centavosASoles
 
@@ -368,67 +372,14 @@ private fun ContenidoRider(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(Modifier.height(10.dp))
-        BadgeEstadoMotorizado(perfil.estado)
+        val (textoEstado, colorEstado) = colorDeEstadoRider(perfil.estado)
+        BadgeEstado(texto = textoEstado, color = colorEstado)
 
         Spacer(Modifier.height(16.dp))
 
-        // Monedero prepago (2026-07-24): cada carrera cuesta S/1. Sin saldo
-        // resalta en coral — es lo que le impide trabajar.
+        // El saldo manda: sin plata no puede aceptar nada.
         if (monedero != null) {
-            val sinSaldo = monedero.carrerasDisponibles <= 0
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = if (sinSaldo) {
-                        ColoresJala.actuales.calor.copy(alpha = 0.12f)
-                    } else {
-                        MaterialTheme.colorScheme.surfaceContainerLowest
-                    },
-                ),
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Column {
-                        Text(
-                            "💳 Mi saldo",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            centavosASoles(monedero.saldoCentavos),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = if (sinSaldo) ColoresJala.actuales.calor else MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
-                    Column(
-                        modifier = Modifier.weight(1f).padding(start = 12.dp),
-                        horizontalAlignment = Alignment.End,
-                    ) {
-                        Text(
-                            if (sinSaldo) {
-                                "Recarga para tomar carreras"
-                            } else {
-                                "Te alcanza para ${monedero.carrerasDisponibles} carreras"
-                            },
-                            style = MaterialTheme.typography.bodySmall,
-                            color = if (sinSaldo) ColoresJala.actuales.calor else MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.End,
-                        )
-                        Spacer(Modifier.height(6.dp))
-                        Button(
-                            onClick = onRecargar,
-                            shape = RoundedCornerShape(12.dp),
-                            modifier = Modifier.height(36.dp),
-                        ) {
-                            Text("Recargar", style = MaterialTheme.typography.labelMedium)
-                        }
-                    }
-                }
-            }
+            CardSaldo(monedero = monedero, onRecargar = onRecargar)
             Spacer(Modifier.height(12.dp))
         }
 
@@ -603,134 +554,6 @@ private fun FilaEntrega(entrega: CarreraEntregadaDto) {
                 }
             }
         }
-    }
-}
-
-/** Una carrera disponible: el tipo, de dónde a dónde, cuánto gana y el botón que gana el primero. */
-@Composable
-private fun CardCarrera(
-    carrera: CarreraDto,
-    aceptando: Boolean,
-    habilitado: Boolean,
-    onAceptar: () -> Unit,
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
-    ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-            // Tipo + lo que GANA (el flete). Nunca el total con la compra.
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(
-                    etiquetaTipo(carrera.tipo),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.weight(1f),
-                )
-                Text(
-                    centavosASoles(carrera.montoOfrecido),
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-
-            Spacer(Modifier.height(8.dp))
-            Text(
-                "📍 ${carrera.origenTexto ?: carrera.negocio}",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            val destino = carrera.destinoTexto ?: carrera.direccion
-            if (!destino.isNullOrBlank()) {
-                Spacer(Modifier.height(2.dp))
-                Text(
-                    "🏁 $destino",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-
-            if (carrera.notas.isNotBlank()) {
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    "📝 ${carrera.notas}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-
-            // ENCOMIENDA CON COMPRA: cuánta plata tiene que llevar encima. En
-            // ámbar y SEPARADO de lo que gana — un total combinado
-            // (S/8 + S/60 = S/68) se lee como una carrera muy rentable y no lo es.
-            if (requiereCompra(carrera)) {
-                Spacer(Modifier.height(10.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = ColoresJala.actuales.espera.copy(alpha = 0.14f),
-                            shape = RoundedCornerShape(10.dp),
-                        )
-                        .padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        "💵 Llevas ${centavosASoles(carrera.montoCompraEstimado ?: 0)} para la compra",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = ColoresJala.actuales.espera,
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-                Spacer(Modifier.height(2.dp))
-                Text(
-                    "El cliente te lo devuelve al entregar",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-
-            // Despacho por proximidad: el feed llega ordenado por cercanía.
-            if (carrera.kmAlNegocio != null) {
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    "🛵 A ${carrera.kmAlNegocio} km de ti",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary,
-                )
-            }
-
-            Spacer(Modifier.height(12.dp))
-            Button(
-                onClick = onAceptar,
-                enabled = habilitado,
-                modifier = Modifier.fillMaxWidth().height(44.dp),
-                shape = RoundedCornerShape(12.dp),
-            ) {
-                if (aceptando) {
-                    CircularProgressIndicator(modifier = Modifier.size(18.dp), strokeWidth = 2.dp)
-                } else {
-                    Text("Aceptar carrera", style = MaterialTheme.typography.labelLarge)
-                }
-            }
-        }
-    }
-}
-
-/** "Pendiente de verificación" ámbar / "Verificado ✓" teal / "Bloqueado" coral — mismos tonos que el resto de la app (regla de oro Brand Harmony). */
-@Composable
-private fun BadgeEstadoMotorizado(estado: String) {
-    val (texto, color) = when (estado) {
-        "verificado" -> "Verificado ✓" to MaterialTheme.colorScheme.primary
-        "bloqueado" -> "Bloqueado" to ColoresJala.actuales.calor
-        else -> "Pendiente de verificación" to ColoresJala.actuales.espera
-    }
-    Box(
-        modifier = Modifier
-            .background(color = color.copy(alpha = 0.14f), shape = RoundedCornerShape(8.dp))
-            .padding(horizontal = 10.dp, vertical = 6.dp),
-    ) {
-        Text(text = texto, style = MaterialTheme.typography.labelMedium, color = color)
     }
 }
 
