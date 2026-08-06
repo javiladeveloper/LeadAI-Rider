@@ -59,12 +59,15 @@ import pe.leadai.rider.ui.comunes.EstadoError
 import pe.leadai.rider.ui.comunes.PantallaCargando
 import pe.leadai.rider.ui.permisos.PermisosPantalla
 import pe.leadai.rider.ui.carreras.componentes.CardCarrera
+import pe.leadai.rider.ui.carreras.componentes.EncabezadoRider
 import pe.leadai.rider.ui.carreras.componentes.CardSaldo
 import pe.leadai.rider.ui.carreras.componentes.colorDeEstadoRider
 import pe.leadai.rider.ui.comunes.BadgeEstado
 import pe.leadai.rider.ui.comunes.BarraInferiorRider
 import pe.leadai.rider.ui.comunes.SeccionRider
+import pe.leadai.rider.ui.billetera.BilleteraPantalla
 import pe.leadai.rider.ui.ganancias.GananciasPantalla
+import pe.leadai.rider.ui.perfil.PerfilPantalla
 import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.centavosASoles
 
@@ -104,6 +107,8 @@ internal fun telefonoDeContacto(contacto: String?): String? {
 fun CarrerasPantalla(
     alCambiarDistrito: () -> Unit,
     alCerrarSesion: () -> Unit,
+    /** "Cambiar a modo cliente" desde Perfil. */
+    alCambiarModo: () -> Unit = {},
     viewModel: CarrerasViewModel = koinViewModel(),
 ) {
     val estado by viewModel.estado.collectAsState()
@@ -192,25 +197,46 @@ fun CarrerasPantalla(
                             onCerrarSesion = { confirmandoCierre = true },
                         )
                     } else {
+                        // Cada pestaña tiene SU pantalla. Antes Billetera y
+                        // Perfil caían en la misma vista de Inicio, así que
+                        // tocarlas no hacía nada.
                         when (seccion) {
-                            SeccionRider.INICIO, SeccionRider.BILLETERA, SeccionRider.PERFIL ->
-                                ContenidoRider(
-                                    nombreUsuario = sesion?.usuarioNombre.orEmpty(),
-                                    perfil = estado.perfil!!,
-                                    carreras = estado.carreras,
-                                    miCarrera = estado.miCarrera,
-                                    historial = estado.historial,
-                                    monedero = estado.monedero,
-                                    accionEnCurso = estado.accionEnCurso,
-                                    onAceptar = viewModel::aceptar,
-                                    onEntregar = viewModel::entregar,
-                                    onRecogido = viewModel::marcarRecogido,
-                                    onRecargar = { eligiendoPaquete = true },
-                                    onCambiarDistrito = alCambiarDistrito,
-                                    onVerPermisos = { viendoPermisos = true },
-                                    onCerrarSesion = { confirmandoCierre = true },
-                                )
+                            SeccionRider.INICIO -> ContenidoRider(
+                                nombreUsuario = sesion?.usuarioNombre.orEmpty(),
+                                perfil = estado.perfil!!,
+                                carreras = estado.carreras,
+                                miCarrera = estado.miCarrera,
+                                historial = estado.historial,
+                                monedero = estado.monedero,
+                                accionEnCurso = estado.accionEnCurso,
+                                onAceptar = viewModel::aceptar,
+                                onEntregar = viewModel::entregar,
+                                onRecogido = viewModel::marcarRecogido,
+                                onRecargar = { eligiendoPaquete = true },
+                                onCambiarDistrito = alCambiarDistrito,
+                                onVerPermisos = { viendoPermisos = true },
+                                onCerrarSesion = { confirmandoCierre = true },
+                            )
                             SeccionRider.GANANCIAS -> GananciasPantalla(historial = estado.historial)
+                            SeccionRider.BILLETERA -> BilleteraPantalla(
+                                monedero = estado.monedero,
+                                onRecargar = { eligiendoPaquete = true },
+                                onElegirPaquete = { paqueteId ->
+                                    val token = sesion?.token.orEmpty()
+                                    abridorPago.openUri(
+                                        "$URL_BASE_TRACKING/pago/rider?token=$token&paquete=$paqueteId",
+                                    )
+                                },
+                            )
+                            SeccionRider.PERFIL -> PerfilPantalla(
+                                nombreUsuario = sesion?.usuarioNombre.orEmpty(),
+                                emailUsuario = sesion?.usuarioEmail.orEmpty(),
+                                perfil = estado.perfil!!,
+                                onEditarPerfil = alCambiarDistrito,
+                                onVerPermisos = { viendoPermisos = true },
+                                onCambiarModo = alCambiarModo,
+                                onCerrarSesion = { confirmandoCierre = true },
+                            )
                         }
                     }
                 }
@@ -398,144 +424,74 @@ private fun ContenidoRider(
         return
     }
 
-    // 2) y 3): lista de carreras disponibles, o la sala de espera de siempre.
-    Column(modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp)) {
-        Spacer(Modifier.height(24.dp))
-        // El saludo y el badge NO comparten fila: "Pendiente de verificación"
-        // es texto largo y con un nombre normal los dos quedaban apretados
-        // contra los bordes. El badge va debajo, con su ancho natural.
+    // El FEED, con la estructura del diseño: saludo + saldo arriba (en el
+    // encabezado), y debajo la lista de solicitudes cercanas. El historial y
+    // el perfil ya NO viven acá — tienen su propia pestaña.
+    LazyColumn(
+        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        item(key = "encabezado") {
+            Spacer(Modifier.height(8.dp))
+            EncabezadoRider(
+                nombreUsuario = nombreUsuario,
+                perfil = perfil,
+                monedero = monedero,
+                onRecargar = onRecargar,
+            )
+        }
+
+        item(key = "titulo-solicitudes") {
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "📋 Solicitudes cercanas",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+
+        if (carreras.isEmpty()) {
+            item(key = "sin-carreras") {
+                SalaDeEspera()
+            }
+        } else {
+            items(carreras, key = { it.pedidoId }) { carrera ->
+                CardCarrera(
+                    carrera = carrera,
+                    aceptando = accionEnCurso == carrera.pedidoId,
+                    habilitado = accionEnCurso == null,
+                    onAceptar = { onAceptar(carrera) },
+                )
+            }
+        }
+
+        item(key = "fin") { Spacer(Modifier.height(16.dp)) }
+    }
+}
+
+/** Sin carreras a la vista: el mensaje de siempre, con algo de personalidad. */
+@Composable
+private fun SalaDeEspera() {
+    val colores = ColoresJala.actuales
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text("🛵", style = MaterialTheme.typography.displayLarge)
+        Spacer(Modifier.height(12.dp))
         Text(
-            text = if (nombreUsuario.isNotBlank()) "Hola, $nombreUsuario 🛵" else "Hola 🛵",
-            style = MaterialTheme.typography.headlineSmall,
+            "Sin carreras por ahora",
+            style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
         )
+        Spacer(Modifier.height(8.dp))
         Text(
-            text = perfil.distrito,
+            "Cuando alguien pida cerca tuyo, aparece acá solito. " +
+                "Te avisamos aunque tengas la app cerrada 📲",
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = colores.tintaSecundaria,
+            textAlign = TextAlign.Center,
         )
-        Spacer(Modifier.height(10.dp))
-        val (textoEstado, colorEstado) = colorDeEstadoRider(perfil.estado)
-        BadgeEstado(texto = textoEstado, color = colorEstado)
-
-        Spacer(Modifier.height(16.dp))
-
-        // El saldo manda: sin plata no puede aceptar nada.
-        if (monedero != null) {
-            CardSaldo(monedero = monedero, onRecargar = onRecargar)
-            Spacer(Modifier.height(12.dp))
-        }
-
-        // Resumen de HOY (pedido de Jonathan 2026-07-24): carreras, km reales
-        // del odómetro de GPS y total entregado.
-        val hoy = historial?.hoy
-        if (hoy != null && hoy.carreras > 0) {
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    DatoDeHoy(valor = "${hoy.carreras}", etiqueta = if (hoy.carreras == 1) "carrera" else "carreras")
-                    DatoDeHoy(valor = "${hoy.km} km", etiqueta = "recorridos")
-                    DatoDeHoy(valor = centavosASoles(hoy.totalCentavos), etiqueta = "entregado")
-                }
-            }
-            Spacer(Modifier.height(12.dp))
-        }
-
-        LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            if (carreras.isEmpty()) {
-                item(key = "sin-carreras") {
-                    Column(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text(text = "🛵", style = MaterialTheme.typography.displayMedium)
-                        Spacer(Modifier.height(12.dp))
-                        Text(
-                            text = "Sin carreras por ahora",
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Spacer(Modifier.height(8.dp))
-                        Text(
-                            text = "Cuando un negocio de tu zona tenga un pedido listo, " +
-                                "aparecerá acá solito. Las carreras llegan según dónde estés 📍",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textAlign = TextAlign.Center,
-                        )
-                    }
-                }
-            } else {
-                item(key = "titulo-disponibles") {
-                    Text(
-                        "🛎️ Carreras disponibles",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                }
-                items(carreras, key = { it.pedidoId }) { carrera ->
-                    CardCarrera(
-                        carrera = carrera,
-                        aceptando = accionEnCurso == carrera.pedidoId,
-                        habilitado = accionEnCurso == null,
-                        onAceptar = { onAceptar(carrera) },
-                    )
-                }
-            }
-
-            // Historial: sus últimas entregas con los km de cada una.
-            val entregas = historial?.carreras.orEmpty()
-            if (entregas.isNotEmpty()) {
-                item(key = "titulo-historial") {
-                    Text(
-                        "📦 Mis últimas entregas",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(top = 8.dp),
-                    )
-                }
-                items(entregas.take(10), key = { "entrega-${it.pedidoId}" }) { entrega ->
-                    FilaEntrega(entrega)
-                }
-            }
-        }
-
-        Spacer(Modifier.height(12.dp))
-        OutlinedButton(
-            onClick = onCambiarDistrito,
-            modifier = Modifier.fillMaxWidth().height(48.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Text("✏️ Editar mi perfil", style = MaterialTheme.typography.labelLarge)
-        }
-        Spacer(Modifier.height(8.dp))
-        // El permiso de ubicación "todo el tiempo" no se puede pedir por
-        // diálogo desde Android 11: hay que mandar al rider a Configuración,
-        // y conviene que pueda volver ahí cuando quiera (si lo negó una vez,
-        // el sistema ya no vuelve a preguntar).
-        OutlinedButton(
-            onClick = onVerPermisos,
-            modifier = Modifier.fillMaxWidth().height(48.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Text("⚙️ Permisos", style = MaterialTheme.typography.labelLarge)
-        }
-        TextButton(
-            onClick = onCerrarSesion,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-        ) {
-            Text("Cerrar sesión", style = MaterialTheme.typography.bodyMedium, color = ColoresJala.actuales.calor)
-        }
-        Spacer(Modifier.height(8.dp))
     }
 }
 

@@ -287,6 +287,12 @@ fun NavegacionRaiz(navController: NavHostController = rememberNavController()) {
         composable(Rutas.CARRERAS) {
             CarrerasPantalla(
                 alCambiarDistrito = { navController.navigate(Rutas.EDITAR) },
+                alCambiarModo = {
+                    scope.launch {
+                        modoRepositorio.guardar(ModoRepositorio.CLIENTE)
+                        navController.navigate(Rutas.CLIENTE) { popUpTo(0) { inclusive = true } }
+                    }
+                },
                 alCerrarSesion = {
                     scope.launch {
                         // Desregistra el token push ANTES de cerrar sesión,
