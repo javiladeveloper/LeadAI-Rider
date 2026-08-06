@@ -156,6 +156,14 @@ jobs:
           fi
 
       # Se borran aunque el job falle: son la clave de firma y el acceso a Play.
+      #
+      # `continue-on-error`: si este paso falla, el workflow NO debe quedar en
+      # rojo. El runner se destruye completo al terminar, así que borrar los
+      # archivos es cinturón sobre tirantes — un fallo acá no significa que la
+      # publicación haya salido mal, y marcarlo como error manda un mail que
+      # miente sobre el resultado (pasó en la v0.4.2: subió a Play perfecto y
+      # el correo decía "All jobs have failed").
       - name: Limpiar secretos del runner
         if: always()
+        continue-on-error: true
         run: rm -f composeApp/release.keystore composeApp/google-services.json play-store-key.json
