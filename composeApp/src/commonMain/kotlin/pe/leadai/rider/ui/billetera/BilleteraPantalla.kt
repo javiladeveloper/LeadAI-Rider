@@ -1,12 +1,14 @@
 package pe.leadai.rider.ui.billetera
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +18,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,16 +30,17 @@ import androidx.compose.ui.unit.dp
 import pe.leadai.rider.datos.MonederoDto
 import pe.leadai.rider.datos.MovimientoMonederoDto
 import pe.leadai.rider.datos.PaqueteMonederoDto
-import pe.leadai.rider.ui.comunes.BotonAcento
 import pe.leadai.rider.ui.comunes.CardJala
 import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.centavosASoles
 
 /**
- * La billetera del rider: cuánto tiene, cómo recargar, y en qué se le fue.
+ * Mi Billetera — sigue el diseño de Stitch (pantalla "Mi Billetera").
  *
- * El saldo va en una card amarilla a sangre, tamaño display: es el número que
- * decide si puede trabajar o no, así que es lo primero y lo más grande.
+ * Estructura del diseño: card de saldo centrada en `primary-container` con el
+ * monto en `display-lg`, dos botones apilados (recargar / retirar), chips de
+ * paquetes rápidos en scroll horizontal, y la lista de movimientos con ícono
+ * circular, concepto, fecha y monto con signo.
  */
 @Composable
 fun BilleteraPantalla(
@@ -55,67 +59,43 @@ fun BilleteraPantalla(
     }
 
     LazyColumn(
-        modifier = modifier.fillMaxSize().padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier.fillMaxSize().padding(horizontal = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item(key = "titulo") {
             Spacer(Modifier.height(8.dp))
             Text(
-                "Mi billetera",
+                "Mi Billetera",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.ExtraBold,
                 ),
                 color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
             )
         }
 
         item(key = "saldo") {
-            CardJala(
-                modifier = Modifier.fillMaxWidth(),
-                color = colores.marcaAmarillo,
-                paddingInterno = 24,
-            ) {
-                Text(
-                    "Saldo actual",
-                    style = MaterialTheme.typography.labelSmall,
-                    // Sobre el amarillo, SIEMPRE texto carbón.
-                    color = colores.marcaCarbon.copy(alpha = 0.7f),
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    centavosASoles(monedero.saldoCentavos),
-                    style = MaterialTheme.typography.displayLarge.copy(
-                        fontWeight = FontWeight.ExtraBold,
-                    ),
-                    color = colores.marcaCarbon,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                )
-                if (monedero.carrerasDisponibles > 0) {
-                    Text(
-                        "Te alcanza para ${monedero.carrerasDisponibles} carreras",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = colores.marcaCarbon.copy(alpha = 0.7f),
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                    )
-                }
+            CardSaldo(monedero = monedero)
+        }
+
+        item(key = "acciones") {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                BotonRecargar(onClick = onRecargar)
+                // "Retirar ganancias" está en el diseño pero el backend no
+                // tiene ese flujo todavía: el monedero solo acredita saldo
+                // para comisiones, no devuelve plata. Se muestra desactivado
+                // en vez de esconderlo, para que el rider sepa que existe.
+                BotonRetirar()
             }
         }
 
-        item(key = "recargar") {
-            BotonAcento(texto = "⊕ Recargar saldo", onClick = onRecargar)
-        }
-
-        // Atajos: tocar un monto lleva directo al pago, sin pasar por el
-        // diálogo de elegir paquete.
         val paquetes = monedero.paquetes
         if (paquetes.isNotEmpty()) {
             item(key = "titulo-paquetes") {
+                Spacer(Modifier.height(8.dp))
                 Text(
-                    "Paquetes rápidos",
+                    "Paquetes Rápidos",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
@@ -129,19 +109,17 @@ fun BilleteraPantalla(
             }
         }
 
+        item(key = "titulo-movimientos") {
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "Movimientos Recientes",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+
         val movimientos = monedero.movimientos
-        if (movimientos.isNotEmpty()) {
-            item(key = "titulo-movimientos") {
-                Text(
-                    "Movimientos recientes",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-            items(movimientos, key = { it.creadoEn ?: it.concepto }) { movimiento ->
-                FilaMovimiento(movimiento)
-            }
-        } else {
+        if (movimientos.isEmpty()) {
             item(key = "sin-movimientos") {
                 Text(
                     "Todavía no hay movimientos.",
@@ -149,25 +127,149 @@ fun BilleteraPantalla(
                     color = colores.tintaSecundaria,
                 )
             }
+        } else {
+            items(movimientos, key = { "${it.creadoEn}-${it.concepto}" }) { movimiento ->
+                FilaMovimiento(movimiento)
+            }
         }
 
         item(key = "fin") { Spacer(Modifier.height(16.dp)) }
     }
 }
 
+/**
+ * El saldo, centrado, sobre `primaryContainer` (el carbón claro del diseño).
+ *
+ * El diseño le pone un círculo difuminado de adorno arriba a la derecha; acá
+ * se omite: en Compose exige un `blur` que en Android 11 y anteriores no está
+ * disponible, y el adorno no aporta información.
+ */
+@Composable
+private fun CardSaldo(monedero: MonederoDto) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 140.dp)
+            .background(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(24.dp),
+            )
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text(
+            "Saldo Actual",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            centavosASoles(monedero.saldoCentavos),
+            style = MaterialTheme.typography.displayLarge.copy(
+                fontWeight = FontWeight.ExtraBold,
+            ),
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+        )
+        if (monedero.carrerasDisponibles > 0) {
+            Spacer(Modifier.height(4.dp))
+            Text(
+                "Te alcanza para ~${monedero.carrerasDisponibles} carreras",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+            )
+        }
+    }
+}
+
+@Composable
+private fun BotonRecargar(onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .background(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = RoundedCornerShape(16.dp),
+            )
+            .clickable { onClick() },
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text("⊕", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onPrimaryContainer)
+        Spacer(Modifier.size(8.dp))
+        Text(
+            "Recargar Saldo",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+        )
+    }
+}
+
+/**
+ * "Retirar Ganancias" — en el diseño, con borde y fondo neutro.
+ *
+ * Desactivado a propósito: el monedero de hoy es PREPAGO (se carga saldo para
+ * pagar comisiones), no una cuenta de la que se pueda sacar plata. Lo que el
+ * rider gana lo cobra en efectivo del cliente. Mostrarlo apagado es más
+ * honesto que esconderlo: el diseño lo prevé y algún día va a existir.
+ */
+@Composable
+private fun BotonRetirar() {
+    val colores = ColoresJala.actuales
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .background(
+                color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                shape = RoundedCornerShape(16.dp),
+            )
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(16.dp),
+            ),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text("💵", style = MaterialTheme.typography.bodyLarge)
+        Spacer(Modifier.size(8.dp))
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                "Retirar Ganancias",
+                style = MaterialTheme.typography.bodyLarge,
+                color = colores.tintaSecundaria,
+            )
+            Text(
+                "Próximamente",
+                style = MaterialTheme.typography.labelSmall,
+                color = colores.tintaSecundaria,
+            )
+        }
+    }
+}
+
 /** "S/20" tocable: atajo directo al pago de ese paquete. */
 @Composable
 private fun ChipPaquete(paquete: PaqueteMonederoDto, onClick: () -> Unit) {
-    val colores = ColoresJala.actuales
     Box(
         modifier = Modifier
-            .background(colores.superficieCard, MaterialTheme.shapes.medium)
+            .background(
+                color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                shape = RoundedCornerShape(16.dp),
+            )
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(16.dp),
+            )
             .clickable { onClick() }
             .padding(horizontal = 28.dp, vertical = 18.dp),
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            "S/${paquete.soles}",
+            "S/ ${paquete.soles}",
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -175,10 +277,10 @@ private fun ChipPaquete(paquete: PaqueteMonederoDto, onClick: () -> Unit) {
 }
 
 /**
- * Un movimiento: recarga (+, verde) o cobro de carrera (−).
+ * Un movimiento: ícono circular, concepto, cuándo fue, y el monto con signo.
  *
- * El signo y el color hacen el trabajo: el rider entiende de un vistazo si
- * esa línea le sumó o le restó, sin leer el concepto.
+ * El signo y el color hacen el trabajo: el rider entiende de un vistazo si esa
+ * línea le sumó o le restó, sin leer el concepto.
  */
 @Composable
 private fun FilaMovimiento(movimiento: MovimientoMonederoDto) {
@@ -189,7 +291,7 @@ private fun FilaMovimiento(movimiento: MovimientoMonederoDto) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Box(
                 modifier = Modifier
-                    .size(36.dp)
+                    .size(40.dp)
                     .background(
                         color = if (esIngreso) {
                             colores.exito.copy(alpha = 0.15f)
@@ -200,24 +302,60 @@ private fun FilaMovimiento(movimiento: MovimientoMonederoDto) {
                     ),
                 contentAlignment = Alignment.Center,
             ) {
-                Text(if (esIngreso) "↓" else "🛵", style = MaterialTheme.typography.labelLarge)
+                Text(
+                    if (esIngreso) "↓" else iconoDelConcepto(movimiento.concepto),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = if (esIngreso) colores.exito else colores.tintaSecundaria,
+                )
             }
             Spacer(Modifier.size(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     movimiento.concepto.ifBlank {
-                        if (esIngreso) "Recarga" else "Comisión de carrera"
+                        if (esIngreso) "Recarga exitosa" else "Comisión de carrera"
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
+                val cuando = movimiento.creadoEn?.let { fechaLegible(it) }
+                if (cuando != null) {
+                    Text(
+                        cuando,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = colores.tintaSecundaria,
+                    )
+                }
             }
             Text(
                 (if (esIngreso) "+" else "−") +
                     centavosASoles(kotlin.math.abs(movimiento.montoCentavos)),
-                style = MaterialTheme.typography.labelLarge,
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                 color = if (esIngreso) colores.exito else MaterialTheme.colorScheme.onSurface,
             )
         }
     }
+}
+
+/** El ícono según de qué fue el cobro: taxi, paquete o genérico. */
+private fun iconoDelConcepto(concepto: String): String = when {
+    concepto.contains("pasajero", ignoreCase = true) -> "🚕"
+    concepto.contains("encomienda", ignoreCase = true) -> "📦"
+    else -> "🛵"
+}
+
+/**
+ * "2026-08-06T15:30:00Z" → "6 ago, 15:30".
+ *
+ * Se formatea a mano en vez de traer kotlinx-datetime: son dos campos de una
+ * fecha ISO, y la dependencia pesa más que estas líneas.
+ */
+internal fun fechaLegible(iso: String): String? {
+    if (iso.length < 16) return null
+    val meses = listOf("ene", "feb", "mar", "abr", "may", "jun",
+                       "jul", "ago", "sep", "oct", "nov", "dic")
+    val mes = iso.substring(5, 7).toIntOrNull()?.minus(1) ?: return null
+    if (mes !in meses.indices) return null
+    val dia = iso.substring(8, 10).trimStart('0')
+    val hora = iso.substring(11, 16)
+    return "$dia ${meses[mes]}, $hora"
 }

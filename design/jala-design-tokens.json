@@ -115,7 +115,7 @@
   "coloresMarca": {
     "$comment": "Semánticos que Material 3 no tiene dónde guardar. Cambian entre claro y oscuro.",
     "claro": {
-      "marcaAmarillo": "#FDBF35",
+      "marcaAmarillo": "#F0B429",
       "marcaCarbon": "#2E3440",
       "calor": "#E5484D",
       "exito": "#2E7D32",
