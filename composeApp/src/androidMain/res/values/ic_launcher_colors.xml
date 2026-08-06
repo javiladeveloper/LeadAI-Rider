@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Fondo del ícono adaptativo: brasa teal (Brand Harmony) -->
-    <color name="ic_launcher_background">#006B5D</color>
+    <!-- Fondo del ícono: el amarillo del logo de Jala. Las flechas van
+         blancas encima (ver ic_launcher_foreground.xml). -->
+    <color name="ic_launcher_background">#F0B429</color>
 </resources>

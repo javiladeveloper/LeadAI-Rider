@@ -46,6 +46,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import pe.leadai.rider.ui.comunes.BannerError
+import pe.leadai.rider.ui.tema.TokensExtra
 
 /**
  * Primera pantalla real de la app. Estética "Brand Harmony": fondo arena
@@ -253,16 +254,21 @@ private fun TextoConLinkRegistro(onClick: () -> Unit, habilitado: Boolean) {
 }
 
 /**
- * "Jala": la marca de cara al usuario. NO dice "LeadAI" a propósito — esa es
- * la marca B2B que le vendemos a los negocios, y no le dice nada a un
- * motorizado ni a alguien pidiendo una moto en Tacna. Tampoco dice "Rider":
- * la misma app la usan los clientes para pedir.
+ * "Jala" con las flechas del logo: `»»` en amarillo de marca y el nombre en
+ * carbón, igual que el logotipo.
+ *
+ * NO dice "LeadAI" a propósito — esa es la marca B2B que le vendemos a los
+ * negocios, y no le dice nada a un motorizado ni a alguien pidiendo una moto
+ * en Tacna. Tampoco dice "Rider": la misma app la usan los clientes.
  */
 @Composable
 private fun LogoLeadAI() {
     Text(
         text = buildAnnotatedString {
-            withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary)) {
+            withStyle(SpanStyle(color = TokensExtra.marcaAmarillo)) {
+                append("»» ")
+            }
+            withStyle(SpanStyle(color = TokensExtra.marcaCarbon)) {
                 append("Jala")
             }
         },

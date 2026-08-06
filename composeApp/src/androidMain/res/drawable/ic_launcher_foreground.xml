@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Ícono de Jala: una MOTO de perfil, no el rayo de LeadAI.
+  Ícono de Jala: las tres flechas del logo, apuntando adelante.
 
-  LeadAI es la marca B2B (captación de leads con IA) y su rayo no dice nada de
-  lo que hace esta app. Acá el usuario es un motorizado o alguien pidiendo una
-  moto en Tacna: la silueta se lee de un vistazo en la pantalla de inicio, que
-  es donde compite con inDrive y Yango.
+  NO es un vehículo a propósito. Hoy son motos, pero el plan incluye autos —
+  una moto dibujada acá dejaría la marca vieja el día que entre el primer
+  auto. Las flechas dicen "movimiento" sin decir de qué.
 
-  Todo el dibujo vive dentro de la SAFE ZONE del ícono adaptativo (el círculo
-  central de 66dp en el lienzo de 108): fuera de ahí los launchers recortan
-  distinto según el fabricante.
+  Las flechas van BLANCAS: este drawable también se usa como ícono monocromo
+  (Android 13+ lo tiñe con el wallpaper), y ahí el color se descarta. Con
+  blanco sobre el amarillo de fondo se lee igual en las dos variantes.
+
+  Todo dentro de la safe zone del ícono adaptativo (el círculo central de
+  66dp en el lienzo de 108): fuera de ahí cada launcher recorta distinto.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
@@ -17,42 +19,18 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Rueda trasera: aro blanco con el centro calado al teal del fondo. -->
+    <!-- Flecha 1 (la de atrás) -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M38,68m-12,0a12,12 0 1,0 24,0a12,12 0 1,0 -24,0z" />
-    <path
-        android:fillColor="#006B5D"
-        android:pathData="M38,68m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0z" />
+        android:pathData="M30,32 L46,32 L64,54 L46,76 L30,76 L48,54 Z" />
 
-    <!-- Rueda delantera. -->
+    <!-- Flecha 2 (centro) -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M72,68m-12,0a12,12 0 1,0 24,0a12,12 0 1,0 -24,0z" />
-    <path
-        android:fillColor="#006B5D"
-        android:pathData="M72,68m-5.5,0a5.5,5.5 0 1,0 11,0a5.5,5.5 0 1,0 -11,0z" />
+        android:pathData="M46,32 L62,32 L80,54 L62,76 L46,76 L64,54 Z" />
 
-    <!-- Chasis: del eje trasero sube al asiento, baja al motor y sale al frente. -->
+    <!-- Flecha 3 (la de adelante) -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M38,68 L46,54 L60,54 L57,61 L72,68 L72,63 L62,58.5 L65,52
-                          L70,52 L70,47 L57,47 L57,50 L46,50 C43.5,50 42,51 40.5,53.5
-                          L34.5,65 Z" />
-
-    <!-- Asiento. -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M43,51 L57,51 L57,46.5 C57,45 56,44.5 54.5,44.5 L47,44.5
-                          C44.5,44.5 43,46 43,48 Z" />
-
-    <!-- Manubrio, inclinado hacia adelante. -->
-    <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M67,46 L78,40 L80,44 L69,49 Z" />
-
-    <!-- Faro en coral: marca hacia dónde va la moto y trae el acento de la marca. -->
-    <path
-        android:fillColor="#F0704F"
-        android:pathData="M80,41m-4.5,0a4.5,4.5 0 1,0 9,0a4.5,4.5 0 1,0 -9,0z" />
+        android:pathData="M62,32 L78,32 L96,54 L78,76 L62,76 L80,54 Z" />
 </vector>

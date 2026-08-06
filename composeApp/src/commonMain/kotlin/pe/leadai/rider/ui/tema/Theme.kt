@@ -10,70 +10,70 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 /**
- * Theme "Brand Harmony" — transcripción literal de los 53 `namedColors` de
- * `docs/design-tokens-m3.json` (fuente de verdad, generado por Stitch/M3).
+ * Paleta de JALA, tomada del logo: las flechas amarillas sobre carbón.
  *
- * DECISIÓN tertiary vs TokensExtra.calor (documentada también en ARQUITECTURA.md):
- * el JSON trae DOS representaciones de "calor":
- *   1) `namedColors.tertiary` (#852307) y sus derivados (`on_tertiary`,
- *      `tertiary_container`, `on_tertiary_container`) — es el rol M3 generado
- *      por el algoritmo de esquema de color, con tonos oscuros pensados para
- *      contraste AA/AAA de texto/iconos sobre contenedores.
- *   2) `overrideTertiaryColor` / `designMd` (#f0704f) — el coral de marca
- *      "Calor" tal como lo define el brand (urgencia, borde 4px izquierdo,
- *      texto de alerta), que es el que Diseño usa visualmente en los
- *      prototipos.
- * Son colores DISTINTOS a propósito: `tertiary` (colorScheme) se usa en
- * componentes M3 que necesitan el rol completo con contraste garantizado
- * (p.ej. `tertiaryContainer` de un `Card`), mientras que `TokensExtra.calor`
- * es el coral plano (#f0704f) para usos directos de marca (borde de card
- * urgente, ícono, texto "Calor"). NO se alias-an entre sí — ver regla de oro
- * en ARQUITECTURA.md: "acción = teal (primary), calor/urgencia = coral
- * (TokensExtra.calor)".
+ * Reemplaza al teal "Brand Harmony" heredado de LeadAI — esa es la marca B2B
+ * que se le vende a los negocios, y no le dice nada a un motorizado en Tacna.
+ *
+ * DECISIÓN CLAVE — por qué el `primary` es el CARBÓN y no el amarillo:
+ * el amarillo de marca (#F0B429) es precioso pero **no sirve como fondo de
+ * botón**: texto blanco encima da ~1.9:1 de contraste, muy por debajo del
+ * 4.5:1 que exige accesibilidad, y a pleno sol —donde el rider usa la app—
+ * se vuelve ilegible. Así que:
+ *   - `primary` = carbón #2E3440 → botones, con texto blanco (13:1, AAA)
+ *   - `secondary` = amarillo #F0B429 → acentos de marca, badges, resaltados,
+ *     SIEMPRE con texto carbón encima (9.7:1), nunca blanco
+ * El amarillo sigue siendo la cara de la marca; simplemente no carga texto
+ * claro. Ver [TokensExtra.marcaAmarillo] para los usos directos.
  */
-private val LeadAIColorScheme = lightColorScheme(
-    primary = Color(0xFF005146),
+private val JalaColorScheme = lightColorScheme(
+    // Carbón del logo: la acción. Sobrio, con contraste de sobra al sol.
+    primary = Color(0xFF2E3440),
     onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFF006B5D),
-    onPrimaryContainer = Color(0xFF95E8D6),
-    inversePrimary = Color(0xFF83D6C4),
+    primaryContainer = Color(0xFF3B4252),
+    onPrimaryContainer = Color(0xFFE5E9F0),
+    inversePrimary = Color(0xFFB8C0CF),
 
-    secondary = Color(0xFF565E74),
-    onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFFDAE2FD),
-    onSecondaryContainer = Color(0xFF5C647A),
+    // Amarillo de marca: acentos y resaltados. SIEMPRE con texto oscuro.
+    secondary = Color(0xFFF0B429),
+    onSecondary = Color(0xFF2E3440),
+    secondaryContainer = Color(0xFFFDF0D0),
+    onSecondaryContainer = Color(0xFF6B4E00),
 
-    tertiary = Color(0xFF852307),
+    // Ámbar profundo: el tercer rol, para lo que necesita atención sin ser error.
+    tertiary = Color(0xFF9A6700),
     onTertiary = Color(0xFFFFFFFF),
-    tertiaryContainer = Color(0xFFA63A1E),
-    onTertiaryContainer = Color(0xFFFFCDC1),
+    tertiaryContainer = Color(0xFFFFE9B8),
+    onTertiaryContainer = Color(0xFF5C3D00),
 
     error = Color(0xFFBA1A1A),
     onError = Color(0xFFFFFFFF),
     errorContainer = Color(0xFFFFDAD6),
     onErrorContainer = Color(0xFF93000A),
 
-    background = Color(0xFFF7F9FB),
-    onBackground = Color(0xFF191C1E),
+    // Fondo cálido, casi blanco: descansa la vista al sol y hace que las
+    // cards blancas se despeguen.
+    background = Color(0xFFFAFAF8),
+    onBackground = Color(0xFF1C1D21),
 
-    surface = Color(0xFFF7F9FB),
-    onSurface = Color(0xFF191C1E),
-    surfaceVariant = Color(0xFFE0E3E5),
-    onSurfaceVariant = Color(0xFF3E4946),
+    surface = Color(0xFFFAFAF8),
+    onSurface = Color(0xFF1C1D21),
+    surfaceVariant = Color(0xFFE6E6E2),
+    onSurfaceVariant = Color(0xFF48494E),
 
-    outline = Color(0xFF6E7976),
-    outlineVariant = Color(0xFFBEC9C5),
+    outline = Color(0xFF79797E),
+    outlineVariant = Color(0xFFC9C9C5),
 
-    inverseSurface = Color(0xFF2D3133),
-    inverseOnSurface = Color(0xFFEFF1F3),
+    inverseSurface = Color(0xFF2E3440),
+    inverseOnSurface = Color(0xFFF1F1EF),
 
-    surfaceTint = Color(0xFF006B5D),
-    surfaceBright = Color(0xFFF7F9FB),
-    surfaceDim = Color(0xFFD8DADC),
-    surfaceContainer = Color(0xFFECEEF0),
-    surfaceContainerHigh = Color(0xFFE6E8EA),
-    surfaceContainerHighest = Color(0xFFE0E3E5),
-    surfaceContainerLow = Color(0xFFF2F4F6),
+    surfaceTint = Color(0xFF2E3440),
+    surfaceBright = Color(0xFFFAFAF8),
+    surfaceDim = Color(0xFFDBDBD7),
+    surfaceContainer = Color(0xFFEFEFEC),
+    surfaceContainerHigh = Color(0xFFE9E9E6),
+    surfaceContainerHighest = Color(0xFFE3E3E0),
+    surfaceContainerLow = Color(0xFFF5F5F2),
     surfaceContainerLowest = Color(0xFFFFFFFF),
 )
 
@@ -83,28 +83,44 @@ private val LeadAIColorScheme = lightColorScheme(
  * los usa ningún prototipo actual — se omiten a propósito, ver ARQUITECTURA.md).
  */
 object TokensExtra {
-    /** Coral de marca "Calor": urgencia, tardanza, borde 4px de card urgente. NO es tertiary del colorScheme — ver nota arriba. */
-    val calor = Color(0xFFF0704F)
+    /**
+     * El AMARILLO del logo. Es la cara de la marca: acentos, el monto que el
+     * rider gana, badges destacados.
+     *
+     * REGLA: nunca lleva texto blanco encima (1.9:1, ilegible al sol). Usalo
+     * de fondo con texto carbón, o como color de texto/ícono sobre fondo
+     * oscuro.
+     */
+    val marcaAmarillo = Color(0xFFF0B429)
 
-    /** Verde de éxito / pedido completado / pago confirmado. */
+    /** El CARBÓN del logo. Fondos oscuros, headers, texto sobre amarillo. */
+    val marcaCarbon = Color(0xFF2E3440)
+
+    /** Rojo de urgencia: sin saldo, carrera que se vence, error que frena el trabajo. */
+    val calor = Color(0xFFE5484D)
+
+    /** Verde de éxito: entregado, pago confirmado. */
     val exito = Color(0xFF2E7D32)
 
-    /** Ámbar de espera / pendiente. `waiting-amber` en el JSON. */
-    val espera = Color(0xFFF5A623)
+    /**
+     * Ámbar de espera / atención. Es el color de "llevás S/60 para la compra"
+     * y de "pendiente de verificación": pide mirar sin gritar.
+     */
+    val espera = Color(0xFFD98B0C)
 
-    /** Navy slate: bottom navigation y headers oscuros. Secondary override de marca (#0f172a), NO el `secondary` M3 (#565e74). */
-    val slate = Color(0xFF0F172A)
+    /** Carbón profundo: bottom navigation y headers. */
+    val slate = Color(0xFF1C1D21)
 
-    /** Teal presionado/hover del botón primario. `brasa-pressed` en el JSON. */
-    val brasaPresionado = Color(0xFF00584C)
+    /** Carbón presionado del botón primario. */
+    val brasaPresionado = Color(0xFF232833)
 
-    /** Texto principal de marca (`tinta-primary`). Coincide con onSurface pero se expone explícito para no-Material contexts. */
-    val tintaPrimaria = Color(0xFF191C1E)
+    /** Texto principal. Coincide con onSurface pero se expone para usos fuera de Material. */
+    val tintaPrimaria = Color(0xFF1C1D21)
 
-    /** Texto secundario / placeholders (`tinta-secondary`). */
-    val tintaSecundaria = Color(0xFF5B6770)
+    /** Texto secundario / placeholders. */
+    val tintaSecundaria = Color(0xFF5B5C63)
 
-    /** Blanco puro de marca (`white`), para cards sobre `background` arena. */
+    /** Blanco puro, para cards sobre el fondo cálido. */
     val blanco = Color(0xFFFFFFFF)
 
     /**
@@ -162,7 +178,7 @@ val FormaChip = RoundedCornerShape(CornerSize(50))
 @Composable
 fun LeadAITheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = LeadAIColorScheme,
+        colorScheme = JalaColorScheme,
         typography = LeadAITypography,
         shapes = LeadAIShapes,
         content = content,
