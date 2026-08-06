@@ -190,6 +190,11 @@ data class ResumenHoyRiderDto(
 @Serializable
 data class CarreraEntregadaDto(
     val pedidoId: String,
+    val carreraId: String? = null,
+    /** `pedido` | `encomienda` | `pasajero`. */
+    val tipo: String = "pedido",
+    /** Lo que se le descontó del monedero por esta carrera. */
+    val comisionCentavos: Long = 0,
     val negocio: String,
     val direccion: String? = null,
     val totalCentavos: Long = 0,
@@ -197,10 +202,29 @@ data class CarreraEntregadaDto(
     val entregadoEn: String? = null,
 )
 
-/** `GET /motorizados/historial` → resumen de hoy + últimas entregas del rider. */
+/** Una barra del gráfico de ganancias: cuánto se hizo ese día. */
+@Serializable
+data class DiaDeGananciasDto(
+    /** ISO corto: "2026-08-06". */
+    val fecha: String = "",
+    val totalCentavos: Long = 0,
+    val carreras: Int = 0,
+)
+
+/**
+ * `GET /motorizados/historial` → lo que el rider ganó, por período, más sus
+ * últimas entregas.
+ *
+ * Los totales son lo que GANÓ (monto menos comisión), no lo que movió: el
+ * adelanto de una encomienda con compra nunca entra acá.
+ */
 @Serializable
 data class HistorialRiderResponseDto(
     val hoy: ResumenHoyRiderDto = ResumenHoyRiderDto(),
+    val semana: ResumenHoyRiderDto = ResumenHoyRiderDto(),
+    val mes: ResumenHoyRiderDto = ResumenHoyRiderDto(),
+    /** Los últimos 7 días, para el gráfico de barras. Siempre 7, con ceros. */
+    val porDia: List<DiaDeGananciasDto> = emptyList(),
     val carreras: List<CarreraEntregadaDto> = emptyList(),
 )
 

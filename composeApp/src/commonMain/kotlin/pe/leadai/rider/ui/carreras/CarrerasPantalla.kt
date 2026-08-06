@@ -62,6 +62,9 @@ import pe.leadai.rider.ui.carreras.componentes.CardCarrera
 import pe.leadai.rider.ui.carreras.componentes.CardSaldo
 import pe.leadai.rider.ui.carreras.componentes.colorDeEstadoRider
 import pe.leadai.rider.ui.comunes.BadgeEstado
+import pe.leadai.rider.ui.comunes.BarraInferiorRider
+import pe.leadai.rider.ui.comunes.SeccionRider
+import pe.leadai.rider.ui.ganancias.GananciasPantalla
 import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.centavosASoles
 
@@ -112,6 +115,7 @@ fun CarrerasPantalla(
     var eligiendoPaquete by remember { mutableStateOf(false) }
     // Los permisos del sistema, a demanda desde "⚙️ Permisos".
     var viendoPermisos by remember { mutableStateOf(false) }
+    var seccion by remember { mutableStateOf(SeccionRider.INICIO) }
     val abridorPago = LocalUriHandler.current
 
     LaunchedEffect(Unit) {
@@ -149,28 +153,67 @@ fun CarrerasPantalla(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(snackbarHostState) { Snackbar(it) } },
+        bottomBar = {
+            // Con una carrera en curso la barra DESAPARECE: el rider está
+            // manejando y la pantalla tiene que ser el mapa y el botón de
+            // avanzar, nada más. Volver a Ganancias a mitad de entrega no
+            // tiene sentido y roba espacio al mapa.
+            if (estado.miCarrera == null && estado.perfil != null) {
+                BarraInferiorRider(
+                    seleccionada = seccion,
+                    onSeleccionar = { seccion = it },
+                )
+            }
+        },
     ) { padding ->
         Box(modifier = Modifier.padding(padding).fillMaxSize()) {
             when {
                 estado.cargando -> PantallaCargando()
                 estado.perfil == null && estado.error != null ->
                     EstadoError(mensaje = estado.error!!, onReintentar = viewModel::cargar)
-                estado.perfil != null -> ContenidoRider(
-                    nombreUsuario = sesion?.usuarioNombre.orEmpty(),
-                    perfil = estado.perfil!!,
-                    carreras = estado.carreras,
-                    miCarrera = estado.miCarrera,
-                    historial = estado.historial,
-                    monedero = estado.monedero,
-                    accionEnCurso = estado.accionEnCurso,
-                    onAceptar = viewModel::aceptar,
-                    onEntregar = viewModel::entregar,
-                    onRecogido = viewModel::marcarRecogido,
-                    onRecargar = { eligiendoPaquete = true },
-                    onCambiarDistrito = alCambiarDistrito,
-                    onVerPermisos = { viendoPermisos = true },
-                    onCerrarSesion = { confirmandoCierre = true },
-                )
+                estado.perfil != null -> {
+                    // La carrera en curso MANDA sobre la pestaña elegida: si
+                    // aceptó algo, lo que importa es llegar.
+                    if (estado.miCarrera != null) {
+                        ContenidoRider(
+                            nombreUsuario = sesion?.usuarioNombre.orEmpty(),
+                            perfil = estado.perfil!!,
+                            carreras = estado.carreras,
+                            miCarrera = estado.miCarrera,
+                            historial = estado.historial,
+                            monedero = estado.monedero,
+                            accionEnCurso = estado.accionEnCurso,
+                            onAceptar = viewModel::aceptar,
+                            onEntregar = viewModel::entregar,
+                            onRecogido = viewModel::marcarRecogido,
+                            onRecargar = { eligiendoPaquete = true },
+                            onCambiarDistrito = alCambiarDistrito,
+                            onVerPermisos = { viendoPermisos = true },
+                            onCerrarSesion = { confirmandoCierre = true },
+                        )
+                    } else {
+                        when (seccion) {
+                            SeccionRider.INICIO, SeccionRider.BILLETERA, SeccionRider.PERFIL ->
+                                ContenidoRider(
+                                    nombreUsuario = sesion?.usuarioNombre.orEmpty(),
+                                    perfil = estado.perfil!!,
+                                    carreras = estado.carreras,
+                                    miCarrera = estado.miCarrera,
+                                    historial = estado.historial,
+                                    monedero = estado.monedero,
+                                    accionEnCurso = estado.accionEnCurso,
+                                    onAceptar = viewModel::aceptar,
+                                    onEntregar = viewModel::entregar,
+                                    onRecogido = viewModel::marcarRecogido,
+                                    onRecargar = { eligiendoPaquete = true },
+                                    onCambiarDistrito = alCambiarDistrito,
+                                    onVerPermisos = { viendoPermisos = true },
+                                    onCerrarSesion = { confirmandoCierre = true },
+                                )
+                            SeccionRider.GANANCIAS -> GananciasPantalla(historial = estado.historial)
+                        }
+                    }
+                }
                 else -> EstadoError(mensaje = "No pudimos cargar tu perfil.", onReintentar = viewModel::cargar)
             }
         }

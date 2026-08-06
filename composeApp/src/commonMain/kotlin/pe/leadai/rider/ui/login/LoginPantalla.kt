@@ -46,6 +46,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import pe.leadai.rider.ui.comunes.BannerError
+import pe.leadai.rider.ui.comunes.BotonPrincipal
 import pe.leadai.rider.ui.tema.ColoresJala
 
 /**
@@ -149,32 +150,12 @@ fun LoginPantalla(
 
                 Spacer(Modifier.height(24.dp))
 
-                Button(
+                BotonPrincipal(
+                    texto = "Entrar",
                     onClick = { viewModel.entrar(alExito) },
-                    enabled = !algoCargando,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(52.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                ) {
-                    if (estado.cargando) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(18.dp),
-                                color = MaterialTheme.colorScheme.onPrimary,
-                                strokeWidth = 2.dp,
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text("Entrando…", style = MaterialTheme.typography.labelLarge)
-                        }
-                    } else {
-                        Text("Entrar", style = MaterialTheme.typography.labelLarge)
-                    }
-                }
+                    habilitado = !algoCargando,
+                    cargando = estado.cargando,
+                )
 
                 Spacer(Modifier.height(20.dp))
 

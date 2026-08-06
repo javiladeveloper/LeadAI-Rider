@@ -15,6 +15,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import pe.leadai.rider.ui.comunes.BotonAcento
+import pe.leadai.rider.ui.comunes.BotonPrincipal
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -53,21 +55,12 @@ fun ElegirModoPantalla(
         )
         Spacer(Modifier.height(32.dp))
 
-        Button(
-            onClick = alElegirCliente,
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Text("🛵 Pido un motorizado", style = MaterialTheme.typography.titleSmall)
-        }
+        // El amarillo va en "pedir": es la acción que más se usa y la que
+        // trae gente nueva. Manejar es la secundaria — quien va a manejar ya
+        // sabe que viene a eso.
+        BotonAcento(texto = "🛵 Pido un motorizado", onClick = alElegirCliente)
         Spacer(Modifier.height(12.dp))
-        OutlinedButton(
-            onClick = alElegirConductor,
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Text("🏍️ Manejo", style = MaterialTheme.typography.titleSmall)
-        }
+        BotonPrincipal(texto = "🏍️ Manejo", onClick = alElegirConductor)
         Spacer(Modifier.height(16.dp))
         Card(
             modifier = Modifier.fillMaxWidth(),
