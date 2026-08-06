@@ -32,3 +32,6 @@ captures/
 
 # Clave de la cuenta de servicio de Play (la inyecta el CI desde secretos)
 play-store-key.json
+
+# Código generado desde los tokens de diseño (lo produce Gradle)
+composeApp/build/generated/tokens/

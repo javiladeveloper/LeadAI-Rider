@@ -49,7 +49,7 @@ import pe.leadai.rider.ui.carreras.telefonoDeContacto
 import pe.leadai.rider.ui.comunes.AvisosGlobales
 import pe.leadai.rider.ui.comunes.MapaEmbebido
 import pe.leadai.rider.ui.comunes.PantallaCargando
-import pe.leadai.rider.ui.tema.TokensExtra
+import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.centavosASoles
 import pe.leadai.rider.ui.tema.epochMsAhora
 import pe.leadai.rider.ui.tema.epochMsDesdeIso
@@ -249,14 +249,14 @@ private fun FormularioPedir(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = TokensExtra.espera.copy(alpha = 0.10f),
+                    containerColor = ColoresJala.actuales.espera.copy(alpha = 0.10f),
                 ),
             ) {
                 Column(modifier = Modifier.fillMaxWidth().padding(14.dp)) {
                     Text(
                         "💵 ¿Cuánto cuesta lo que va a comprar?",
                         style = MaterialTheme.typography.titleSmall,
-                        color = TokensExtra.espera,
+                        color = ColoresJala.actuales.espera,
                     )
                     Spacer(Modifier.height(8.dp))
                     OutlinedTextField(
@@ -311,7 +311,7 @@ private fun FormularioPedir(
             Text(
                 estado.error,
                 style = MaterialTheme.typography.bodySmall,
-                color = TokensExtra.calor,
+                color = ColoresJala.actuales.calor,
             )
         }
 
@@ -346,7 +346,7 @@ private fun FormularioPedir(
             Text(
                 "Cerrar sesión",
                 style = MaterialTheme.typography.bodyMedium,
-                color = TokensExtra.calor,
+                color = ColoresJala.actuales.calor,
             )
         }
         Spacer(Modifier.height(16.dp))
@@ -450,7 +450,7 @@ private fun SeguimientoCarrera(
                     Text(
                         "💵 Llevá ${centavosASoles(compra)} para pagarle la compra",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = TokensExtra.espera,
+                        color = ColoresJala.actuales.espera,
                     )
                     Text(
                         "Es aparte del flete: el motorizado puso esa plata.",
@@ -481,7 +481,7 @@ private fun SeguimientoCarrera(
                 Text(
                     "Cancelar",
                     style = MaterialTheme.typography.labelLarge,
-                    color = TokensExtra.calor,
+                    color = ColoresJala.actuales.calor,
                 )
             }
         }

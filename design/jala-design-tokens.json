@@ -1,0 +1,183 @@
+{
+  "$comment": [
+    "FUENTE DE VERDAD del diseño de Jala. Todo valor visual de la app sale de acá.",
+    "",
+    "Cómo se usa: `./gradlew :composeApp:generarTokens` lee este archivo y genera",
+    "composeApp/build/generated/tokens/.../TokensGenerados.kt. El código nunca",
+    "define un color a mano — si un hex aparece en un .kt fuera de lo generado,",
+    "está mal.",
+    "",
+    "Por qué se GENERA en vez de leerse en runtime: así el compilador verifica",
+    "los nombres (un token inexistente no compila, en vez de reventar en el",
+    "teléfono) y no hay que parsear JSON en cada arranque.",
+    "",
+    "Origen: docs/DESIGN.md, exportado de Google Stitch. Al actualizar el diseño",
+    "allá, se vuelca acá y se regenera."
+  ],
+
+  "marca": {
+    "nombre": "Jala",
+    "$comment": "Regla de contraste: el amarillo SIEMPRE lleva texto carbón. Blanco sobre amarillo da 1.9:1 — ilegible al sol, que es donde el rider trabaja."
+  },
+
+  "colores": {
+    "claro": {
+      "primary": "#191F2A",
+      "onPrimary": "#FFFFFF",
+      "primaryContainer": "#2E3440",
+      "onPrimaryContainer": "#969CAB",
+      "inversePrimary": "#C1C6D6",
+
+      "secondary": "#7B5900",
+      "onSecondary": "#FFFFFF",
+      "secondaryContainer": "#FDBF35",
+      "onSecondaryContainer": "#6E4F00",
+
+      "tertiary": "#2F1A00",
+      "onTertiary": "#FFFFFF",
+      "tertiaryContainer": "#4C2D00",
+      "onTertiaryContainer": "#D98B0C",
+
+      "error": "#BA1A1A",
+      "onError": "#FFFFFF",
+      "errorContainer": "#FFDAD6",
+      "onErrorContainer": "#93000A",
+
+      "background": "#F9F9F7",
+      "onBackground": "#1A1C1B",
+      "surface": "#F9F9F7",
+      "onSurface": "#1A1C1B",
+      "surfaceVariant": "#E2E3E1",
+      "onSurfaceVariant": "#45474C",
+
+      "outline": "#76777C",
+      "outlineVariant": "#C6C6CC",
+      "inverseSurface": "#2F3130",
+      "inverseOnSurface": "#F1F1EF",
+
+      "surfaceTint": "#585E6C",
+      "surfaceBright": "#F9F9F7",
+      "surfaceDim": "#DADAD8",
+      "surfaceContainer": "#EEEEEC",
+      "surfaceContainerHigh": "#E8E8E6",
+      "surfaceContainerHighest": "#E2E3E1",
+      "surfaceContainerLow": "#F4F4F2",
+      "surfaceContainerLowest": "#FFFFFF"
+    },
+
+    "oscuro": {
+      "$comment": "DESIGN.md describe el dark mode en prosa pero no trae sus hex. Derivado con las reglas de M3 (roles invertidos, contenedores más oscuros, contraste AA) respetando carbón y amarillo. Si Stitch genera el oficial, se reemplaza.",
+
+      "primary": "#FDBF35",
+      "onPrimary": "#261900",
+      "primaryContainer": "#5D4200",
+      "onPrimaryContainer": "#FFDEA4",
+      "inversePrimary": "#7B5900",
+
+      "secondary": "#C1C6D6",
+      "onSecondary": "#2A303C",
+      "secondaryContainer": "#414753",
+      "onSecondaryContainer": "#DDE2F2",
+
+      "tertiary": "#FFB960",
+      "onTertiary": "#2B1700",
+      "tertiaryContainer": "#653E00",
+      "onTertiaryContainer": "#FFDDB8",
+
+      "error": "#FFB4AB",
+      "onError": "#690005",
+      "errorContainer": "#93000A",
+      "onErrorContainer": "#FFDAD6",
+
+      "background": "#121312",
+      "onBackground": "#E3E3E1",
+      "surface": "#121312",
+      "onSurface": "#E3E3E1",
+      "surfaceVariant": "#45474C",
+      "onSurfaceVariant": "#C6C6CC",
+
+      "outline": "#8F9095",
+      "outlineVariant": "#45474C",
+      "inverseSurface": "#E3E3E1",
+      "inverseOnSurface": "#2F3130",
+
+      "surfaceTint": "#FDBF35",
+      "surfaceBright": "#383838",
+      "surfaceDim": "#121312",
+      "surfaceContainer": "#1E1F1E",
+      "surfaceContainerHigh": "#292A29",
+      "surfaceContainerHighest": "#343534",
+      "surfaceContainerLow": "#1A1B1A",
+      "surfaceContainerLowest": "#0D0E0D"
+    }
+  },
+
+  "coloresMarca": {
+    "$comment": "Semánticos que Material 3 no tiene dónde guardar. Cambian entre claro y oscuro.",
+    "claro": {
+      "marcaAmarillo": "#FDBF35",
+      "marcaCarbon": "#2E3440",
+      "calor": "#E5484D",
+      "exito": "#2E7D32",
+      "espera": "#D98B0C",
+      "tintaPrimaria": "#1A1C1B",
+      "tintaSecundaria": "#5B5C63",
+      "superficieCard": "#FFFFFF"
+    },
+    "oscuro": {
+      "marcaAmarillo": "#FFD166",
+      "marcaCarbon": "#E3E3E1",
+      "calor": "#FF6B70",
+      "exito": "#6FCF77",
+      "espera": "#FFB960",
+      "tintaPrimaria": "#E3E3E1",
+      "tintaSecundaria": "#A8A9AE",
+      "superficieCard": "#1E1F1E"
+    }
+  },
+
+  "formas": {
+    "$comment": "En dp. DESIGN.md: 16px en cards y botones; inputs igual, para el look 'squishy'.",
+    "extraSmall": 4,
+    "small": 8,
+    "medium": 16,
+    "large": 16,
+    "extraLarge": 24
+  },
+
+  "espaciado": {
+    "$comment": "Ritmo de 8px. `accionPrincipal` son los 56dp que pide el DESIGN.md para botones que se tocan manejando.",
+    "xs": 4,
+    "sm": 8,
+    "md": 16,
+    "lg": 24,
+    "xl": 32,
+    "margenPantalla": 16,
+    "alturaToqueMinima": 48,
+    "accionPrincipal": 56
+  },
+
+  "tipografia": {
+    "$comment": "Plus Jakarta Sans en todo. Nunca por debajo de 12sp en información funcional.",
+    "familia": "Plus Jakarta Sans",
+    "escala": {
+      "displayLarge": { "size": 40, "weight": 800, "lineHeight": 48, "letterSpacing": -0.8 },
+      "headlineLarge": { "size": 32, "weight": 700, "lineHeight": 40, "letterSpacing": 0 },
+      "headlineMedium": { "size": 24, "weight": 700, "lineHeight": 32, "letterSpacing": 0 },
+      "titleMedium": { "size": 20, "weight": 700, "lineHeight": 28, "letterSpacing": 0 },
+      "bodyLarge": { "size": 18, "weight": 500, "lineHeight": 26, "letterSpacing": 0 },
+      "bodyMedium": { "size": 16, "weight": 400, "lineHeight": 24, "letterSpacing": 0 },
+      "labelLarge": { "size": 14, "weight": 700, "lineHeight": 20, "letterSpacing": 0.14 },
+      "labelSmall": { "size": 12, "weight": 600, "lineHeight": 16, "letterSpacing": 0 }
+    }
+  },
+
+  "app": {
+    "$comment": "Comportamiento que hoy vive disperso en constantes de cada pantalla.",
+    "urlBase": "https://api.leadai-pe.com",
+    "pollingCarrerasMs": 15000,
+    "pollingClienteMs": 10000,
+    "reporteGpsMs": 5000,
+    "minutosExpiracionCarrera": 15
+  }
+}

@@ -1,186 +1,206 @@
 package pe.leadai.rider.ui.tema
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import pe.leadai.rider.ui.tema.generado.ColoresTokens
+import pe.leadai.rider.ui.tema.generado.FormaTokens
+import pe.leadai.rider.ui.tema.generado.MarcaTokens
 
 /**
- * Paleta de JALA, tomada del logo: las flechas amarillas sobre carbón.
+ * Tema de Jala.
  *
- * Reemplaza al teal "Brand Harmony" heredado de LeadAI — esa es la marca B2B
- * que se le vende a los negocios, y no le dice nada a un motorizado en Tacna.
+ * TODOS los valores vienen de `design/jala-design-tokens.json`, que es la
+ * fuente de verdad. Este archivo solo los arma en las estructuras que espera
+ * Material 3 — no define ni un color.
  *
- * DECISIÓN CLAVE — por qué el `primary` es el CARBÓN y no el amarillo:
- * el amarillo de marca (#F0B429) es precioso pero **no sirve como fondo de
- * botón**: texto blanco encima da ~1.9:1 de contraste, muy por debajo del
- * 4.5:1 que exige accesibilidad, y a pleno sol —donde el rider usa la app—
- * se vuelve ilegible. Así que:
- *   - `primary` = carbón #2E3440 → botones, con texto blanco (13:1, AAA)
- *   - `secondary` = amarillo #F0B429 → acentos de marca, badges, resaltados,
- *     SIEMPRE con texto carbón encima (9.7:1), nunca blanco
- * El amarillo sigue siendo la cara de la marca; simplemente no carga texto
- * claro. Ver [TokensExtra.marcaAmarillo] para los usos directos.
+ * Para cambiar cualquier cosa visual: editar el JSON y recompilar. Si un
+ * `Color(0x...)` aparece en un archivo que no sea el generado, está mal.
  */
-private val JalaColorScheme = lightColorScheme(
-    // Carbón del logo: la acción. Sobrio, con contraste de sobra al sol.
-    primary = Color(0xFF2E3440),
-    onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFF3B4252),
-    onPrimaryContainer = Color(0xFFE5E9F0),
-    inversePrimary = Color(0xFFB8C0CF),
 
-    // Amarillo de marca: acentos y resaltados. SIEMPRE con texto oscuro.
-    secondary = Color(0xFFF0B429),
-    onSecondary = Color(0xFF2E3440),
-    secondaryContainer = Color(0xFFFDF0D0),
-    onSecondaryContainer = Color(0xFF6B4E00),
+private val EsquemaClaro = lightColorScheme(
+    primary = ColoresTokens.Claro.primary,
+    onPrimary = ColoresTokens.Claro.onPrimary,
+    primaryContainer = ColoresTokens.Claro.primaryContainer,
+    onPrimaryContainer = ColoresTokens.Claro.onPrimaryContainer,
+    inversePrimary = ColoresTokens.Claro.inversePrimary,
+    secondary = ColoresTokens.Claro.secondary,
+    onSecondary = ColoresTokens.Claro.onSecondary,
+    secondaryContainer = ColoresTokens.Claro.secondaryContainer,
+    onSecondaryContainer = ColoresTokens.Claro.onSecondaryContainer,
+    tertiary = ColoresTokens.Claro.tertiary,
+    onTertiary = ColoresTokens.Claro.onTertiary,
+    tertiaryContainer = ColoresTokens.Claro.tertiaryContainer,
+    onTertiaryContainer = ColoresTokens.Claro.onTertiaryContainer,
+    error = ColoresTokens.Claro.error,
+    onError = ColoresTokens.Claro.onError,
+    errorContainer = ColoresTokens.Claro.errorContainer,
+    onErrorContainer = ColoresTokens.Claro.onErrorContainer,
+    background = ColoresTokens.Claro.background,
+    onBackground = ColoresTokens.Claro.onBackground,
+    surface = ColoresTokens.Claro.surface,
+    onSurface = ColoresTokens.Claro.onSurface,
+    surfaceVariant = ColoresTokens.Claro.surfaceVariant,
+    onSurfaceVariant = ColoresTokens.Claro.onSurfaceVariant,
+    outline = ColoresTokens.Claro.outline,
+    outlineVariant = ColoresTokens.Claro.outlineVariant,
+    inverseSurface = ColoresTokens.Claro.inverseSurface,
+    inverseOnSurface = ColoresTokens.Claro.inverseOnSurface,
+    surfaceTint = ColoresTokens.Claro.surfaceTint,
+    surfaceBright = ColoresTokens.Claro.surfaceBright,
+    surfaceDim = ColoresTokens.Claro.surfaceDim,
+    surfaceContainer = ColoresTokens.Claro.surfaceContainer,
+    surfaceContainerHigh = ColoresTokens.Claro.surfaceContainerHigh,
+    surfaceContainerHighest = ColoresTokens.Claro.surfaceContainerHighest,
+    surfaceContainerLow = ColoresTokens.Claro.surfaceContainerLow,
+    surfaceContainerLowest = ColoresTokens.Claro.surfaceContainerLowest,
+)
 
-    // Ámbar profundo: el tercer rol, para lo que necesita atención sin ser error.
-    tertiary = Color(0xFF9A6700),
-    onTertiary = Color(0xFFFFFFFF),
-    tertiaryContainer = Color(0xFFFFE9B8),
-    onTertiaryContainer = Color(0xFF5C3D00),
-
-    error = Color(0xFFBA1A1A),
-    onError = Color(0xFFFFFFFF),
-    errorContainer = Color(0xFFFFDAD6),
-    onErrorContainer = Color(0xFF93000A),
-
-    // Fondo cálido, casi blanco: descansa la vista al sol y hace que las
-    // cards blancas se despeguen.
-    background = Color(0xFFFAFAF8),
-    onBackground = Color(0xFF1C1D21),
-
-    surface = Color(0xFFFAFAF8),
-    onSurface = Color(0xFF1C1D21),
-    surfaceVariant = Color(0xFFE6E6E2),
-    onSurfaceVariant = Color(0xFF48494E),
-
-    outline = Color(0xFF79797E),
-    outlineVariant = Color(0xFFC9C9C5),
-
-    inverseSurface = Color(0xFF2E3440),
-    inverseOnSurface = Color(0xFFF1F1EF),
-
-    surfaceTint = Color(0xFF2E3440),
-    surfaceBright = Color(0xFFFAFAF8),
-    surfaceDim = Color(0xFFDBDBD7),
-    surfaceContainer = Color(0xFFEFEFEC),
-    surfaceContainerHigh = Color(0xFFE9E9E6),
-    surfaceContainerHighest = Color(0xFFE3E3E0),
-    surfaceContainerLow = Color(0xFFF5F5F2),
-    surfaceContainerLowest = Color(0xFFFFFFFF),
+private val EsquemaOscuro = darkColorScheme(
+    primary = ColoresTokens.Oscuro.primary,
+    onPrimary = ColoresTokens.Oscuro.onPrimary,
+    primaryContainer = ColoresTokens.Oscuro.primaryContainer,
+    onPrimaryContainer = ColoresTokens.Oscuro.onPrimaryContainer,
+    inversePrimary = ColoresTokens.Oscuro.inversePrimary,
+    secondary = ColoresTokens.Oscuro.secondary,
+    onSecondary = ColoresTokens.Oscuro.onSecondary,
+    secondaryContainer = ColoresTokens.Oscuro.secondaryContainer,
+    onSecondaryContainer = ColoresTokens.Oscuro.onSecondaryContainer,
+    tertiary = ColoresTokens.Oscuro.tertiary,
+    onTertiary = ColoresTokens.Oscuro.onTertiary,
+    tertiaryContainer = ColoresTokens.Oscuro.tertiaryContainer,
+    onTertiaryContainer = ColoresTokens.Oscuro.onTertiaryContainer,
+    error = ColoresTokens.Oscuro.error,
+    onError = ColoresTokens.Oscuro.onError,
+    errorContainer = ColoresTokens.Oscuro.errorContainer,
+    onErrorContainer = ColoresTokens.Oscuro.onErrorContainer,
+    background = ColoresTokens.Oscuro.background,
+    onBackground = ColoresTokens.Oscuro.onBackground,
+    surface = ColoresTokens.Oscuro.surface,
+    onSurface = ColoresTokens.Oscuro.onSurface,
+    surfaceVariant = ColoresTokens.Oscuro.surfaceVariant,
+    onSurfaceVariant = ColoresTokens.Oscuro.onSurfaceVariant,
+    outline = ColoresTokens.Oscuro.outline,
+    outlineVariant = ColoresTokens.Oscuro.outlineVariant,
+    inverseSurface = ColoresTokens.Oscuro.inverseSurface,
+    inverseOnSurface = ColoresTokens.Oscuro.inverseOnSurface,
+    surfaceTint = ColoresTokens.Oscuro.surfaceTint,
+    surfaceBright = ColoresTokens.Oscuro.surfaceBright,
+    surfaceDim = ColoresTokens.Oscuro.surfaceDim,
+    surfaceContainer = ColoresTokens.Oscuro.surfaceContainer,
+    surfaceContainerHigh = ColoresTokens.Oscuro.surfaceContainerHigh,
+    surfaceContainerHighest = ColoresTokens.Oscuro.surfaceContainerHighest,
+    surfaceContainerLow = ColoresTokens.Oscuro.surfaceContainerLow,
+    surfaceContainerLowest = ColoresTokens.Oscuro.surfaceContainerLowest,
 )
 
 /**
- * Colores semánticos de marca sin slot en `ColorScheme` de Material 3
- * (`*_fixed`/`*_fixed_variant` de M3 tampoco tienen slot en Compose M3 y no
- * los usa ningún prototipo actual — se omiten a propósito, ver ARQUITECTURA.md).
+ * Colores de marca que Material 3 no tiene dónde guardar.
+ *
+ * Se acceden por [ColoresJala.actuales] dentro de un `@Composable`, nunca como
+ * constante global: cada uno tiene su versión clara y oscura, y una constante
+ * dejaría el modo noche con los tonos del día.
  */
-object TokensExtra {
-    /**
-     * El AMARILLO del logo. Es la cara de la marca: acentos, el monto que el
-     * rider gana, badges destacados.
-     *
-     * REGLA: nunca lleva texto blanco encima (1.9:1, ilegible al sol). Usalo
-     * de fondo con texto carbón, o como color de texto/ícono sobre fondo
-     * oscuro.
-     */
-    val marcaAmarillo = Color(0xFFF0B429)
-
-    /** El CARBÓN del logo. Fondos oscuros, headers, texto sobre amarillo. */
-    val marcaCarbon = Color(0xFF2E3440)
-
-    /** Rojo de urgencia: sin saldo, carrera que se vence, error que frena el trabajo. */
-    val calor = Color(0xFFE5484D)
-
+data class ColoresJala(
+    /** El amarillo del logo. Ganancias, acentos. SIEMPRE con texto carbón encima. */
+    val marcaAmarillo: Color,
+    /** El carbón del logo. Fondos oscuros, headers. */
+    val marcaCarbon: Color,
+    /** Rojo de urgencia: sin saldo, algo que frena el trabajo. */
+    val calor: Color,
     /** Verde de éxito: entregado, pago confirmado. */
-    val exito = Color(0xFF2E7D32)
-
-    /**
-     * Ámbar de espera / atención. Es el color de "llevás S/60 para la compra"
-     * y de "pendiente de verificación": pide mirar sin gritar.
-     */
-    val espera = Color(0xFFD98B0C)
-
-    /** Carbón profundo: bottom navigation y headers. */
-    val slate = Color(0xFF1C1D21)
-
-    /** Carbón presionado del botón primario. */
-    val brasaPresionado = Color(0xFF232833)
-
-    /** Texto principal. Coincide con onSurface pero se expone para usos fuera de Material. */
-    val tintaPrimaria = Color(0xFF1C1D21)
-
-    /** Texto secundario / placeholders. */
-    val tintaSecundaria = Color(0xFF5B5C63)
-
-    /** Blanco puro, para cards sobre el fondo cálido. */
-    val blanco = Color(0xFFFFFFFF)
-
-    /**
-     * Paleta de ETIQUETAS DE NEGOCIO (bandeja global, Fase C2): pares
-     * `fondo pastel → texto oscuro` para que cada negocio se distinga de un
-     * vistazo (pedido de Jonathan 2026-07-22: "a cada empresa un color
-     * distinto"). Tonos suaves a propósito — no compiten con los colores
-     * semánticos (coral calor / ámbar espera / teal acción). La asignación
-     * es estable por tenant: ver [colorEtiquetaNegocio].
-     */
-    val etiquetasNegocio: List<Pair<Color, Color>> = listOf(
-        Color(0xFFE2E3F8) to Color(0xFF3D4279), // lavanda
-        Color(0xFFD8F0E3) to Color(0xFF1F5C40), // menta
-        Color(0xFFD9EBF8) to Color(0xFF1D4E73), // cielo
-        Color(0xFFF8DEE7) to Color(0xFF803049), // rosa
-        Color(0xFFF3EAD2) to Color(0xFF6B5620), // arena
-        Color(0xFFEBDDF6) to Color(0xFF5A3A78), // lila
-    )
+    val exito: Color,
+    /** Ámbar de atención: "llevás S/60 para la compra", "pendiente de verificación". */
+    val espera: Color,
+    /** Texto principal, para usos fuera de Material. */
+    val tintaPrimaria: Color,
+    /** Texto secundario y placeholders. */
+    val tintaSecundaria: Color,
+    /** Fondo de las cards elevadas. */
+    val superficieCard: Color,
+) {
+    companion object {
+        /**
+         * Los colores de marca del modo actual. Uso:
+         * `val c = ColoresJala.actuales` dentro de un `@Composable`.
+         */
+        val actuales: ColoresJala
+            @Composable @ReadOnlyComposable get() = LocalColoresJala.current
+    }
 }
 
-/**
- * Color estable de la etiqueta de un negocio: el `tenantId` (cuid inmutable)
- * se hashea al índice de la paleta [TokensExtra.etiquetasNegocio] — el mismo
- * negocio SIEMPRE sale del mismo color, en cualquier sesión y pantalla. Dos
- * negocios pueden colisionar si hay más de 6 (aceptado: la etiqueta además
- * lleva el nombre).
- */
-fun colorEtiquetaNegocio(tenantId: String): Pair<Color, Color> {
-    val indice = indiceEtiquetaNegocio(tenantId, TokensExtra.etiquetasNegocio.size)
-    return TokensExtra.etiquetasNegocio[indice]
-}
-
-/** Hash estable (suma de chars, sin depender de `hashCode` de la plataforma) → índice en `[0, cantidad)`. */
-internal fun indiceEtiquetaNegocio(tenantId: String, cantidad: Int): Int {
-    var acumulado = 0
-    for (c in tenantId) acumulado = (acumulado * 31 + c.code) and 0x7FFFFFFF
-    return acumulado % cantidad
-}
-
-/**
- * Shapes: 16px (rounded-lg) para cards/botones primarios (medium/large),
- * 8px (rounded-md) para inputs (small), full/pill para chips y status pills.
- */
-val LeadAIShapes = Shapes(
-    extraSmall = RoundedCornerShape(4.dp),
-    small = RoundedCornerShape(8.dp),
-    medium = RoundedCornerShape(16.dp),
-    large = RoundedCornerShape(16.dp),
-    extraLarge = RoundedCornerShape(24.dp),
+private val MarcaClara = ColoresJala(
+    marcaAmarillo = MarcaTokens.Claro.marcaAmarillo,
+    marcaCarbon = MarcaTokens.Claro.marcaCarbon,
+    calor = MarcaTokens.Claro.calor,
+    exito = MarcaTokens.Claro.exito,
+    espera = MarcaTokens.Claro.espera,
+    tintaPrimaria = MarcaTokens.Claro.tintaPrimaria,
+    tintaSecundaria = MarcaTokens.Claro.tintaSecundaria,
+    superficieCard = MarcaTokens.Claro.superficieCard,
 )
 
-/** Shape completamente redondeado (pill) para chips y status pills. */
+private val MarcaOscura = ColoresJala(
+    marcaAmarillo = MarcaTokens.Oscuro.marcaAmarillo,
+    marcaCarbon = MarcaTokens.Oscuro.marcaCarbon,
+    calor = MarcaTokens.Oscuro.calor,
+    exito = MarcaTokens.Oscuro.exito,
+    espera = MarcaTokens.Oscuro.espera,
+    tintaPrimaria = MarcaTokens.Oscuro.tintaPrimaria,
+    tintaSecundaria = MarcaTokens.Oscuro.tintaSecundaria,
+    superficieCard = MarcaTokens.Oscuro.superficieCard,
+)
+
+private val LocalColoresJala = staticCompositionLocalOf { MarcaClara }
+
+/** Radios de esquina, del JSON. */
+val JalaShapes = Shapes(
+    extraSmall = RoundedCornerShape(FormaTokens.extraSmall),
+    small = RoundedCornerShape(FormaTokens.small),
+    medium = RoundedCornerShape(FormaTokens.medium),
+    large = RoundedCornerShape(FormaTokens.large),
+    extraLarge = RoundedCornerShape(FormaTokens.extraLarge),
+)
+
+/** Forma pill para chips y badges de estado. */
 val FormaChip = RoundedCornerShape(CornerSize(50))
 
+/**
+ * Tema raíz de la app.
+ *
+ * [oscuro] sigue al sistema por defecto. Se puede forzar para previews o para
+ * un toggle manual dentro de la app, si algún día se agrega.
+ */
 @Composable
-fun LeadAITheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        colorScheme = JalaColorScheme,
-        typography = LeadAITypography,
-        shapes = LeadAIShapes,
-        content = content,
-    )
+fun JalaTheme(
+    oscuro: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
+) {
+    CompositionLocalProvider(
+        LocalColoresJala provides if (oscuro) MarcaOscura else MarcaClara,
+    ) {
+        MaterialTheme(
+            colorScheme = if (oscuro) EsquemaOscuro else EsquemaClaro,
+            typography = LeadAITypography,
+            shapes = JalaShapes,
+            content = content,
+        )
+    }
 }
+
+/**
+ * Alias del nombre viejo, para no romper lo que ya lo usa. La app se llama
+ * Jala; `LeadAITheme` queda solo como puente y se irá al migrar las pantallas.
+ */
+@Deprecated("Usá JalaTheme", ReplaceWith("JalaTheme(content = content)"))
+@Composable
+fun LeadAITheme(content: @Composable () -> Unit) = JalaTheme(content = content)

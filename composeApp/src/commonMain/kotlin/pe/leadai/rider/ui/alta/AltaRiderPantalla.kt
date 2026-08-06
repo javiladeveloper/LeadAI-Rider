@@ -42,7 +42,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import pe.leadai.rider.ui.comunes.BannerError
-import pe.leadai.rider.ui.tema.TokensExtra
+import pe.leadai.rider.ui.tema.ColoresJala
 
 /**
  * Alta del motorizado: DNI (con validación en vivo que autocompleta el
@@ -226,7 +226,7 @@ private fun FormularioMotorizado(
                     nombreOficialDni == null -> Text("8 dígitos — para verificar tu identidad")
                     nombreOficialDni.isNotBlank() -> Text(
                         "✓ $nombreOficialDni",
-                        color = TokensExtra.exito,
+                        color = ColoresJala.actuales.exito,
                     )
                     else -> Text("No lo encontramos — lo verificaremos manualmente")
                 }

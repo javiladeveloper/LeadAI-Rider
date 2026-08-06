@@ -58,7 +58,7 @@ import pe.leadai.rider.ui.comunes.AvisosGlobales
 import pe.leadai.rider.ui.comunes.EstadoError
 import pe.leadai.rider.ui.comunes.PantallaCargando
 import pe.leadai.rider.ui.permisos.PermisosPantalla
-import pe.leadai.rider.ui.tema.TokensExtra
+import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.centavosASoles
 
 /** Mismo ritmo de polling que la Cocina: el feed del rider se refresca solo. */
@@ -289,7 +289,7 @@ private fun ContenidoRider(
                         Text(
                             "💵 Llevas ${centavosASoles(miCarrera.montoCompraEstimado ?: 0)} para la compra",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = TokensExtra.espera,
+                            color = ColoresJala.actuales.espera,
                         )
                     }
                 }
@@ -381,7 +381,7 @@ private fun ContenidoRider(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = if (sinSaldo) {
-                        TokensExtra.calor.copy(alpha = 0.12f)
+                        ColoresJala.actuales.calor.copy(alpha = 0.12f)
                     } else {
                         MaterialTheme.colorScheme.surfaceContainerLowest
                     },
@@ -401,7 +401,7 @@ private fun ContenidoRider(
                         Text(
                             centavosASoles(monedero.saldoCentavos),
                             style = MaterialTheme.typography.titleLarge,
-                            color = if (sinSaldo) TokensExtra.calor else MaterialTheme.colorScheme.onSurface,
+                            color = if (sinSaldo) ColoresJala.actuales.calor else MaterialTheme.colorScheme.onSurface,
                         )
                     }
                     Column(
@@ -415,7 +415,7 @@ private fun ContenidoRider(
                                 "Te alcanza para ${monedero.carrerasDisponibles} carreras"
                             },
                             style = MaterialTheme.typography.bodySmall,
-                            color = if (sinSaldo) TokensExtra.calor else MaterialTheme.colorScheme.onSurfaceVariant,
+                            color = if (sinSaldo) ColoresJala.actuales.calor else MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.End,
                         )
                         Spacer(Modifier.height(6.dp))
@@ -539,7 +539,7 @@ private fun ContenidoRider(
             onClick = onCerrarSesion,
             modifier = Modifier.align(Alignment.CenterHorizontally),
         ) {
-            Text("Cerrar sesión", style = MaterialTheme.typography.bodyMedium, color = TokensExtra.calor)
+            Text("Cerrar sesión", style = MaterialTheme.typography.bodyMedium, color = ColoresJala.actuales.calor)
         }
         Spacer(Modifier.height(8.dp))
     }
@@ -669,7 +669,7 @@ private fun CardCarrera(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            color = TokensExtra.espera.copy(alpha = 0.14f),
+                            color = ColoresJala.actuales.espera.copy(alpha = 0.14f),
                             shape = RoundedCornerShape(10.dp),
                         )
                         .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -678,7 +678,7 @@ private fun CardCarrera(
                     Text(
                         "💵 Llevas ${centavosASoles(carrera.montoCompraEstimado ?: 0)} para la compra",
                         style = MaterialTheme.typography.bodySmall,
-                        color = TokensExtra.espera,
+                        color = ColoresJala.actuales.espera,
                         modifier = Modifier.weight(1f),
                     )
                 }
@@ -722,8 +722,8 @@ private fun CardCarrera(
 private fun BadgeEstadoMotorizado(estado: String) {
     val (texto, color) = when (estado) {
         "verificado" -> "Verificado ✓" to MaterialTheme.colorScheme.primary
-        "bloqueado" -> "Bloqueado" to TokensExtra.calor
-        else -> "Pendiente de verificación" to TokensExtra.espera
+        "bloqueado" -> "Bloqueado" to ColoresJala.actuales.calor
+        else -> "Pendiente de verificación" to ColoresJala.actuales.espera
     }
     Box(
         modifier = Modifier

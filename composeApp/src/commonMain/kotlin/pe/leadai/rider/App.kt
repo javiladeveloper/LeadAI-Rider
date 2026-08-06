@@ -12,11 +12,11 @@ import pe.leadai.rider.datos.ChequeoVersion
 import pe.leadai.rider.datos.VersionApi
 import pe.leadai.rider.ui.comunes.DialogoActualizacion
 import pe.leadai.rider.ui.navegacion.NavegacionRaiz
-import pe.leadai.rider.ui.tema.LeadAITheme
+import pe.leadai.rider.ui.tema.JalaTheme
 
 @Composable
 fun App() {
-    LeadAITheme {
+    JalaTheme {
         NavegacionRaiz()
         AvisoDeActualizacion()
     }

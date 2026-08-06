@@ -46,7 +46,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import pe.leadai.rider.ui.comunes.BannerError
-import pe.leadai.rider.ui.tema.TokensExtra
+import pe.leadai.rider.ui.tema.ColoresJala
 
 /**
  * Primera pantalla real de la app. Estética "Brand Harmony": fondo arena
@@ -265,10 +265,10 @@ private fun TextoConLinkRegistro(onClick: () -> Unit, habilitado: Boolean) {
 private fun LogoLeadAI() {
     Text(
         text = buildAnnotatedString {
-            withStyle(SpanStyle(color = TokensExtra.marcaAmarillo)) {
+            withStyle(SpanStyle(color = ColoresJala.actuales.marcaAmarillo)) {
                 append("»» ")
             }
-            withStyle(SpanStyle(color = TokensExtra.marcaCarbon)) {
+            withStyle(SpanStyle(color = ColoresJala.actuales.marcaCarbon)) {
                 append("Jala")
             }
         },

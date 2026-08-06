@@ -37,6 +37,20 @@ val versionNameDelTag: String =
         ?.takeIf { it.isNotBlank() }
         ?: VERSION_NAME_LOCAL
 
+// ── Tokens de diseño ──────────────────────────────────────────────────────
+// `design/jala-design-tokens.json` es la FUENTE DE VERDAD de todo lo visual.
+// Esta tarea lo traduce a Kotlin antes de compilar, así el compilador verifica
+// los nombres y no hay que parsear JSON en cada arranque de la app.
+val generarTokens = tasks.register<GenerarTokensTask>("generarTokens") {
+    archivoTokens.set(rootProject.file("design/jala-design-tokens.json"))
+    directorioSalida.set(layout.buildDirectory.dir("generated/tokens"))
+}
+
+// Cualquier compilación de Kotlin depende de que los tokens estén generados.
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
+    dependsOn(generarTokens)
+}
+
 kotlin {
     androidTarget {
         compilations.all {
@@ -62,6 +76,9 @@ kotlin {
     }
 
     sourceSets {
+        commonMain {
+            kotlin.srcDir(layout.buildDirectory.dir("generated/tokens"))
+        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
