@@ -9,6 +9,7 @@ import pe.leadai.rider.datos.ModoRepositorio
 import pe.leadai.rider.datos.MonederoApi
 import pe.leadai.rider.datos.MotorizadosApi
 import pe.leadai.rider.datos.SesionRepositorio
+import pe.leadai.rider.datos.VersionApi
 import pe.leadai.rider.datos.crearDataStore
 import pe.leadai.rider.push.RegistroPushRepositorio
 import pe.leadai.rider.ui.alta.AltaRiderViewModel
@@ -35,6 +36,7 @@ val moduloApp = module {
     single { AuthApi(get(), get()) }
     single { MotorizadosApi(get()) }
     single { MonederoApi(get()) }
+    single { VersionApi(get()) }
     single { CarrerasClienteApi(get()) }
     single { RegistroPushRepositorio(get()) }
     single { AvisosGlobales() }

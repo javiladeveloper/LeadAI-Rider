@@ -125,6 +125,33 @@ jobs:
             *)          bundle exec fastlane android interna ;;
           esac
 
+      # Avisa a las apps instaladas que hay una versión nueva. SOLO si la
+      # subida a Play salió bien: anunciar una versión que nadie puede instalar
+      # es peor que no anunciarla — el usuario ve "actualizá" y en Play no hay
+      # nada. (Lección de controlgym, que lo sufrió con un release rechazado.)
+      - name: Avisar de la nueva versión
+        if: success()
+        env:
+          ADMIN_API_KEY: ${{ secrets.ADMIN_API_KEY }}
+        run: |
+          if [ -z "$ADMIN_API_KEY" ]; then
+            echo "::error::Falta ADMIN_API_KEY — sin él las apps instaladas no se enteran de la actualización."
+            exit 1
+          fi
+          VC=$(( ${{ github.run_number }} + 10 ))   # mismo cálculo que build.gradle.kts
+          VN=$(grep -oE 'versionName = "[^"]+"' composeApp/build.gradle.kts | head -1 | sed -E 's/.*"([^"]+)".*/\1/')
+          echo "Anunciando versionCode $VC (v$VN)…"
+          HTTP=$(curl -s -o /tmp/r.txt -w "%{http_code}" \
+            -X POST "https://api.leadai-pe.com/app/version" \
+            -H "Content-Type: application/json" \
+            -H "x-admin-key: $ADMIN_API_KEY" \
+            -d "{\"plataforma\":\"android\",\"versionCode\":$VC,\"versionName\":\"$VN\"}")
+          if [ "$HTTP" = "200" ]; then
+            echo "OK: las apps instaladas verán el aviso."
+          else
+            echo "ERROR (HTTP $HTTP):"; cat /tmp/r.txt; exit 1
+          fi
+
       # Se borran aunque el job falle: son la clave de firma y el acceso a Play.
       - name: Limpiar secretos del runner
         if: always()

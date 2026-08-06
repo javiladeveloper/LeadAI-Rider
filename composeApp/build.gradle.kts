@@ -109,6 +109,12 @@ android {
             ?: VERSION_CODE_BASE
         versionName = "0.1.4"
     }
+    // BuildConfig: de ahí sale el versionCode que la app compara con la
+    // última publicada para avisar de actualizaciones.
+    buildFeatures {
+        buildConfig = true
+    }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
