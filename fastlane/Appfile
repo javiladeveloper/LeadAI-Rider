@@ -1,0 +1,5 @@
+# Identidad de la app para Fastlane.
+app_identifier("pe.leadai.rider")
+
+# La cuenta de servicio de Google Play llega por env var desde el workflow,
+# no vive acá.

@@ -1,0 +1,71 @@
+# Fastlane — publicación de Jala en Google Play.
+#
+# Los secretos NUNCA viven acá: los inyecta el workflow por variables de
+# entorno (ver .github/workflows/android-release.yml).
+#
+# Los tres canales son la escalera de siempre: interna → cerrada → producción.
+
+default_platform(:android)
+
+PACKAGE = "pe.leadai.rider"
+AAB = "composeApp/build/outputs/bundle/release/composeApp-release.aab"
+
+platform :android do
+  # Track "internal": hasta 100 testers de la lista, disponible en minutos.
+  # Es donde se valida un build antes de mostrárselo a nadie más.
+  desc "Publica en la prueba interna (el equipo)"
+  lane :interna do
+    upload_to_play_store(
+      package_name: PACKAGE,
+      track: "internal",
+      aab: AAB,
+      json_key: ENV["PLAY_STORE_JSON_KEY_PATH"],
+      # 'completed' = les llega de una a los testers, no queda en borrador.
+      release_status: "completed",
+      # Solo sube las notas de versión: el título, la descripción y las
+      # capturas ya configuradas en Play no se tocan desde acá.
+      skip_upload_metadata: true,
+      skip_upload_changelogs: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+
+  # Track "alpha" (Play lo llama "Prueba cerrada"): grupo invitado, más amplio
+  # que la interna. Es el paso donde entran los motorizados y sus clientes
+  # antes de abrir al público.
+  desc "Publica en la prueba cerrada (testers invitados)"
+  lane :cerrada do
+    upload_to_play_store(
+      package_name: PACKAGE,
+      track: ENV["PLAY_TRACK_CERRADA"] || "alpha",
+      aab: AAB,
+      json_key: ENV["PLAY_STORE_JSON_KEY_PATH"],
+      release_status: "completed",
+      skip_upload_metadata: true,
+      skip_upload_changelogs: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+
+  # PRODUCCIÓN: rollout 100%, LIVE para cualquiera que la instale.
+  #
+  # Un tag `produccion-*` equivocado publica al instante y no hay "deshacer" —
+  # lo máximo es subir una versión nueva encima. Usarlo solo después de haber
+  # validado en interna y cerrada.
+  desc "Publica en PRODUCCIÓN (rollout completo, LIVE)"
+  lane :production do
+    upload_to_play_store(
+      package_name: PACKAGE,
+      track: "production",
+      aab: AAB,
+      json_key: ENV["PLAY_STORE_JSON_KEY_PATH"],
+      release_status: "completed",
+      skip_upload_metadata: true,
+      skip_upload_changelogs: false,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+end

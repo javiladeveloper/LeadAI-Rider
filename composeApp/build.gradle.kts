@@ -15,6 +15,13 @@ if (tieneGoogleServicesJson) {
     apply(plugin = "com.google.gms.google-services")
 }
 
+// versionCode: en CI sale de GITHUB_RUN_NUMBER + OFFSET, así nunca hay que
+// acordarse de subirlo a mano ni choca con Play (que rechaza duplicados).
+// El OFFSET supera el último subido a mano (5), para que el primer build
+// automático empiece por encima. BASE es el valor de los builds locales.
+val VERSION_CODE_OFFSET = 10
+val VERSION_CODE_BASE = 5
+
 kotlin {
     androidTarget {
         compilations.all {
@@ -97,7 +104,9 @@ android {
         applicationId = "pe.leadai.rider"
         minSdk = 26
         targetSdk = 35
-        versionCode = 5
+        // En CI cada corrida incrementa solo; en local queda fijo en BASE.
+        versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()?.plus(VERSION_CODE_OFFSET)
+            ?: VERSION_CODE_BASE
         versionName = "0.1.4"
     }
     packaging {
@@ -106,12 +115,18 @@ android {
         }
     }
 
+    // Credenciales de firma por variable de entorno, con el valor local como
+    // respaldo: así el CI las inyecta desde los secretos de GitHub y el build
+    // en la máquina de Jonathan sigue andando sin configurar nada.
+    //
+    // El keystore NO está en el repo (.gitignore); el CI lo reconstruye desde
+    // el secreto ANDROID_KEYSTORE_BASE64.
     signingConfigs {
         create("release") {
             storeFile = file("release.keystore")
-            storePassword = "leadai2026pe"
-            keyAlias = "leadai"
-            keyPassword = "leadai2026pe"
+            storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: "leadai2026pe"
+            keyAlias = System.getenv("ANDROID_KEY_ALIAS") ?: "leadai"
+            keyPassword = System.getenv("ANDROID_KEY_PASSWORD") ?: "leadai2026pe"
         }
     }
 

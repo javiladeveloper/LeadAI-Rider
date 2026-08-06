@@ -25,3 +25,10 @@ captures/
 
 # Reglas de AI del IDE local (no son del repo)
 .github/instructions/codacy.instructions.md
+
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md
+
+# Clave de la cuenta de servicio de Play (la inyecta el CI desde secretos)
+play-store-key.json
