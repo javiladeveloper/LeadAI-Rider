@@ -42,6 +42,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import pe.leadai.rider.ui.comunes.BannerError
+import pe.leadai.rider.ui.alta.componentes.DniSinValidar
+import pe.leadai.rider.ui.alta.componentes.DniValidado
+import pe.leadai.rider.ui.alta.componentes.ProgresoAlta
+import pe.leadai.rider.ui.comunes.CampoJala
 import pe.leadai.rider.ui.tema.ColoresJala
 
 /**
@@ -91,20 +95,33 @@ fun AltaRiderPantalla(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = if (modoEditar) "Tu perfil de motorizado" else "Empecemos, motorizado 🛵",
-                    style = MaterialTheme.typography.titleLarge,
+                    text = if (modoEditar) "Tu perfil" else "¡Únete al equipo! 🚀",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = androidx.compose.ui.text.font.FontWeight.ExtraBold,
+                    ),
                     color = MaterialTheme.colorScheme.onSurface,
                 )
 
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = if (modoEditar) "Corrige lo que necesites y guarda" else "Un último paso antes de empezar",
+                    text = if (modoEditar) {
+                        "Corregí lo que necesites y guardá"
+                    } else {
+                        "Llená tus datos para empezar a jalar con nosotros."
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
-                Spacer(Modifier.height(24.dp))
+                Spacer(Modifier.height(20.dp))
+
+                // En el alta se muestra el avance; editando no, porque ahí no
+                // hay pasos: se corrige lo que haga falta y se guarda.
+                if (!modoEditar) {
+                    ProgresoAlta(paso = 1, total = 2, titulo = "Datos personales")
+                    Spacer(Modifier.height(20.dp))
+                }
 
                 FormularioMotorizado(
                     departamento = estado.departamento,
@@ -213,26 +230,36 @@ private fun FormularioMotorizado(
         // DNI con validación EN VIVO (fila 16): a los 8 dígitos el backend
         // consulta MAXFIND y acá se muestra el nombre oficial — o "lo
         // verificaremos manualmente", sin bloquear (decisión 8).
-        OutlinedTextField(
-            value = dni,
-            onValueChange = onDniCambia,
-            label = { Text("DNI") },
-            singleLine = true,
-            enabled = habilitado,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            supportingText = {
-                when {
-                    validandoDni -> Text("Verificando tu DNI…")
-                    nombreOficialDni == null -> Text("8 dígitos — para verificar tu identidad")
-                    nombreOficialDni.isNotBlank() -> Text(
-                        "✓ $nombreOficialDni",
-                        color = ColoresJala.actuales.exito,
-                    )
-                    else -> Text("No lo encontramos — lo verificaremos manualmente")
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
+        CampoJala(
+            valor = dni,
+            onCambio = onDniCambia,
+            etiqueta = "DNI / CE",
+            placeholder = "76543210",
+            habilitado = habilitado,
+            tipoTeclado = KeyboardType.Number,
         )
+        // El resultado de la validación es una card aparte, no un texto de
+        // ayuda: es la confirmación de que el sistema lo reconoció, y merece
+        // verse.
+        when {
+            validandoDni -> {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "Verificando tu DNI…",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = ColoresJala.actuales.tintaSecundaria,
+                )
+            }
+            nombreOficialDni == null -> Unit
+            nombreOficialDni.isNotBlank() -> {
+                Spacer(Modifier.height(8.dp))
+                DniValidado(nombreOficial = nombreOficialDni)
+            }
+            else -> {
+                Spacer(Modifier.height(8.dp))
+                DniSinValidar()
+            }
+        }
 
         Spacer(Modifier.height(16.dp))
 

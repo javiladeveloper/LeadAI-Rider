@@ -49,6 +49,13 @@ import pe.leadai.rider.ui.carreras.telefonoDeContacto
 import pe.leadai.rider.ui.comunes.AvisosGlobales
 import pe.leadai.rider.ui.comunes.MapaEmbebido
 import pe.leadai.rider.ui.comunes.PantallaCargando
+import pe.leadai.rider.ui.cliente.componentes.CardMontoCompra
+import pe.leadai.rider.ui.cliente.componentes.CardRecorrido
+import pe.leadai.rider.ui.cliente.componentes.CardTarifa
+import pe.leadai.rider.ui.comunes.BannerError
+import pe.leadai.rider.ui.comunes.BotonAcento
+import pe.leadai.rider.ui.comunes.CampoJala
+import pe.leadai.rider.ui.comunes.SelectorDos
 import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.centavosASoles
 import pe.leadai.rider.ui.tema.epochMsAhora
@@ -145,199 +152,87 @@ private fun FormularioPedir(
     onCambiarModo: () -> Unit,
     onCerrarSesion: () -> Unit,
 ) {
+    val colores = ColoresJala.actuales
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Spacer(Modifier.height(20.dp))
-        Text(
-            "🛵 Pedir un motorizado",
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(4.dp))
 
-        // 1) Qué necesita. El tipo cambia el formulario: solo la encomienda
-        // puede mandar al rider a comprar algo.
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            BotonTipo(
-                texto = "🚕 Que me lleven",
-                elegido = estado.tipo == TIPO_PASAJERO,
-                onClick = { onTipo(TIPO_PASAJERO) },
-                modifier = Modifier.weight(1f),
-            )
-            BotonTipo(
-                texto = "📦 Que traigan algo",
-                elegido = estado.tipo == TIPO_ENCOMIENDA,
-                onClick = { onTipo(TIPO_ENCOMIENDA) },
-                modifier = Modifier.weight(1f),
-            )
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-        // 2) Origen, con el atajo del GPS.
-        OutlinedTextField(
-            value = estado.origen,
-            onValueChange = onOrigen,
-            label = { Text("¿De dónde sale?") },
-            placeholder = { Text("Av. Grau 240") },
-            singleLine = true,
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxWidth(),
-        )
-        TextButton(onClick = onUsarMiUbicacion) {
-            Text("📍 Estoy acá", style = MaterialTheme.typography.labelLarge)
-        }
-
-        // 3) Destino. Al salir del campo ya se puede sugerir el monto.
-        OutlinedTextField(
-            value = estado.destino,
-            onValueChange = onDestino,
-            label = { Text("¿A dónde va?") },
-            placeholder = { Text("Jose Olaya 110") },
-            singleLine = true,
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { foco -> if (!foco.isFocused) onSugerir() },
+        // Qué necesita: llevar a alguien, o llevar/traer algo.
+        SelectorDos(
+            opciones = listOf(
+                TIPO_PASAJERO to "🚕 Pasajero",
+                TIPO_ENCOMIENDA to "📦 Encomienda",
+            ),
+            seleccionada = estado.tipo,
+            onSeleccionar = onTipo,
         )
 
-        Spacer(Modifier.height(12.dp))
-
-        // 4) EL FLETE: lo que le paga al motorizado por el servicio.
-        OutlinedTextField(
-            value = estado.monto,
-            onValueChange = onMonto,
-            label = { Text("¿Cuánto ofrecés? (S/)") },
-            placeholder = { Text("8") },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxWidth(),
-        )
-        if (estado.montoSugerido != null) {
-            Spacer(Modifier.height(4.dp))
-            Text(
-                buildString {
-                    append("Sugerido: ${centavosASoles(estado.montoSugerido)}")
-                    if (estado.kmEstimado != null) append(" · ${estado.kmEstimado} km")
-                },
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary,
-            )
-        }
-        Spacer(Modifier.height(2.dp))
-        // LeadAI ENLAZA, no fija precios: el número es un punto de partida.
-        Text(
-            "Podés ofrecer más o menos — lo acordás con el motorizado",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        CardRecorrido(
+            origen = estado.origen,
+            destino = estado.destino,
+            onOrigenCambia = onOrigen,
+            onDestinoCambia = { onDestino(it); onSugerir() },
+            onUsarMiUbicacion = onUsarMiUbicacion,
         )
 
-        // 5) SOLO ENCOMIENDA: la plata que el rider ADELANTA y el cliente le
-        // devuelve. En ámbar y en su propia caja, visualmente separada del
-        // flete de arriba — nunca se suman ni se muestran como un total.
+        CardTarifa(
+            monto = estado.monto,
+            onMontoCambia = onMonto,
+            montoSugeridoCentavos = estado.montoSugerido,
+        )
+
+        // Solo en encomienda: cuánta plata adelanta el rider en la compra.
         if (estado.tipo == TIPO_ENCOMIENDA) {
-            Spacer(Modifier.height(16.dp))
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = ColoresJala.actuales.espera.copy(alpha = 0.10f),
-                ),
-            ) {
-                Column(modifier = Modifier.fillMaxWidth().padding(14.dp)) {
-                    Text(
-                        "💵 ¿Cuánto cuesta lo que va a comprar?",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = ColoresJala.actuales.espera,
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    OutlinedTextField(
-                        value = estado.montoCompra,
-                        onValueChange = onMontoCompra,
-                        label = { Text("Monto de la compra (S/)") },
-                        placeholder = { Text("60") },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        shape = RoundedCornerShape(16.dp),
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    Spacer(Modifier.height(6.dp))
-                    Text(
-                        "Se lo devolvés aparte del flete: el motorizado pone la " +
-                            "plata de la compra y vos se la reintegrás al recibir.",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-            }
+            CardMontoCompra(monto = estado.montoCompra, onMontoCambia = onMontoCompra)
         }
 
-        Spacer(Modifier.height(12.dp))
-
-        // 6) Detalles del encargo.
-        OutlinedTextField(
-            value = estado.notas,
-            onValueChange = onNotas,
-            label = { Text("¿Algo que deba saber?") },
-            placeholder = { Text("combinado sin verduras, caja mediana…") },
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxWidth(),
+        CampoJala(
+            valor = estado.contacto,
+            onCambio = onContacto,
+            etiqueta = "Tu celular",
+            placeholder = "987 654 321",
+            tipoTeclado = KeyboardType.Phone,
+            prefijo = "+51",
         )
 
-        Spacer(Modifier.height(12.dp))
-
-        // 7) Contacto: por dónde lo ubica el rider.
-        OutlinedTextField(
-            value = estado.contacto,
-            onValueChange = onContacto,
-            label = { Text("Tu teléfono") },
-            placeholder = { Text("952123456") },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.fillMaxWidth(),
+        CampoJala(
+            valor = estado.notas,
+            onCambio = onNotas,
+            etiqueta = "Notas para el motorizado",
+            placeholder = "Ej: tocar timbre, casa amarilla",
+            maxLineas = 3,
         )
 
-        if (estado.error != null) {
-            Spacer(Modifier.height(10.dp))
-            Text(
-                estado.error,
-                style = MaterialTheme.typography.bodySmall,
-                color = ColoresJala.actuales.calor,
-            )
+        val error = estado.error
+        if (error != null) {
+            BannerError(error)
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(4.dp))
 
-        // 8) La acción.
-        Button(
+        BotonAcento(
+            texto = "PEDIR JALA  →",
             onClick = onPedir,
-            enabled = !estado.pidiendo,
-            modifier = Modifier.fillMaxWidth().height(56.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            if (estado.pidiendo) {
-                CircularProgressIndicator(modifier = Modifier.size(20.dp), strokeWidth = 2.dp)
-            } else {
-                Text("🛵 Pedir motorizado", style = MaterialTheme.typography.titleSmall)
-            }
-        }
+            cargando = estado.pidiendo,
+        )
 
-        // 9) Al pie: cambiar de modo y salir.
-        Spacer(Modifier.height(12.dp))
+        Spacer(Modifier.height(8.dp))
+
         TextButton(
             onClick = onCambiarModo,
             modifier = Modifier.align(Alignment.CenterHorizontally),
         ) {
-            Text("🏍️ Quiero manejar", style = MaterialTheme.typography.bodyMedium)
+            Text(
+                "🏍️ Quiero manejar",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
         }
         TextButton(
             onClick = onCerrarSesion,
@@ -345,10 +240,11 @@ private fun FormularioPedir(
         ) {
             Text(
                 "Cerrar sesión",
-                style = MaterialTheme.typography.bodyMedium,
-                color = ColoresJala.actuales.calor,
+                style = MaterialTheme.typography.labelSmall,
+                color = colores.tintaSecundaria,
             )
         }
+
         Spacer(Modifier.height(16.dp))
     }
 }
