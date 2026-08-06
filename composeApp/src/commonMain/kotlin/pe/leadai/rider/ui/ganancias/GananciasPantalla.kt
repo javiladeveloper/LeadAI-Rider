@@ -1,8 +1,10 @@
 package pe.leadai.rider.ui.ganancias
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -99,40 +102,91 @@ fun GananciasPantalla(
     }
 }
 
-/** El número grande: lo que lleva hoy. */
+/**
+ * El total del día — la "hero card" del diseño: verde claro con borde, el
+ * monto en display, y los stats separados por una línea abajo.
+ *
+ * El verde es propio del diseño, no un rol de Material 3: comunica "esto es
+ * plata que ya ganaste" sin confundirse con el amarillo de marca, que se usa
+ * para acciones.
+ */
 @Composable
 private fun TotalDelDia(hoy: ResumenHoyRiderDto) {
     val colores = ColoresJala.actuales
-    CardJala(modifier = Modifier.fillMaxWidth(), color = colores.marcaCarbon) {
-        Text(
-            "TOTAL DEL DÍA 💸",
-            style = MaterialTheme.typography.labelSmall,
-            color = colores.marcaAmarillo,
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .defaultMinSize(minHeight = 160.dp)
+            .background(colores.gananciaFondo, RoundedCornerShape(24.dp))
+            .border(1.dp, colores.gananciaBorde, RoundedCornerShape(24.dp))
+            .padding(16.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Column {
+            Text(
+                "TOTAL DEL DÍA 💸",
+                style = MaterialTheme.typography.labelLarge,
+                color = colores.gananciaTexto.copy(alpha = 0.8f),
+            )
+            Spacer(Modifier.height(4.dp))
+            // "S/" en título y el número en display: el diseño pide que el
+            // símbolo pese menos que la cifra.
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(
+                    "S/",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = colores.gananciaTexto,
+                )
+                Spacer(Modifier.size(6.dp))
+                Text(
+                    solesSinSimbolo(hoy.totalCentavos),
+                    style = MaterialTheme.typography.displayLarge.copy(
+                        fontWeight = FontWeight.ExtraBold,
+                    ),
+                    color = colores.gananciaTexto,
+                )
+            }
+        }
+
+        Spacer(Modifier.height(20.dp))
+
+        // Línea divisoria + los dos datos, como en el diseño.
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(colores.gananciaBorde),
         )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            centavosASoles(hoy.totalCentavos),
-            style = MaterialTheme.typography.displayLarge.copy(fontWeight = FontWeight.ExtraBold),
-            color = colores.superficieCard,
-        )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(10.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
-            DatoChico("Viajes completados", "${hoy.carreras}", Modifier.weight(1f))
-            DatoChico("Distancia", "${hoy.km} km", Modifier.weight(1f))
+            DatoChico("Viajes completados", "${hoy.carreras} 🛵", Modifier.weight(1f))
+            DatoChico("Distancia (km)", "${hoy.km} 🛣️", Modifier.weight(1f))
         }
     }
+}
+
+/** "845" → "8.45" sin el "S/", que va aparte en la hero card. */
+private fun solesSinSimbolo(centavos: Long): String {
+    val entero = centavos / 100
+    val resto = (centavos % 100).toString().padStart(2, '0')
+    return "$entero.$resto"
 }
 
 @Composable
 private fun DatoChico(etiqueta: String, valor: String, modifier: Modifier = Modifier) {
     val colores = ColoresJala.actuales
     Column(modifier) {
-        Text(etiqueta, style = MaterialTheme.typography.labelSmall, color = colores.tintaSecundaria)
+        Text(
+            etiqueta,
+            style = MaterialTheme.typography.labelSmall,
+            color = colores.gananciaTexto.copy(alpha = 0.7f),
+        )
         Spacer(Modifier.height(2.dp))
         Text(
             valor,
             style = MaterialTheme.typography.titleMedium,
-            color = colores.superficieCard,
+            color = colores.gananciaTexto,
         )
     }
 }

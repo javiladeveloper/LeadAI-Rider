@@ -127,6 +127,10 @@ data class ColoresJala(
     val tintaSecundaria: Color,
     /** Fondo de las cards elevadas. */
     val superficieCard: Color,
+    /** Verde de la card de ganancias (del diseño: no es un rol de M3). */
+    val gananciaFondo: Color,
+    val gananciaBorde: Color,
+    val gananciaTexto: Color,
 ) {
     companion object {
         /**
@@ -147,6 +151,9 @@ private val MarcaClara = ColoresJala(
     tintaPrimaria = MarcaTokens.Claro.tintaPrimaria,
     tintaSecundaria = MarcaTokens.Claro.tintaSecundaria,
     superficieCard = MarcaTokens.Claro.superficieCard,
+    gananciaFondo = MarcaTokens.Claro.gananciaFondo,
+    gananciaBorde = MarcaTokens.Claro.gananciaBorde,
+    gananciaTexto = MarcaTokens.Claro.gananciaTexto,
 )
 
 private val MarcaOscura = ColoresJala(
@@ -158,6 +165,9 @@ private val MarcaOscura = ColoresJala(
     tintaPrimaria = MarcaTokens.Oscuro.tintaPrimaria,
     tintaSecundaria = MarcaTokens.Oscuro.tintaSecundaria,
     superficieCard = MarcaTokens.Oscuro.superficieCard,
+    gananciaFondo = MarcaTokens.Oscuro.gananciaFondo,
+    gananciaBorde = MarcaTokens.Oscuro.gananciaBorde,
+    gananciaTexto = MarcaTokens.Oscuro.gananciaTexto,
 )
 
 private val LocalColoresJala = staticCompositionLocalOf { MarcaClara }
