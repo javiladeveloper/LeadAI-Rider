@@ -61,15 +61,26 @@ nada sobre la causa real.
 
 ### La cuenta de servicio de Google Play
 
-Si todavía no existe:
+> **Empezar por Google Cloud, no por Play Console.** "Acceso a la API" es
+> configuración de la CUENTA de desarrollador, no de la app, y en algunas
+> cuentas ni aparece en el menú. Esto ya pasó montando el CI de sania y de
+> controlgym — el camino de abajo es el que funcionó.
 
-1. **Play Console → Configuración → Acceso a API**
-2. Crear un proyecto de Google Cloud o vincular uno existente
-3. Crear una **cuenta de servicio** y descargar su JSON
-4. Volver a Play Console y darle permiso de **"Administrar versiones"** sobre
-   la app
+1. **Google Cloud Console** → usar `leadai-501802` (el de Firebase) o crear uno.
+2. Habilitar la **"Google Play Android Developer API"** en ese proyecto.
+   ⚠️ **Este paso se olvida y sin él nada funciona.**
+3. **IAM → Cuentas de servicio** → crear una (los roles se pueden saltar) →
+   pestaña **Claves** → **Agregar clave → JSON** → se descarga.
+4. **Play Console → Usuarios y permisos** (NO "Acceso a la API") → **Invitar
+   usuario** → pegar el **email de la cuenta de servicio**
+   (`...@leadai-501802.iam.gserviceaccount.com`) → permiso **"Lanzar en
+   canales de prueba"**, y **"Lanzar a producción"** si se va a publicar.
+5. `base64 -w0 el-archivo.json` → pegarlo en `PLAY_STORE_JSON_KEY_B64`.
 
-Sin esto, el workflow falla en el último paso: compila y firma bien, pero no
+La propagación del permiso tarda unos minutos: si el primer intento falla por
+permisos, esperar y relanzar antes de suponer que está mal configurado.
+
+Sin esto el workflow falla en el último paso: compila y firma bien, pero no
 tiene con qué autenticarse contra Play.
 
 ## Qué hace el workflow
