@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Fondo del ícono: el amarillo del logo de Jala. Las flechas van
-         blancas encima (ver ic_launcher_foreground.xml). -->
-    <color name="ic_launcher_background">#F0B429</color>
+    <!-- Fondo del ícono: BLANCO, como el logo. El amarillo y el carbón están
+         en los chevrones (ver ic_launcher_foreground.xml) — sobre fondo
+         amarillo el chevron amarillo del frente no se vería. -->
+    <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

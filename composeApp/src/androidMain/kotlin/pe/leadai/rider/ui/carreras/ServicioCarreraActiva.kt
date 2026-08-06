@@ -7,8 +7,10 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -49,7 +51,30 @@ class ServicioCarreraActiva : Service(), KoinComponent {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val destino = intent?.getStringExtra(EXTRA_DESTINO).orEmpty()
-        startForeground(ID_NOTIFICACION, construirNotificacion(destino))
+
+        // `startForeground` TIENE que ir protegido, y acá está el motivo:
+        //
+        // Con `foregroundServiceType="location"` y targetSdk 34+, Android
+        // lanza SecurityException si el permiso de ubicación todavía no está
+        // concedido cuando el servicio pasa a primer plano. El intento
+        // anterior de cubrir esto envolvía `startForegroundService` en el
+        // `iniciar()` de abajo, pero ahí NO salta: ese arranque es asíncrono y
+        // devuelve bien; la excepción explota después, en ESTA línea, ya en el
+        // proceso del servicio — y sin capturar, se lleva la app entera.
+        //
+        // Pasaba de verdad: el rider aceptaba una carrera, Android le mostraba
+        // el diálogo de permisos, y la app se cerraba sola.
+        //
+        // Si falla, el servicio se detiene y no se arranca el loop: sin
+        // permiso no hay ubicación que reportar. La carrera sigue viva — se
+        // pierde el rastreo en segundo plano, no el trabajo.
+        val enPrimerPlano = runCatching {
+            startForeground(ID_NOTIFICACION, construirNotificacion(destino))
+        }
+        if (enPrimerPlano.isFailure) {
+            stopSelf()
+            return START_NOT_STICKY
+        }
 
         // Un solo loop aunque el sistema reentregue el Intent (START_STICKY):
         // dos loops reportarían la misma posición dos veces por vuelta.
@@ -125,13 +150,34 @@ class ServicioCarreraActiva : Service(), KoinComponent {
          */
         private var reportando = false
 
-        /** `minSdk = 26`, así que `startForegroundService` está siempre disponible. */
-        fun iniciar(contexto: Context, destino: String) {
+        /**
+         * `minSdk = 26`, así que `startForegroundService` está siempre
+         * disponible.
+         *
+         * No se arranca si todavía no hay permiso de ubicación: un service de
+         * tipo "location" sin permiso muere en `startForeground` (ver el
+         * comentario de `onStartCommand`). Salir temprano evita arrancar un
+         * proceso para nada mientras el rider mira el diálogo de permisos.
+         *
+         * Esto NO reemplaza al `runCatching` de `onStartCommand`: entre este
+         * chequeo y el arranque real el permiso puede revocarse, y el service
+         * también puede reentregarse solo por START_STICKY. Las dos capas
+         * hacen falta.
+         */
+        fun iniciar(contexto: Context, destino: String): Boolean {
+            if (!hayPermisoDeUbicacion(contexto)) return false
             val intent = Intent(contexto, ServicioCarreraActiva::class.java)
                 .putExtra(EXTRA_DESTINO, destino)
-            // Si el permiso de ubicación no está dado, Android 14+ rechaza el
-            // arranque del service de tipo "location": que no tumbe la app.
-            runCatching { contexto.startForegroundService(intent) }
+            return runCatching { contexto.startForegroundService(intent) }.isSuccess
+        }
+
+        /** Alcanza con una de las dos: el GPS fino o el aproximado. */
+        private fun hayPermisoDeUbicacion(contexto: Context): Boolean {
+            fun concedido(permiso: String) =
+                ContextCompat.checkSelfPermission(contexto, permiso) ==
+                    PackageManager.PERMISSION_GRANTED
+            return concedido(android.Manifest.permission.ACCESS_FINE_LOCATION) ||
+                concedido(android.Manifest.permission.ACCESS_COARSE_LOCATION)
         }
 
         fun detener(contexto: Context) {

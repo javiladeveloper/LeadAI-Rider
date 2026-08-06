@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Variante monocroma del ícono (Android 13+, "íconos temáticos").
+
+  El sistema descarta nuestros colores y tiñe todo con un color plano sacado
+  del wallpaper. Por eso acá NO se puede usar el amarillo/carbón alternado del
+  ícono a color: quedaría una sola masa sin distinción.
+
+  Los chevrones van con trazo más grueso (9 en vez de 7) y más separados: a
+  48dp en el cajón de apps, un trazo fino teñido de un color claro sobre fondo
+  claro desaparece.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="9"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M60,38 L76,54 L60,70" />
+
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="9"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M46,38 L62,54 L46,70" />
+
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="9"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M32,38 L48,54 L32,70" />
+</vector>

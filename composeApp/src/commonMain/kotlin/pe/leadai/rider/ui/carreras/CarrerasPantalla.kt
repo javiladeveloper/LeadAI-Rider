@@ -80,6 +80,14 @@ private const val INTERVALO_POLLING_MS = 15_000L
 private const val URL_BASE_TRACKING = "https://api.leadai-pe.com"
 
 /**
+ * Cada cuánto se reintenta arrancar el servicio de GPS mientras falta el
+ * permiso. 3s: el rider está mirando el diálogo del sistema en ese momento, y
+ * el reintento es apenas un chequeo de permiso — no arranca nada hasta que se
+ * conceda.
+ */
+private const val ESPERA_REINTENTO_SERVICIO_MS = 3_000L
+
+/**
  * El contacto del lead como TELÉFONO marcable, o `null` si no lo es (los
  * leads del simulador/seeds usan ids tipo "demo-cocina-104" — un botón de
  * llamar ahí no haría nada). Acepta dígitos con separadores sueltos; exige
@@ -140,10 +148,17 @@ fun CarrerasPantalla(
     // mientras hay carrera: arranca al aceptar, para al entregar.
     val carreraEnCurso = estado.miCarrera
     LaunchedEffect(carreraEnCurso?.pedidoId) {
-        if (carreraEnCurso != null) {
-            iniciarServicioCarrera(carreraEnCurso.destinoTexto ?: carreraEnCurso.direccion.orEmpty())
-        } else {
+        if (carreraEnCurso == null) {
             detenerServicioCarrera()
+            return@LaunchedEffect
+        }
+        // REINTENTO: al aceptar, Android recién le muestra al rider el diálogo
+        // de permisos, así que el primer intento casi siempre falla. Sin
+        // reinsistir, el rastreo quedaba muerto TODA la carrera — el efecto
+        // depende del pedidoId y no vuelve a correr al conceder el permiso.
+        val destino = carreraEnCurso.destinoTexto ?: carreraEnCurso.direccion.orEmpty()
+        while (isActive && !iniciarServicioCarrera(destino)) {
+            delay(ESPERA_REINTENTO_SERVICIO_MS)
         }
     }
     // Si el rider sale de la pantalla (cerrar sesión, cambiar de modo) el

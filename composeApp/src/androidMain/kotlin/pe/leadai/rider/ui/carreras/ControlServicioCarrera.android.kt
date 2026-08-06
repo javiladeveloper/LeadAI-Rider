@@ -8,9 +8,8 @@ import pe.leadai.rider.datos.ContextoApp
  * sobrevivir a que el rider cierre la pantalla o bloquee el teléfono — que es
  * justo el caso que este service existe para resolver.
  */
-actual fun iniciarServicioCarrera(destino: String) {
+actual fun iniciarServicioCarrera(destino: String): Boolean =
     ServicioCarreraActiva.iniciar(ContextoApp.context, destino)
-}
 
 actual fun detenerServicioCarrera() {
     ServicioCarreraActiva.detener(ContextoApp.context)

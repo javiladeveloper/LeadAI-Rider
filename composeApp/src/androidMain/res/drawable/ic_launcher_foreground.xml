@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Ícono de Jala: las tres flechas del logo, apuntando adelante.
+  Ícono de Jala: los tres chevrones del logo.
 
   NO es un vehículo a propósito. Hoy son motos, pero el plan incluye autos —
   una moto dibujada acá dejaría la marca vieja el día que entre el primer
-  auto. Las flechas dicen "movimiento" sin decir de qué.
+  auto. Los chevrones dicen "movimiento" sin decir de qué.
 
-  Las flechas van BLANCAS: este drawable también se usa como ícono monocromo
-  (Android 13+ lo tiñe con el wallpaper), y ahí el color se descarta. Con
-  blanco sobre el amarillo de fondo se lee igual en las dos variantes.
+  Sigue el logo de verdad, no una versión simplificada:
+  · Chevrones CONTORNEADOS (stroke), no siluetas rellenas. El trazo hueco es
+    lo que le da el aire del logo; relleno macizo se ve como otra marca.
+  · Amarillo y carbón ALTERNADOS. Antes iban los tres blancos sobre amarillo
+    y el carbón desaparecía — justo el contraste que identifica a Jala.
+  · El primero adelante y en amarillo, los otros dos detrás en carbón, con
+    el solape que arma la profundidad del original.
 
-  Todo dentro de la safe zone del ícono adaptativo (el círculo central de
-  66dp en el lienzo de 108): fuera de ahí cada launcher recorta distinto.
+  El fondo es BLANCO (ic_launcher_background), no amarillo: el amarillo ahora
+  está en el trazo, y amarillo sobre amarillo no se vería.
+
+  Para el ícono monocromo de Android 13+ hay un drawable aparte
+  (ic_launcher_monochrome.xml): el sistema lo tiñe de un color plano y
+  descarta el nuestro, así que ahí los chevrones van sólidos o se pierden.
+
+  Todo dentro de la safe zone del adaptativo (círculo central de 66dp en el
+  lienzo de 108): fuera de ahí cada launcher recorta distinto.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
@@ -19,18 +30,30 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Flecha 1 (la de atrás) -->
+    <!-- Chevron 3 (el más atrás) — carbón -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M30,32 L46,32 L64,54 L46,76 L30,76 L48,54 Z" />
+        android:strokeColor="#2D3748"
+        android:strokeWidth="7"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M58,38 L74,54 L58,70" />
 
-    <!-- Flecha 2 (centro) -->
+    <!-- Chevron 2 (medio) — carbón -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M46,32 L62,32 L80,54 L62,76 L46,76 L64,54 Z" />
+        android:strokeColor="#2D3748"
+        android:strokeWidth="7"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M46,38 L62,54 L46,70" />
 
-    <!-- Flecha 3 (la de adelante) -->
+    <!-- Chevron 1 (adelante) — amarillo del logo -->
     <path
-        android:fillColor="#FFFFFF"
-        android:pathData="M62,32 L78,32 L96,54 L78,76 L62,76 L80,54 Z" />
+        android:strokeColor="#F0B429"
+        android:strokeWidth="7"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M34,38 L50,54 L34,70" />
 </vector>
