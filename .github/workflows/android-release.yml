@@ -139,7 +139,10 @@ jobs:
             exit 1
           fi
           VC=$(( ${{ github.run_number }} + 10 ))   # mismo cálculo que build.gradle.kts
-          VN=$(grep -oE 'versionName = "[^"]+"' composeApp/build.gradle.kts | head -1 | sed -E 's/.*"([^"]+)".*/\1/')
+          # El nombre sale del TAG (interna-v0.1.6 → 0.1.6), igual que en
+          # build.gradle.kts: así lo anunciado y lo compilado no divergen.
+          VN="${GITHUB_REF_NAME##*-v}"
+          [ -n "$VN" ] && [ "$VN" != "$GITHUB_REF_NAME" ] || VN="0.0.0"
           echo "Anunciando versionCode $VC (v$VN)…"
           HTTP=$(curl -s -o /tmp/r.txt -w "%{http_code}" \
             -X POST "https://api.leadai-pe.com/app/version" \

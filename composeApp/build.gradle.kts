@@ -22,6 +22,21 @@ if (tieneGoogleServicesJson) {
 val VERSION_CODE_OFFSET = 10
 val VERSION_CODE_BASE = 5
 
+/**
+ * versionName: sale del TAG que disparó la publicación
+ * (`interna-v0.1.6` → `0.1.6`), así el número que ve el usuario siempre
+ * coincide con lo que se etiquetó. Antes estaba fijo acá y quedaba
+ * desincronizado: el tag decía v0.1.6 y la app mostraba 0.1.4.
+ *
+ * En local (sin tag) queda el valor de respaldo.
+ */
+val VERSION_NAME_LOCAL = "0.1.6"
+val versionNameDelTag: String =
+    System.getenv("GITHUB_REF_NAME")
+        ?.substringAfterLast("-v", "")
+        ?.takeIf { it.isNotBlank() }
+        ?: VERSION_NAME_LOCAL
+
 kotlin {
     androidTarget {
         compilations.all {
@@ -107,7 +122,7 @@ android {
         // En CI cada corrida incrementa solo; en local queda fijo en BASE.
         versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()?.plus(VERSION_CODE_OFFSET)
             ?: VERSION_CODE_BASE
-        versionName = "0.1.4"
+        versionName = versionNameDelTag
     }
     // BuildConfig: de ahí sale el versionCode que la app compara con la
     // última publicada para avisar de actualizaciones.
