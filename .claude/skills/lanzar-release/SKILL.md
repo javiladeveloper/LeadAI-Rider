@@ -100,6 +100,25 @@ GITHUB_RUN_NUMBER=10 ./gradlew.bat :composeApp:bundleRelease
 El AAB queda en `composeApp/build/outputs/bundle/release/composeApp-release.aab`
 y se sube a mano en Play Console → el canal → Crear nueva versión.
 
+**Verificá el `versionCode` REAL antes de subir**, no lo deduzcas de la cuenta:
+```bash
+python3 -c "
+import zipfile
+z = zipfile.ZipFile('composeApp/build/outputs/bundle/release/composeApp-release.aab')
+m = z.read('base/manifest/AndroidManifest.xml')
+i = m.find(b'versionCode')
+print(m[i:i+40])"
+```
+El manifest del bundle es protobuf (`aapt2 dump badging` NO lo lee: da
+`could not identify format of APK`). El `versionCode` aparece como string justo
+después del literal — `\x1a\x0225` es 25.
+
+> Play rechaza duplicados: *"El código de versión 20 ya se ha usado"*. Las
+> corridas viejas del CI ya consumieron números, así que elegí un
+> `GITHUB_RUN_NUMBER` con margen — mirá el mayor de Play Console (incluidas las
+> versiones descartadas) y saltá por encima. Un hueco en la numeración no
+> molesta a nadie; un número repetido te bloquea la subida.
+
 Antes de subirlo, verificá la firma (debe ser el keystore del repo):
 ```bash
 keytool -printcert -jarfile composeApp/build/outputs/bundle/release/composeApp-release.aab | grep SHA1
