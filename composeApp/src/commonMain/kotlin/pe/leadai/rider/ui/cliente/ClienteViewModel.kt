@@ -12,6 +12,8 @@ import kotlinx.coroutines.launch
 import pe.leadai.rider.datos.CarreraClienteDto
 import pe.leadai.rider.datos.CarrerasClienteApi
 import pe.leadai.rider.datos.MotorizadosApi
+import pe.leadai.rider.datos.PerfilApi
+import pe.leadai.rider.datos.PerfilPersonaDto
 import pe.leadai.rider.datos.Resultado
 import pe.leadai.rider.push.tokenPushActual
 import pe.leadai.rider.ui.carreras.UbicacionRider
@@ -21,6 +23,26 @@ import pe.leadai.rider.ui.comunes.AvisosGlobales
 /** Los dos tipos de carrera que acepta el backend. */
 const val TIPO_ENCOMIENDA = "encomienda"
 const val TIPO_PASAJERO = "pasajero"
+
+/**
+ * "Delivery" SOLO existe en la pantalla: viaja al backend como
+ * [TIPO_ENCOMIENDA] (ver [tipoParaElBackend]).
+ *
+ * Traer comida de un local ES una encomienda — mismo flujo, misma comisión.
+ * Pero nadie que quiere un pollo piensa "voy a pedir una encomienda", y con
+ * dos botones el caso más común de Tacna quedaba escondido detrás de una
+ * palabra de manual. Separarlo de verdad en la base obligaría a una migración
+ * y a una config de comisión nueva sin ganar nada.
+ */
+const val TIPO_DELIVERY = "delivery"
+
+/** Lo que entiende el backend: "delivery" es una encomienda. */
+fun tipoParaElBackend(tipo: String): String =
+    if (tipo == TIPO_DELIVERY) TIPO_ENCOMIENDA else tipo
+
+/** Si el rider tiene que poner plata de su bolsillo (comprar algo). */
+fun requiereMontoDeCompra(tipo: String): Boolean =
+    tipo == TIPO_ENCOMIENDA || tipo == TIPO_DELIVERY
 
 /** Estado de la pantalla del cliente: o está pidiendo, o está esperando/siguiendo. */
 data class ClienteUiState(
@@ -47,6 +69,11 @@ data class ClienteUiState(
     val montoSugerido: Long? = null,
     val kmEstimado: Double? = null,
     val pidiendo: Boolean = false,
+    /** Las carreras ya cerradas — alimenta la pestaña "Viajes". */
+    val historial: List<CarreraClienteDto> = emptyList(),
+    /** Mi perfil: el celular sale de acá, no de un campo por pedido. */
+    val perfil: PerfilPersonaDto? = null,
+    val guardandoPerfil: Boolean = false,
 )
 
 private const val MENSAJE_SIN_ORIGEN = "Falta el origen"
@@ -74,6 +101,8 @@ class ClienteViewModel(
      * no exige perfil de motorizado.
      */
     private val motorizadosApi: MotorizadosApi,
+    /** El perfil de la persona: el celular y la dirección habitual. */
+    private val perfilApi: PerfilApi,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
     /** GPS inyectable (mismo patrón que `CarrerasViewModel`) — en tests, `null`. */
     private val obtenerUbicacion: suspend () -> UbicacionRider? = { obtenerUbicacionActual() },
@@ -99,6 +128,68 @@ class ClienteViewModel(
         }
         registrarPush()
         usarMiUbicacion()
+        refrescarHistorial()
+        refrescarPerfil()
+    }
+
+    /**
+     * Trae el perfil y PRE-LLENA el contacto del pedido.
+     *
+     * El celular vive en el perfil, no en cada pedido: antes había que
+     * escribirlo cada vez, y si el cliente lo dejaba vacío el rider se
+     * quedaba sin a quién llamar. Solo pre-llena si el campo está en blanco,
+     * para no pisar lo que la persona escribió recién.
+     */
+    fun refrescarPerfil() {
+        viewModelScope.launch(dispatcher) {
+            when (val r = perfilApi.miPerfil()) {
+                is Resultado.Ok -> _estado.update {
+                    it.copy(
+                        perfil = r.valor.perfil,
+                        contacto = it.contacto.ifBlank { r.valor.perfil?.telefono.orEmpty() },
+                    )
+                }
+                is Resultado.Error -> Unit
+            }
+        }
+    }
+
+    /** Guarda el celular y la dirección habitual desde la pestaña Perfil. */
+    fun guardarPerfil(nombre: String?, telefono: String?, direccion: String?) {
+        if (_estado.value.guardandoPerfil) return
+        _estado.update { it.copy(guardandoPerfil = true) }
+        viewModelScope.launch(dispatcher) {
+            val r = perfilApi.guardar(
+                nombre = nombre?.trim()?.takeIf { it.isNotBlank() },
+                telefono = telefono?.trim()?.takeIf { it.isNotBlank() },
+                direccionHabitual = direccion?.trim()?.takeIf { it.isNotBlank() },
+            )
+            _estado.update { it.copy(guardandoPerfil = false) }
+            when (r) {
+                is Resultado.Ok -> {
+                    avisos.mostrar("Datos guardados")
+                    refrescarPerfil()
+                }
+                is Resultado.Error -> avisos.mostrar(
+                    r.mensaje.ifBlank { "No pudimos guardar tus datos" },
+                )
+            }
+        }
+    }
+
+    /**
+     * Las carreras cerradas, para la pestaña "Viajes".
+     *
+     * Silencioso: es información de consulta, no bloquea pedir una moto. Si
+     * falla, la pestaña queda vacía y se reintenta al volver a cargar.
+     */
+    fun refrescarHistorial() {
+        viewModelScope.launch(dispatcher) {
+            when (val r = api.historial()) {
+                is Resultado.Ok -> _estado.update { it.copy(historial = r.valor) }
+                is Resultado.Error -> Unit
+            }
+        }
     }
 
     /**
@@ -147,7 +238,7 @@ class ClienteViewModel(
             // el monto de compra deja de tener sentido y se limpia solo.
             it.copy(
                 tipo = tipo,
-                montoCompra = if (tipo == TIPO_ENCOMIENDA) it.montoCompra else "",
+                montoCompra = if (requiereMontoDeCompra(tipo)) it.montoCompra else "",
                 error = null,
             )
         }
@@ -178,7 +269,7 @@ class ClienteViewModel(
         viewModelScope.launch(dispatcher) {
             when (
                 val r = api.sugerir(
-                    tipo = a.tipo,
+                    tipo = tipoParaElBackend(a.tipo),
                     origenTexto = a.origen,
                     origenLat = a.origenLat,
                     origenLng = a.origenLng,
@@ -214,7 +305,7 @@ class ClienteViewModel(
         viewModelScope.launch(dispatcher) {
             when (
                 val r = api.pedir(
-                    tipo = a.tipo,
+                    tipo = tipoParaElBackend(a.tipo),
                     origenTexto = a.origen,
                     origenLat = a.origenLat,
                     origenLng = a.origenLng,

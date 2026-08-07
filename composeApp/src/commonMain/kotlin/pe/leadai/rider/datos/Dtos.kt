@@ -326,6 +326,8 @@ data class CarreraClienteDto(
     val notas: String = "",
     val recogido: Boolean = false,
     val creadoEn: String = "",
+    /** Cuándo se cerró. Solo lo manda el historial; en la carrera activa es `null`. */
+    val entregadoEn: String? = null,
     val expiraEn: String? = null,
     val riderNombre: String? = null,
     val riderTelefono: String? = null,
@@ -337,4 +339,80 @@ data class CarreraClienteDto(
 @Serializable
 data class MiCarreraClienteDto(
     val carrera: CarreraClienteDto? = null,
+)
+
+/**
+ * `GET /carreras/historial` → las carreras ya cerradas del cliente.
+ *
+ * Reusa [CarreraClienteDto]: el backend manda menos campos (sin datos del
+ * rider — una carrera terminada ya no necesita a quién llamar) y los que
+ * faltan caen en sus valores por defecto.
+ */
+@Serializable
+data class HistorialClienteDto(
+    val carreras: List<CarreraClienteDto> = emptyList(),
+)
+
+/**
+ * `GET /mi-perfil` → los datos de la persona (cliente o rider).
+ *
+ * El celular vive ACÁ y no en cada pedido: antes el cliente lo escribía cada
+ * vez y el rider a veces se quedaba sin a quién llamar.
+ */
+@Serializable
+data class PerfilPersonaDto(
+    val id: String = "",
+    val email: String = "",
+    val nombre: String? = null,
+    val telefono: String? = null,
+    /** "Mi casa": pre-llena el destino, que es el 80% de los pedidos. */
+    val direccionHabitual: String? = null,
+    val direccionLat: Double? = null,
+    val direccionLng: Double? = null,
+    val dni: String? = null,
+    /** `dni` (peruano) | `ce` (carné de extranjería). */
+    val tipoDocumento: String = "dni",
+    /** El nombre según RENIEC, traído por MAXFIND. */
+    val nombreOficial: String? = null,
+    /** `sin_verificar` | `en_revision` | `verificado` | `rechazado`. */
+    val estadoVerificacion: String = "sin_verificar",
+)
+
+/** Un documento subido para verificarse. */
+@Serializable
+data class DocumentoVerificacionDto(
+    val id: String = "",
+    /** `dni_frente` | `dni_dorso` | `selfie` | `brevete` | `tarjeta_propiedad` | `soat`. */
+    val tipo: String = "",
+    /** `pendiente` | `aprobado` | `rechazado`. */
+    val estado: String = "pendiente",
+    /** Por qué se rechazó — para que la persona sepa qué corregir. */
+    val motivoRechazo: String? = null,
+    val creadoEn: String = "",
+)
+
+/**
+ * `GET /mi-perfil` completo. `faltantes` viene RESUELTO del backend: la app no
+ * replica la regla de qué documentos son obligatorios.
+ */
+@Serializable
+data class MiPerfilDto(
+    val perfil: PerfilPersonaDto? = null,
+    val documentos: List<DocumentoVerificacionDto> = emptyList(),
+    val faltantes: List<String> = emptyList(),
+)
+
+/** `PUT /mi-perfil` → confirma lo guardado. */
+@Serializable
+data class GuardarPerfilResponseDto(
+    val ok: Boolean = false,
+    val perfil: PerfilPersonaDto? = null,
+)
+
+/** `POST /verificacion/documentos` → el documento subido y el estado global. */
+@Serializable
+data class SubirDocumentoResponseDto(
+    val ok: Boolean = false,
+    val documento: DocumentoVerificacionDto? = null,
+    val estadoVerificacion: String = "sin_verificar",
 )

@@ -32,7 +32,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -53,6 +55,8 @@ import pe.leadai.rider.ui.cliente.componentes.CardMontoCompra
 import pe.leadai.rider.ui.cliente.componentes.CardRecorrido
 import pe.leadai.rider.ui.cliente.componentes.CardTarifa
 import pe.leadai.rider.ui.comunes.BannerError
+import pe.leadai.rider.ui.comunes.BarraInferiorCliente
+import pe.leadai.rider.ui.comunes.SeccionCliente
 import pe.leadai.rider.ui.comunes.BotonAcento
 import pe.leadai.rider.ui.comunes.CampoJala
 import pe.leadai.rider.ui.comunes.SelectorDos
@@ -99,36 +103,56 @@ fun ClientePantalla(
         avisosGlobales.avisos.collect { mensaje -> snackbarHostState.showSnackbar(mensaje) }
     }
 
+    var seccion by remember { mutableStateOf(SeccionCliente.PEDIR) }
+    val carrera = estado.miCarrera
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(snackbarHostState) { Snackbar(it) } },
+        bottomBar = {
+            // Con una carrera en curso NO hay barra: la pantalla es el
+            // seguimiento del viaje y nada más. Irse a "Viajes" mientras el
+            // rider está llegando es perder de vista lo único que importa.
+            if (carrera == null) {
+                BarraInferiorCliente(
+                    seleccionada = seccion,
+                    onSeleccionar = { seccion = it },
+                )
+            }
+        },
     ) { padding ->
         Box(modifier = Modifier.padding(padding).fillMaxSize()) {
-            val carrera = estado.miCarrera
             when {
                 // 1) Carrera activa: manda sobre todo lo demás.
                 carrera != null -> SeguimientoCarrera(
                     carrera = carrera,
                     onCancelar = viewModel::cancelar,
                 )
-                // 2) Sin carrera: el formulario para pedir.
-                !estado.cargando -> FormularioPedir(
-                    estado = estado,
-                    onTipo = viewModel::elegirTipo,
-                    onOrigen = viewModel::cambiarOrigen,
-                    onUsarMiUbicacion = viewModel::usarMiUbicacion,
-                    onDestino = viewModel::cambiarDestino,
-                    onMonto = viewModel::cambiarMonto,
-                    onMontoCompra = viewModel::cambiarMontoCompra,
-                    onNotas = viewModel::cambiarNotas,
-                    onContacto = viewModel::cambiarContacto,
-                    onSugerir = viewModel::pedirSugerencia,
-                    onPedir = viewModel::pedir,
-                    onCambiarModo = alCambiarModo,
-                    onCerrarSesion = alCerrarSesion,
-                )
-                // 3) Cargando.
-                else -> PantallaCargando()
+                estado.cargando -> PantallaCargando()
+                // 2) Sin carrera: la pestaña que haya elegido.
+                else -> when (seccion) {
+                    SeccionCliente.PEDIR -> FormularioPedir(
+                        estado = estado,
+                        onTipo = viewModel::elegirTipo,
+                        onOrigen = viewModel::cambiarOrigen,
+                        onUsarMiUbicacion = viewModel::usarMiUbicacion,
+                        onDestino = viewModel::cambiarDestino,
+                        onMonto = viewModel::cambiarMonto,
+                        onMontoCompra = viewModel::cambiarMontoCompra,
+                        onNotas = viewModel::cambiarNotas,
+                        onContacto = viewModel::cambiarContacto,
+                        onSugerir = viewModel::pedirSugerencia,
+                        onPedir = viewModel::pedir,
+                    )
+                    SeccionCliente.VIAJES -> ViajesCliente(estado.historial)
+                    SeccionCliente.PERFIL -> PerfilCliente(
+                        onCambiarModo = alCambiarModo,
+                        onCerrarSesion = alCerrarSesion,
+                        perfil = estado.perfil,
+                        guardando = estado.guardandoPerfil,
+                        onGuardar = viewModel::guardarPerfil,
+                    )
+                }
             }
         }
     }
@@ -149,25 +173,31 @@ private fun FormularioPedir(
     onContacto: (String) -> Unit,
     onSugerir: () -> Unit,
     onPedir: () -> Unit,
-    onCambiarModo: () -> Unit,
-    onCerrarSesion: () -> Unit,
 ) {
-    val colores = ColoresJala.actuales
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        // 18 y no 12: cada campo trae su etiqueta ARRIBA, así que con poco
+        // espacio la etiqueta de uno queda pegada al campo del anterior y todo
+        // se lee como un bloque. Con aire se distinguen los pasos del pedido.
+        verticalArrangement = Arrangement.spacedBy(18.dp),
     ) {
         Spacer(Modifier.height(4.dp))
 
-        // Qué necesita: llevar a alguien, o llevar/traer algo.
+        // Qué necesita. "Delivery" y "Encomienda" van al backend igual (los
+        // dos son `encomienda`), pero separados el cliente encuentra lo suyo:
+        // quien quiere un pollo no busca la palabra "encomienda".
+        //
+        // Etiquetas de una palabra: con tres opciones en fila, "Encomienda"
+        // ya es lo más largo que entra en un teléfono angosto.
         SelectorDos(
             opciones = listOf(
                 TIPO_PASAJERO to "🚕 Pasajero",
-                TIPO_ENCOMIENDA to "📦 Encomienda",
+                TIPO_DELIVERY to "🍔 Delivery",
+                TIPO_ENCOMIENDA to "📦 Envío",
             ),
             seleccionada = estado.tipo,
             onSeleccionar = onTipo,
@@ -187,19 +217,21 @@ private fun FormularioPedir(
             montoSugeridoCentavos = estado.montoSugerido,
         )
 
-        // Solo en encomienda: cuánta plata adelanta el rider en la compra.
-        if (estado.tipo == TIPO_ENCOMIENDA) {
+        // Cuánta plata adelanta el rider en la compra. En delivery también:
+        // el pollo lo paga él y se lo devolvés al recibirlo.
+        if (requiereMontoDeCompra(estado.tipo)) {
             CardMontoCompra(monto = estado.montoCompra, onMontoCambia = onMontoCompra)
         }
 
-        CampoJala(
-            valor = estado.contacto,
-            onCambio = onContacto,
-            etiqueta = "Tu celular",
-            placeholder = "987 654 321",
-            tipoTeclado = KeyboardType.Phone,
-            prefijo = "+51",
-        )
+        // El celular NO se pide acá: vive en el perfil y se manda solo. Antes
+        // había que escribirlo en cada pedido, y si quedaba vacío el rider se
+        // quedaba sin a quién llamar.
+        //
+        // Si todavía no lo cargó, se avisa y se manda a Perfil — pedirlo dos
+        // veces sería volver al problema.
+        if (estado.perfil?.telefono.isNullOrBlank() && estado.contacto.isBlank()) {
+            AvisoFaltaCelular()
+        }
 
         CampoJala(
             valor = estado.notas,
@@ -217,34 +249,14 @@ private fun FormularioPedir(
         Spacer(Modifier.height(4.dp))
 
         BotonAcento(
-            texto = "PEDIR JALA  →",
+            texto = "PEDIR MOTO  →",
             onClick = onPedir,
             cargando = estado.pidiendo,
         )
 
-        Spacer(Modifier.height(8.dp))
-
-        TextButton(
-            onClick = onCambiarModo,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-        ) {
-            Text(
-                "🏍️ Quiero manejar",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-        }
-        TextButton(
-            onClick = onCerrarSesion,
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-        ) {
-            Text(
-                "Cerrar sesión",
-                style = MaterialTheme.typography.labelSmall,
-                color = colores.tintaSecundaria,
-            )
-        }
-
+        // "Quiero manejar" y "Cerrar sesión" se fueron a la pestaña Perfil:
+        // acá competían con PEDIR MOTO, que es la única acción de esta
+        // pantalla.
         Spacer(Modifier.height(16.dp))
     }
 }

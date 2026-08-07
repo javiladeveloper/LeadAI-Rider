@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pe.leadai.rider.datos.CarreraDto
 import pe.leadai.rider.ui.carreras.requiereCompra
@@ -43,6 +44,8 @@ fun HojaCarreraActiva(
     onLlamar: (String) -> Unit,
     telefonoCliente: String?,
     modifier: Modifier = Modifier,
+    /** `null` oculta la salida: se usa en previews y en pantallas de solo lectura. */
+    onCancelar: (() -> Unit)? = null,
 ) {
     val colores = ColoresJala.actuales
 
@@ -164,6 +167,26 @@ fun HojaCarreraActiva(
                     fontWeight = FontWeight.ExtraBold,
                 ),
                 color = colores.marcaAmarillo,
+            )
+        }
+
+        // Soltar la carrera: solo ANTES de recoger. Después el rider ya tiene
+        // el paquete (o el pasajero arriba) y devolverla al pool dejaría al
+        // cliente esperando a otro que va a buscar algo que ya no está.
+        //
+        // Discreto y en texto, no un botón: es la salida de emergencia, no una
+        // acción de todos los días. Al lado del botón grande en amarillo, un
+        // segundo botón competiría con la acción que sí queremos.
+        if (!carrera.recogido && onCancelar != null) {
+            Text(
+                "No puedo tomar esta carrera",
+                style = MaterialTheme.typography.labelLarge,
+                color = colores.tintaSecundaria,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(enabled = !accionEnCurso) { onCancelar() }
+                    .padding(vertical = 4.dp),
             )
         }
     }

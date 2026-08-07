@@ -232,6 +232,35 @@ class CarrerasViewModel(
         }
     }
 
+    /**
+     * Suelta la carrera aceptada: vuelve al pool y se reintegra la comisión.
+     *
+     * Existe porque sin esto el rider quedaba atrapado — acepta por error, se
+     * le rompe la moto, el cliente no aparece — y como la app muestra una
+     * carrera activa a la vez, no podía tomar ninguna otra en todo el día.
+     *
+     * El backend solo lo permite antes de recoger; después responde 409 y el
+     * mensaje se muestra tal cual.
+     */
+    fun cancelar() {
+        val carrera = _estado.value.miCarrera ?: return
+        if (_estado.value.accionEnCurso != null) return
+        _estado.update { it.copy(accionEnCurso = carrera.pedidoId) }
+        viewModelScope.launch(dispatcher) {
+            when (val resultado = motorizadosApi.cancelarCarrera(carrera.pedidoId)) {
+                is Resultado.Ok -> {
+                    _estado.update { it.copy(accionEnCurso = null, miCarrera = null) }
+                    avisos.mostrar("La carrera volvió al pool. Se te devolvió la comisión.")
+                    refrescarCarreras()
+                }
+                is Resultado.Error -> {
+                    _estado.update { it.copy(accionEnCurso = null) }
+                    avisos.mostrar(resultado.mensaje.ifBlank { MENSAJE_ERROR_ACCION })
+                }
+            }
+        }
+    }
+
     /** Marca la carrera en curso como entregada y vuelve a la lista. */
     fun entregar() {
         val carrera = _estado.value.miCarrera ?: return

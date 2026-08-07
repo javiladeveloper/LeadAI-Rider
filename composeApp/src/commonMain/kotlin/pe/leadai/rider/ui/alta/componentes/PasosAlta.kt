@@ -126,7 +126,7 @@ fun DniSinValidar(modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = colores.espera.copy(alpha = 0.10f),
+                color = colores.esperaFondo,
                 shape = MaterialTheme.shapes.medium,
             )
             .padding(14.dp),

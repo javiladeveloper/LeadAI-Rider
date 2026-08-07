@@ -90,6 +90,13 @@ class CarrerasClienteApi(private val api: ApiCliente) {
             is Resultado.Error -> respuesta
         }
 
+    /** `GET /carreras/historial` → las carreras ya cerradas, de la más nueva a la más vieja. */
+    suspend fun historial(): Resultado<List<CarreraClienteDto>> =
+        when (val respuesta = api.get<HistorialClienteDto>("/carreras/historial")) {
+            is Resultado.Ok -> Resultado.Ok(respuesta.valor.carreras)
+            is Resultado.Error -> respuesta
+        }
+
     /** `POST /carreras/:id/cancelar` — 409 si un rider ya la tomó (está yendo). */
     suspend fun cancelar(carreraId: String): Resultado<AvanzarEstadoResponseDto> =
         api.post<JsonObject, AvanzarEstadoResponseDto>(

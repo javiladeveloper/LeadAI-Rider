@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import pe.leadai.rider.ui.tema.ColoresJala
+import pe.leadai.rider.ui.tema.generado.AppTokens
 
 /**
  * "Elige tu camino" — sigue el diseño de Stitch.
@@ -56,7 +57,7 @@ fun ElegirModoPantalla(
         Text(
             text = buildAnnotatedString {
                 withStyle(SpanStyle(color = colores.marcaAmarillo)) { append("»» ") }
-                withStyle(SpanStyle(color = colores.marcaCarbon)) { append("Jala") }
+                withStyle(SpanStyle(color = colores.marcaCarbon)) { append(AppTokens.nombreMarca) }
             },
             style = MaterialTheme.typography.headlineLarge.copy(
                 fontWeight = FontWeight.ExtraBold,

@@ -121,6 +121,11 @@ data class ColoresJala(
     val exito: Color,
     /** Ámbar de atención: "llevás S/60 para la compra", "pendiente de verificación". */
     val espera: Color,
+    /**
+     * Fondo de las cards ámbar. Token propio y NO `espera.copy(alpha=…)`: el
+     * ámbar oscuro traslúcido sobre el gris del fondo se ve marrón sucio.
+     */
+    val esperaFondo: Color,
     /** Texto principal, para usos fuera de Material. */
     val tintaPrimaria: Color,
     /** Texto secundario y placeholders. */
@@ -148,6 +153,7 @@ private val MarcaClara = ColoresJala(
     calor = MarcaTokens.Claro.calor,
     exito = MarcaTokens.Claro.exito,
     espera = MarcaTokens.Claro.espera,
+    esperaFondo = MarcaTokens.Claro.esperaFondo,
     tintaPrimaria = MarcaTokens.Claro.tintaPrimaria,
     tintaSecundaria = MarcaTokens.Claro.tintaSecundaria,
     superficieCard = MarcaTokens.Claro.superficieCard,
@@ -162,6 +168,7 @@ private val MarcaOscura = ColoresJala(
     calor = MarcaTokens.Oscuro.calor,
     exito = MarcaTokens.Oscuro.exito,
     espera = MarcaTokens.Oscuro.espera,
+    esperaFondo = MarcaTokens.Oscuro.esperaFondo,
     tintaPrimaria = MarcaTokens.Oscuro.tintaPrimaria,
     tintaSecundaria = MarcaTokens.Oscuro.tintaSecundaria,
     superficieCard = MarcaTokens.Oscuro.superficieCard,

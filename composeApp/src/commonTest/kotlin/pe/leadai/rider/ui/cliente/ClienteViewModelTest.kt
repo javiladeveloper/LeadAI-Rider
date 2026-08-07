@@ -21,6 +21,7 @@ import okio.Path.Companion.toPath
 import pe.leadai.rider.datos.ApiCliente
 import pe.leadai.rider.datos.CarrerasClienteApi
 import pe.leadai.rider.datos.MotorizadosApi
+import pe.leadai.rider.datos.PerfilApi
 import pe.leadai.rider.datos.SesionRepositorio
 import pe.leadai.rider.esperarCondicion
 import pe.leadai.rider.ui.comunes.AvisosGlobales
@@ -64,6 +65,7 @@ class ClienteViewModelTest {
             api = CarrerasClienteApi(apiCliente),
             avisos = AvisosGlobales(),
             motorizadosApi = MotorizadosApi(apiCliente),
+            perfilApi = PerfilApi(apiCliente),
             dispatcher = testDispatcher,
             obtenerUbicacion = { null },
             obtenerTokenPush = { tokenPush },
@@ -125,6 +127,17 @@ class ClienteViewModelTest {
         vm.cargar()
         vm.estado.esperarCondicion { !it.cargando }
         advanceUntilIdle()
+        // `cargar()` dispara varias peticiones en paralelo (carrera, historial,
+        // perfil) y no todas terminan cuando `cargando` baja. Se espera a que
+        // el contador se quede QUIETO: si no, una que aterriza tarde se cuenta
+        // como si la hubiera hecho `pedir()`.
+        var previo = -1
+        while (previo != llamadas) {
+            previo = llamadas
+            advanceUntilIdle()
+            delay(20)
+            advanceUntilIdle()
+        }
         val antes = llamadas
 
         vm.cambiarOrigen("Av. Grau 240")
@@ -338,4 +351,98 @@ class ClienteViewModelTest {
 
         assertNull(vm.estado.value.miCarrera)
     }
+    @Test
+    fun delivery_viaja_al_backend_como_encomienda() = runTest {
+        // "Delivery" solo existe en la pantalla: el backend acepta 'encomienda'
+        // y 'pasajero'. Si viajara "delivery" el POST fallaria con 400.
+        var cuerpoDelPedido = ""
+        val engine = MockEngine { peticion ->
+            if (peticion.url.encodedPath.endsWith("/carreras")) {
+                cuerpoDelPedido = (peticion.body as io.ktor.http.content.TextContent).text
+                respond(
+                    content = """{"ok":true,"id":"c1","montoSugerido":600,"montoOfrecido":600,"expiraEnMinutos":15}""",
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+            } else {
+                respond(
+                    content = """{"carrera":null}""",
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+            }
+        }
+        val vm = vmDePrueba(engine)
+        vm.cargar()
+        vm.estado.esperarCondicion { !it.cargando }
+        advanceUntilIdle()
+
+        vm.elegirTipo(TIPO_DELIVERY)
+        vm.cambiarOrigen("El Pollon")
+        vm.cambiarDestino("La Bombonera")
+        vm.cambiarMonto("6")
+        vm.pedir()
+        advanceUntilIdle()
+        flow { while (true) { emit(cuerpoDelPedido); delay(10) } }
+            .esperarCondicion { it.isNotBlank() }
+
+        assertTrue(cuerpoDelPedido.contains("\"tipo\":\"encomienda\""), cuerpoDelPedido)
+        assertTrue(!cuerpoDelPedido.contains("delivery"), cuerpoDelPedido)
+    }
+
+    @Test
+    fun en_delivery_el_monto_de_compra_se_conserva() = runTest {
+        // El pollo lo paga el rider de su bolsillo, igual que en una
+        // encomienda: cambiar a delivery NO debe limpiar ese monto.
+        val engine = MockEngine {
+            respond(
+                content = """{"carrera":null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val vm = vmDePrueba(engine)
+        vm.cargar()
+        vm.estado.esperarCondicion { !it.cargando }
+        advanceUntilIdle()
+
+        vm.elegirTipo(TIPO_ENCOMIENDA)
+        vm.cambiarMontoCompra("60")
+        vm.elegirTipo(TIPO_DELIVERY)
+        advanceUntilIdle()
+        assertEquals("60", vm.estado.value.montoCompra)
+
+        // Un pasajero NO manda a comprar nada: ahi si se limpia.
+        vm.elegirTipo(TIPO_PASAJERO)
+        advanceUntilIdle()
+        assertEquals("", vm.estado.value.montoCompra)
+    }
+
+    @Test
+    fun el_historial_se_carga_al_entrar() = runTest {
+        val engine = MockEngine { peticion ->
+            if (peticion.url.encodedPath.endsWith("/carreras/historial")) {
+                respond(
+                    content = """{"carreras":[{"id":"c1","tipo":"encomienda","estado":"entregada","origenTexto":"El Pollon","destinoTexto":"La Bombonera","montoOfrecido":800,"creadoEn":"2026-08-06T10:00:00.000Z","entregadoEn":"2026-08-06T10:30:00.000Z"}]}""",
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+            } else {
+                respond(
+                    content = """{"carrera":null}""",
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+            }
+        }
+        val vm = vmDePrueba(engine)
+        vm.cargar()
+        vm.estado.esperarCondicion { it.historial.isNotEmpty() }
+
+        val viaje = vm.estado.value.historial.first()
+        assertEquals("entregada", viaje.estado)
+        assertEquals(800, viaje.montoOfrecido)
+        assertEquals("2026-08-06T10:30:00.000Z", viaje.entregadoEn)
+    }
+
 }

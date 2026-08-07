@@ -166,7 +166,9 @@ fun CardTarifa(
                 // Nunca baja de 1: una tarifa en 0 no la toma nadie.
                 onClick = { onMontoCambia(((monto.toIntOrNull() ?: 0) - 1).coerceAtLeast(1).toString()) },
             )
-            Spacer(Modifier.size(12.dp))
+            // 20 y no 12: el monto es el número más grande de la pantalla y
+            // con poco aire los botones lo aprietan.
+            Spacer(Modifier.size(20.dp))
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(
                     "S/",
@@ -201,7 +203,7 @@ fun CardTarifa(
                     },
                 )
             }
-            Spacer(Modifier.size(12.dp))
+            Spacer(Modifier.size(20.dp))
             BotonPaso(
                 simbolo = "+",
                 onClick = { onMontoCambia(((monto.toIntOrNull() ?: 0) + 1).toString()) },
@@ -263,7 +265,7 @@ fun CardMontoCompra(
 
     CardJala(
         modifier = modifier.fillMaxWidth(),
-        color = colores.espera.copy(alpha = 0.10f),
+        color = colores.esperaFondo,
     ) {
         CampoJala(
             valor = monto,

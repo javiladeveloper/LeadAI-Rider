@@ -9,6 +9,7 @@ import pe.leadai.rider.datos.ModoRepositorio
 import pe.leadai.rider.datos.TemaRepositorio
 import pe.leadai.rider.datos.MonederoApi
 import pe.leadai.rider.datos.MotorizadosApi
+import pe.leadai.rider.datos.PerfilApi
 import pe.leadai.rider.datos.SesionRepositorio
 import pe.leadai.rider.datos.VersionApi
 import pe.leadai.rider.datos.crearDataStore
@@ -34,6 +35,7 @@ val moduloApp = module {
     single { SesionRepositorio(get()) }
     single { ModoRepositorio(get()) }
     single { TemaRepositorio(get()) }
+    single { PerfilApi(get()) }
     single { ApiCliente(sesion = get()) }
     single { AuthApi(get(), get()) }
     single { MotorizadosApi(get()) }
@@ -49,5 +51,5 @@ val moduloApp = module {
     viewModel { CarrerasViewModel(get(), get(), monederoApi = get()) }
     // El tercer get() es MotorizadosApi: el cliente registra su token push por
     // el mismo endpoint que el rider (`POST /motorizados/dispositivo`).
-    viewModel { ClienteViewModel(get(), get(), get()) }
+    viewModel { ClienteViewModel(get(), get(), get(), get()) }
 }

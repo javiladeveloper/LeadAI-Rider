@@ -148,7 +148,7 @@ fun AvisoPlataParaCompra(montoCentavos: Long, modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = colores.espera.copy(alpha = 0.12f),
+                color = colores.esperaFondo,
                 shape = MaterialTheme.shapes.small,
             )
             .padding(horizontal = 12.dp, vertical = 10.dp),

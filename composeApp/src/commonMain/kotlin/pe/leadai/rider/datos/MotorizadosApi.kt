@@ -144,4 +144,19 @@ class MotorizadosApi(private val api: ApiCliente) {
             body = buildJsonObject { },
             requiereSesion = true,
         )
+
+    /**
+     * `POST /motorizados/carreras/:id/cancelar` — suelta una carrera aceptada:
+     * vuelve al pool y se reintegra la comisión.
+     *
+     * Solo ANTES de recoger (el backend responde 409 después). Sin esto, un
+     * rider que aceptó por error quedaba atrapado: la app muestra una carrera
+     * activa a la vez, así que no podía tomar ninguna otra.
+     */
+    suspend fun cancelarCarrera(pedidoId: String): Resultado<AvanzarEstadoResponseDto> =
+        api.post<JsonObject, AvanzarEstadoResponseDto>(
+            path = "/motorizados/carreras/$pedidoId/cancelar",
+            body = buildJsonObject { },
+            requiereSesion = true,
+        )
 }

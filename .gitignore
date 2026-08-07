@@ -35,3 +35,5 @@ play-store-key.json
 
 # Código generado desde los tokens de diseño (lo produce Gradle)
 composeApp/build/generated/tokens/
+
+# Capturas y gráficos de la ficha de Play: se regeneran del emulador.

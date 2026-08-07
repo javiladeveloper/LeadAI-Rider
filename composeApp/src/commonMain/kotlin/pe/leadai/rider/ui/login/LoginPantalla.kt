@@ -48,6 +48,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import pe.leadai.rider.ui.comunes.BannerError
 import pe.leadai.rider.ui.comunes.BotonPrincipal
 import pe.leadai.rider.ui.tema.ColoresJala
+import pe.leadai.rider.ui.tema.generado.AppTokens
 
 /**
  * Primera pantalla real de la app. Estética "Brand Harmony": fondo arena
@@ -235,8 +236,12 @@ private fun TextoConLinkRegistro(onClick: () -> Unit, habilitado: Boolean) {
 }
 
 /**
- * "Jala" con las flechas del logo: `»»` en amarillo de marca y el nombre en
- * carbón, igual que el logotipo.
+ * El nombre con las flechas del logo: `»»` en amarillo de marca y el nombre
+ * en carbón, igual que el logotipo.
+ *
+ * El nombre sale de `AppTokens.nombreMarca` (design/jala-design-tokens.json):
+ * estaba escrito a mano acá y en la pantalla de modo, así que renombrar
+ * obligaba a buscarlo por todo el código.
  *
  * NO dice "LeadAI" a propósito — esa es la marca B2B que le vendemos a los
  * negocios, y no le dice nada a un motorizado ni a alguien pidiendo una moto
@@ -250,7 +255,7 @@ private fun LogoLeadAI() {
                 append("»» ")
             }
             withStyle(SpanStyle(color = ColoresJala.actuales.marcaCarbon)) {
-                append("Jala")
+                append(AppTokens.nombreMarca)
             }
         },
         style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.ExtraBold),

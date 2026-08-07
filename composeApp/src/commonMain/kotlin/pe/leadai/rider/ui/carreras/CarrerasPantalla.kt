@@ -126,6 +126,9 @@ fun CarrerasPantalla(
     val avisosGlobales = koinInject<AvisosGlobales>()
     val sesion by sesionRepositorio.observar().collectAsState(initial = null)
     var confirmandoCierre by remember { mutableStateOf(false) }
+    // Soltar la carrera se confirma: un toque sin querer la devolvería al pool
+    // y otro rider podría llevársela mientras el primero va en camino.
+    var confirmandoCancelar by remember { mutableStateOf(false) }
     // Recarga del monedero: elige paquete → abre la página de pago (Culqi).
     var eligiendoPaquete by remember { mutableStateOf(false) }
     // Los permisos del sistema, a demanda desde "⚙️ Permisos".
@@ -208,6 +211,7 @@ fun CarrerasPantalla(
                             onAceptar = viewModel::aceptar,
                             onEntregar = viewModel::entregar,
                             onRecogido = viewModel::marcarRecogido,
+                            onCancelarCarrera = { confirmandoCancelar = true },
                             onRecargar = { eligiendoPaquete = true },
                             onCambiarDistrito = alCambiarDistrito,
                             onVerPermisos = { viendoPermisos = true },
@@ -229,6 +233,7 @@ fun CarrerasPantalla(
                                 onAceptar = viewModel::aceptar,
                                 onEntregar = viewModel::entregar,
                                 onRecogido = viewModel::marcarRecogido,
+                                onCancelarCarrera = { confirmandoCancelar = true },
                                 onRecargar = { eligiendoPaquete = true },
                                 onCambiarDistrito = alCambiarDistrito,
                                 onVerPermisos = { viendoPermisos = true },
@@ -300,6 +305,28 @@ fun CarrerasPantalla(
             onCancelar = { confirmandoCierre = false },
         )
     }
+
+    if (confirmandoCancelar) {
+        AlertDialog(
+            onDismissRequest = { confirmandoCancelar = false },
+            title = { Text("¿Soltar esta carrera?") },
+            text = {
+                Text(
+                    "Vuelve a la lista para que otro motorizado la tome. " +
+                        "Se te devuelve la comisión.",
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    confirmandoCancelar = false
+                    viewModel.cancelar()
+                }) { Text("Sí, soltarla") }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmandoCancelar = false }) { Text("Seguir con ella") }
+            },
+        )
+    }
 }
 
 @Composable
@@ -314,6 +341,7 @@ private fun ContenidoRider(
     onAceptar: (CarreraDto) -> Unit,
     onEntregar: () -> Unit,
     onRecogido: () -> Unit,
+    onCancelarCarrera: () -> Unit,
     onRecargar: () -> Unit,
     onCambiarDistrito: () -> Unit,
     onVerPermisos: () -> Unit,
@@ -350,6 +378,7 @@ private fun ContenidoRider(
                 onLlamar = { abridor.openUri("tel:+$it") },
                 telefonoCliente = telefonoCliente,
                 modifier = Modifier.align(Alignment.BottomCenter),
+                onCancelar = onCancelarCarrera,
             )
         }
         return
