@@ -1,6 +1,7 @@
 package pe.leadai.rider.ui.perfil
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,15 +15,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import pe.leadai.rider.datos.PerfilMotorizadoDto
+import pe.leadai.rider.datos.TemaRepositorio
 import pe.leadai.rider.ui.carreras.componentes.colorDeEstadoRider
 import pe.leadai.rider.ui.comunes.BadgeEstado
 import pe.leadai.rider.ui.comunes.CardJala
@@ -129,6 +138,8 @@ fun PerfilPantalla(
             OpcionDePerfil("🛵", "Cambiar a modo cliente", onCambiarModo)
         }
 
+        SelectorDeTema()
+
         // Cerrar sesión aparte y en rojo: es destructivo, no debe estar junto
         // a las opciones normales donde se toca por error.
         CardJala(modifier = Modifier.fillMaxWidth(), paddingInterno = 0) {
@@ -136,6 +147,84 @@ fun PerfilPantalla(
         }
 
         Spacer(Modifier.height(16.dp))
+    }
+}
+
+/**
+ * Claro / Oscuro / Automático.
+ *
+ * Tres opciones y no un interruptor: "Automático" sigue al teléfono, pero un
+ * rider que anda de día quiere poder forzar el claro aunque su Android esté en
+ * oscuro. Con un binario esa elección se le pierde cuando el sistema cambia
+ * solo al atardecer.
+ */
+@Composable
+private fun SelectorDeTema() {
+    val temaRepo = koinInject<TemaRepositorio>()
+    val scope = rememberCoroutineScope()
+    val actual by temaRepo.observar().collectAsState(initial = TemaRepositorio.SISTEMA)
+    val colores = ColoresJala.actuales
+
+    CardJala(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            "Apariencia",
+            style = MaterialTheme.typography.labelLarge,
+            color = colores.tintaSecundaria,
+        )
+        Spacer(Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            OpcionDeTema("☀️", "Claro", TemaRepositorio.CLARO, actual, Modifier.weight(1f)) {
+                scope.launch { temaRepo.guardar(it) }
+            }
+            OpcionDeTema("🌙", "Oscuro", TemaRepositorio.OSCURO, actual, Modifier.weight(1f)) {
+                scope.launch { temaRepo.guardar(it) }
+            }
+            OpcionDeTema("📱", "Auto", TemaRepositorio.SISTEMA, actual, Modifier.weight(1f)) {
+                scope.launch { temaRepo.guardar(it) }
+            }
+        }
+    }
+}
+
+/** Una de las tres opciones de tema. La elegida va con borde y fondo de marca. */
+@Composable
+private fun OpcionDeTema(
+    icono: String,
+    texto: String,
+    valor: String,
+    actual: String,
+    modifier: Modifier = Modifier,
+    onElegir: (String) -> Unit,
+) {
+    val elegida = valor == actual
+    val colores = ColoresJala.actuales
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(
+                if (elegida) colores.marcaAmarillo.copy(alpha = 0.18f)
+                else MaterialTheme.colorScheme.surfaceContainerHigh,
+            )
+            .border(
+                width = if (elegida) 2.dp else 1.dp,
+                color = if (elegida) colores.marcaAmarillo
+                else MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(12.dp),
+            )
+            .clickable { onElegir(valor) }
+            .padding(vertical = 12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(icono, style = MaterialTheme.typography.titleMedium)
+        Spacer(Modifier.height(4.dp))
+        Text(
+            texto,
+            style = MaterialTheme.typography.labelSmall,
+            color = if (elegida) MaterialTheme.colorScheme.onSurface else colores.tintaSecundaria,
+        )
     }
 }
 

@@ -30,7 +30,7 @@ val VERSION_CODE_BASE = 5
  *
  * En local (sin tag) queda el valor de respaldo.
  */
-val VERSION_NAME_LOCAL = "0.1.7"
+val VERSION_NAME_LOCAL = "0.1.8"
 val versionNameDelTag: String =
     System.getenv("GITHUB_REF_NAME")
         ?.substringAfterLast("-v", "")

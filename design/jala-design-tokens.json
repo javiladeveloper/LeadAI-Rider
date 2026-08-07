@@ -112,7 +112,8 @@
     },
     "oscuro": {
       "marcaAmarillo": "#FFD166",
-      "marcaCarbon": "#E3E3E1",
+      "$comentarioCarbon": "Oscuro en AMBOS temas: es el color que va ENCIMA del amarillo de marca (chips, botones). Estuvo en #E3E3E1 y el monto sobre el mapa quedaba casi blanco sobre amarillo, ilegible. Para texto sobre fondo oscuro está tintaPrimaria.",
+      "marcaCarbon": "#2E3440",
       "calor": "#FF6B70",
       "exito": "#6FCF77",
       "espera": "#FFB960",

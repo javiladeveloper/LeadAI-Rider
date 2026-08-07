@@ -1,7 +1,9 @@
 package pe.leadai.rider
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -9,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalUriHandler
 import org.koin.compose.koinInject
 import pe.leadai.rider.datos.ChequeoVersion
+import pe.leadai.rider.datos.TemaRepositorio
 import pe.leadai.rider.datos.VersionApi
 import pe.leadai.rider.ui.comunes.DialogoActualizacion
 import pe.leadai.rider.ui.navegacion.NavegacionRaiz
@@ -16,7 +19,19 @@ import pe.leadai.rider.ui.tema.JalaTheme
 
 @Composable
 fun App() {
-    JalaTheme {
+    val temaRepo = koinInject<TemaRepositorio>()
+    // `SISTEMA` como valor inicial: es el default, así que la primera
+    // composición ya sale con el tema correcto y no hay parpadeo mientras
+    // DataStore lee del disco.
+    val tema by temaRepo.observar().collectAsState(initial = TemaRepositorio.SISTEMA)
+
+    JalaTheme(
+        oscuro = when (tema) {
+            TemaRepositorio.CLARO -> false
+            TemaRepositorio.OSCURO -> true
+            else -> isSystemInDarkTheme()
+        },
+    ) {
         NavegacionRaiz()
         AvisoDeActualizacion()
     }
