@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//d/Personal Proyects/leadia/**)",
+      "Bash(npx vitest *)",
+      "Bash(cd \"d:/Personal Proyects/leadia\" && grep -n \"motorizados/carreras\" -A 90 src/routes/motorizados.ts | head -120)",
+      "Bash(cd \"d:/Personal Proyects/leadia\" && head -40 src/routes/motorizados.ts && echo \"=== TESTS PROYECCION ===\" && cat tests/carreras-proyeccion.test.ts)",
+      "Bash(cd \"d:/Personal Proyects/leadia\" && sed -n '1,180p' tests/rutas-motorizados.test.ts)",
+      "Read(//d/Personal Proyects/leadia/src/routes/**)",
+      "Read(//d/Personal Proyects/leadia/tests/**)",
+      "Read(//d/Personal Proyects/leadia/src/core/**)",
+      "Bash(cd \"/d/Personal Proyects/controlgym-app\" && grep -rn \"app_version\\\\|set_app_version\\\\|nueva versión\\\\|versionCode\" --include=*.kt composeApp/src/commonMain 2>/dev/null | head -8)",
+      "Read(//d/Personal Proyects/controlgym-app/**)",
+      "Bash(cd \"d:/Personal Proyects/leadia\" && sed -n '40,80p' src/routes/version-app.ts)"
+    ]
+  }
+}

@@ -1,0 +1,150 @@
+- generic [ref=f58e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f58e3]:
+    - banner [ref=f58e4]:
+      - generic [ref=f58e6]:
+        - link [ref=f58e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f58e8]
+        - generic [ref=f58e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f58e45]:
+            - img [ref=f58e49]: notifications_unread
+            - generic [ref=f58e50]: Notificaciones sin leer
+          - generic [ref=f58e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f58e59] [cursor=pointer]'
+            - button [ref=f58e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f58e16]
+    - navigation [ref=f58e72]:
+      - link "Todas las aplicaciones" [ref=f58e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f58e75]: keyboard_backspace
+      - list [ref=f58e77]:
+        - listitem "Panel de control" [ref=f58e80]:
+          - button "Panel de control" [ref=f58e81] [cursor=pointer]:
+            - img [ref=f58e84]: dashboard
+        - listitem "Estadísticas" [ref=f58e88]:
+          - button "Estadísticas" [ref=f58e89] [cursor=pointer]:
+            - img [ref=f58e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f58e96]:
+          - button "Resumen de publicación" [ref=f58e97] [cursor=pointer]:
+            - img [ref=f58e100]: overview
+        - listitem "Protegida con Play" [ref=f58e104]:
+          - button "Protegida con Play" [ref=f58e105] [cursor=pointer]:
+            - img [ref=f58e108]: shield
+        - listitem "Probar y publicar" [ref=f58e112]:
+          - button "Probar y publicar" [ref=f58e113] [cursor=pointer]:
+            - img [ref=f58e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f58e120]:
+          - button "Monitorizar y mejorar" [ref=f58e121] [cursor=pointer]:
+            - img [ref=f58e124]: vital_signs
+        - listitem "Aumentar usuarios" [ref=f58e128]:
+          - button "Aumentar usuarios" [ref=f58e129] [cursor=pointer]:
+            - img [ref=f58e132]: finance_mode
+          - list [ref=f58e134]:
+            - generic [ref=f58e136]:
+              - listitem "Presencia en Google Play Store" [ref=f58e138]:
+                - button "Presencia en Google Play Store" [ref=f58e139] [cursor=pointer]:
+                  - img [ref=f58e142]: expand_less
+                - list [ref=f58e143]:
+                  - generic [ref=f58e145]:
+                    - listitem "Fichas de Play Store" [ref=f58e147]:
+                      - button "Fichas de Play Store" [ref=f58e148] [cursor=pointer]
+                    - listitem "Configuración de la tienda" [ref=f58e151]:
+                      - button "Configuración de la tienda" [ref=f58e152] [cursor=pointer]
+              - listitem "Rendimiento en Play Store" [ref=f58e155]:
+                - button "Rendimiento en Play Store" [ref=f58e156] [cursor=pointer]:
+                  - img [ref=f58e159]: expand_more
+              - listitem "Traducciones" [ref=f58e161]:
+                - button "Traducciones" [ref=f58e162] [cursor=pointer]:
+                  - img [ref=f58e165]: expand_more
+              - listitem "Enlaces profundos" [ref=f58e167]:
+                - button "Enlaces profundos" [ref=f58e168] [cursor=pointer]
+        - listitem "Monetizar con Play" [ref=f58e172]:
+          - button "Monetizar con Play" [ref=f58e173] [cursor=pointer]:
+            - img [ref=f58e176]: sell
+    - generic [ref=f58e22]:
+      - generic [ref=f58e181]:
+        - generic [ref=f58e188]:
+          - heading "Configuración de la tienda" [level=1] [ref=f58e194]
+          - generic [ref=f58e195]: Gestiona cómo se organiza tu aplicación en Google Play y cómo pueden los usuarios ponerse en contacto contigo
+        - generic [ref=f58e200]:
+          - generic [ref=f58e202]:
+            - generic [ref=f58e205]:
+              - generic [ref=f58e206]:
+                - heading "Categoría de la aplicación" [level=2] [ref=f58e211]
+                - button "Editar" [ref=f58e217]
+              - generic [ref=f58e221]: Elige un tipo de aplicación, su categoría y las etiquetas que mejor describan el contenido o la función principal de tu aplicación. Esto ayuda a los usuarios a descubrir aplicaciones en Google Play.
+            - generic [ref=f58e227]:
+              - group "Aplicación o juego" [ref=f58e229]:
+                - generic [ref=f58e233]: Aplicación
+              - group "Categoría" [ref=f58e237]:
+                - generic [ref=f58e241]: Mapas y navegación
+              - group "Etiquetas" [ref=f58e246]:
+                - button "Gestionar etiquetas" [ref=f58e255]
+          - generic [ref=f58e260]:
+            - generic [ref=f58e263]:
+              - generic [ref=f58e264]:
+                - heading "Datos de contacto de la ficha de Play Store" [level=2] [ref=f58e269]
+                - button "Editar" [ref=f58e275]
+              - generic [ref=f58e279]: Esta información se muestra a los usuarios de Google Play
+            - generic [ref=f58e285]:
+              - group "Dirección de correo electrónico" [ref=f58e287]
+              - group "Número de teléfono" [ref=f58e295]
+              - group "Sitio web" [ref=f58e303]
+          - generic [ref=f58e311]:
+            - generic [ref=f58e314]:
+              - heading "Marketing externo" [level=2] [ref=f58e320]
+              - generic [ref=f58e321]: Desactiva el marketing externo si no quieres que tu aplicación se anuncie fuera de Google Play
+            - group "Marketing externo" [ref=f58e329]:
+              - generic [ref=f58e335] [cursor=pointer]:
+                - checkbox "Anunciar mi aplicación fuera de Google Play Los cambios pueden tardar 60 días en aplicarse" [checked] [ref=f58e337]
+                - generic [ref=f58e338]:
+                  - text: Anunciar mi aplicación fuera de Google Play
+                  - paragraph [ref=f58e339]: Los cambios pueden tardar 60 días en aplicarse
+      - generic [ref=f58e30]:
+        - generic [ref=f58e340]:
+          - link "Novedades sobre productos" [ref=f58e341] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f58e342] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f58e343] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f58e344]:
+          - generic [ref=f58e345]: © 2026 Google
+          - link "Privacidad" [ref=f58e346] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f58e347] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f58e348] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/
+  - dialog [ref=f58e352]:
+    - generic [ref=f58e353]:
+      - generic [ref=f58e354]:
+        - heading "Datos de contacto de la ficha de Play Store" [level=2] [ref=f58e355]
+        - button "Cerrar" [active] [ref=f58e356] [cursor=pointer]:
+          - img [ref=f58e359]: close
+      - generic [ref=f58e360]: Esta información se muestra a los usuarios de Google Play
+    - region [ref=f58e365]:
+      - paragraph [ref=f58e366]: "* - Campos obligatorios"
+      - generic [ref=f58e369]:
+        - group "Dirección de correo electrónico" [ref=f58e371]:
+          - generic [ref=f58e372]: Dirección de correo electrónico *
+          - generic [ref=f58e377]:
+            - textbox [ref=f58e379]
+            - paragraph [ref=f58e381]
+        - group "Número de teléfono" [ref=f58e383]:
+          - generic [ref=f58e389]:
+            - textbox [ref=f58e391]
+            - paragraph [ref=f58e393]
+        - group "Sitio web" [ref=f58e395]:
+          - generic [ref=f58e401]:
+            - generic [ref=f58e402]:
+              - generic: https://
+              - textbox "https://" [ref=f58e403]
+            - paragraph [ref=f58e405]
+      - generic [ref=f58e413]:
+        - button "Descartar" [disabled] [ref=f58e415]
+        - button "Guardar y publicar" [disabled] [ref=f58e420]

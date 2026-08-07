@@ -1,0 +1,216 @@
+- generic [ref=f37e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f37e3]:
+    - banner [ref=f37e4]:
+      - generic [ref=f37e6]:
+        - link [ref=f37e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f37e8]
+        - generic [ref=f37e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f37e45]:
+            - img [ref=f37e49]: notifications_unread
+            - generic [ref=f37e50]: Notificaciones sin leer
+          - generic [ref=f37e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f37e59] [cursor=pointer]'
+            - button [ref=f37e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f37e16]
+    - navigation [ref=f37e72]:
+      - link "Todas las aplicaciones" [ref=f37e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f37e75]: keyboard_backspace
+      - list [ref=f37e77]:
+        - listitem "Panel de control" [ref=f37e80]:
+          - button "Panel de control" [ref=f37e81] [cursor=pointer]:
+            - img [ref=f37e84]: dashboard
+        - listitem "Estadísticas" [ref=f37e88]:
+          - button "Estadísticas" [ref=f37e89] [cursor=pointer]:
+            - img [ref=f37e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f37e96]:
+          - button "Resumen de publicación" [ref=f37e97] [cursor=pointer]:
+            - img [ref=f37e100]: overview
+        - listitem "Protegida con Play" [ref=f37e104]:
+          - button "Protegida con Play" [ref=f37e105] [cursor=pointer]:
+            - img [ref=f37e108]: shield
+        - listitem "Probar y publicar" [ref=f37e112]:
+          - button "Probar y publicar" [ref=f37e113] [cursor=pointer]:
+            - img [ref=f37e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f37e120]:
+          - button "Monitorizar y mejorar" [ref=f37e121] [cursor=pointer]:
+            - img [ref=f37e124]: vital_signs
+          - list [ref=f37e126]:
+            - generic [ref=f37e128]:
+              - listitem "Cobertura y dispositivos" [ref=f37e130]:
+                - button "Cobertura y dispositivos" [ref=f37e131] [cursor=pointer]:
+                  - img [ref=f37e134]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f37e136]:
+                - button "Valoraciones y reseñas" [ref=f37e137] [cursor=pointer]:
+                  - img [ref=f37e140]: expand_more
+              - listitem "Android vitals" [ref=f37e142]:
+                - button "Android vitals" [ref=f37e143] [cursor=pointer]:
+                  - img [ref=f37e146]: expand_more
+              - listitem "Política y programas" [ref=f37e148]:
+                - button "Política y programas" [ref=f37e149] [cursor=pointer]:
+                  - img [ref=f37e152]: expand_less
+                - list [ref=f37e153]:
+                  - generic [ref=f37e155]:
+                    - listitem "Estado según las políticas" [ref=f37e157]:
+                      - button "Estado según las políticas" [ref=f37e158] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f37e161]:
+                      - button "Contenido de la aplicación" [ref=f37e162] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f37e165]:
+                      - button "Aprobada por profesores" [ref=f37e166] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f37e170]:
+          - button "Aumentar usuarios" [ref=f37e171] [cursor=pointer]:
+            - img [ref=f37e174]: finance_mode
+        - listitem "Monetizar con Play" [ref=f37e178]:
+          - button "Monetizar con Play" [ref=f37e179] [cursor=pointer]:
+            - img [ref=f37e182]: sell
+    - generic [ref=f37e22]:
+      - generic [ref=f37e187]:
+        - generic [ref=f37e191]:
+          - generic:
+            - generic:
+              - link "Volver a Contenido de la aplicación":
+                - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/overview
+                - generic [ref=f37e196] [cursor=pointer]
+                - img [ref=f37e198] [cursor=pointer]: keyboard_backspace
+                - generic [ref=f37e199] [cursor=pointer]: Contenido de la aplicación
+          - heading "Aplicaciones de salud" [level=1] [ref=f37e208]
+        - generic [ref=f37e212]:
+          - generic [ref=f37e213]:
+            - tablist [ref=f37e214]:
+              - 'tab "Funciones de salud de tu aplicación: paso 1 de 2" [selected] [ref=f37e215]':
+                - generic [ref=f37e216]: "1"
+                - generic [ref=f37e219]: Funciones de salud de tu aplicación
+              - 'tab "Requisitos de territorios: paso 2 de 2" [disabled] [ref=f37e222]':
+                - generic [ref=f37e223]: "2"
+                - generic [ref=f37e226]: Requisitos de territorios
+            - tabpanel [ref=f37e229]:
+              - generic [ref=f37e230]:
+                - heading "Funciones de salud de tu aplicación" [level=2] [ref=f37e241]
+                - group "Háblanos de las funciones de salud de tu aplicación (selecciona todas las opciones que correspondan)" [ref=f37e249]:
+                  - generic [ref=f37e250]: Funciones de la aplicación
+                  - generic [ref=f37e256]:
+                    - generic [ref=f37e257]: Háblanos de las funciones de salud de tu aplicación (selecciona todas las opciones que correspondan)
+                    - paragraph [ref=f37e263]:
+                      - text: Para obtener más información sobre a qué nos referimos cuando hablamos de funciones de salud y qué funciones podrían afectar a tu aplicación,
+                      - link "accede al Centro de Ayuda" [ref=f37e264] [cursor=pointer]:
+                        - /url: https://support.google.com/googleplay/android-developer/answer/14738291
+                    - group "Salud y fitness" [ref=f37e267]:
+                      - generic [ref=f37e269]:
+                        - generic [ref=f37e270]: Salud y fitness
+                        - generic [ref=f37e273]:
+                          - generic:
+                            - checkbox "Actividad y forma física" [disabled]
+                          - generic [ref=f37e276]: Actividad y forma física
+                        - generic [ref=f37e279]:
+                          - generic:
+                            - checkbox "Nutrición y control del peso" [disabled]
+                          - generic [ref=f37e282]: Nutrición y control del peso
+                        - generic [ref=f37e285]:
+                          - generic:
+                            - checkbox "Seguimiento del periodo menstrual" [disabled]
+                          - generic [ref=f37e288]: Seguimiento del periodo menstrual
+                        - generic [ref=f37e291]:
+                          - generic:
+                            - checkbox "Gestión del sueño" [disabled]
+                          - generic [ref=f37e294]: Gestión del sueño
+                        - generic [ref=f37e297]:
+                          - generic:
+                            - checkbox "Gestión del estrés, relajación, agudeza mental" [disabled]
+                          - generic [ref=f37e300]: Gestión del estrés, relajación, agudeza mental
+                    - group "Medicina" [ref=f37e305]:
+                      - generic [ref=f37e307]:
+                        - generic [ref=f37e308]: Medicina
+                        - generic [ref=f37e311]:
+                          - generic:
+                            - checkbox "Gestión de enfermedades y afecciones" [disabled]
+                          - generic [ref=f37e314]: Gestión de enfermedades y afecciones
+                        - generic [ref=f37e317]:
+                          - generic:
+                            - checkbox "Ayuda a la toma de decisiones clínicas" [disabled]
+                          - generic [ref=f37e320]: Ayuda a la toma de decisiones clínicas
+                        - generic [ref=f37e323]:
+                          - generic:
+                            - checkbox "Prevención de enfermedades y salud pública" [disabled]
+                          - generic [ref=f37e326]: Prevención de enfermedades y salud pública
+                        - generic [ref=f37e329]:
+                          - generic:
+                            - checkbox "Emergencias y primeros auxilios" [disabled]
+                          - generic [ref=f37e332]: Emergencias y primeros auxilios
+                        - generic [ref=f37e335]:
+                          - generic:
+                            - checkbox "Gestión y servicios sanitarios" [disabled]
+                          - generic [ref=f37e338]: Gestión y servicios sanitarios
+                        - generic [ref=f37e341]:
+                          - generic:
+                            - checkbox "Aplicaciones de dispositivos médicos" [disabled]
+                          - generic [ref=f37e344]: Aplicaciones de dispositivos médicos
+                        - generic [ref=f37e347]:
+                          - generic:
+                            - checkbox "Salud mental y conductual" [disabled]
+                          - generic [ref=f37e350]: Salud mental y conductual
+                        - generic [ref=f37e353]:
+                          - generic:
+                            - checkbox "Educación y referencias médicas" [disabled]
+                          - generic [ref=f37e356]: Educación y referencias médicas
+                        - generic [ref=f37e359]:
+                          - generic:
+                            - checkbox "Gestión de medicamentos y tratamientos" [disabled]
+                          - generic [ref=f37e362]: Gestión de medicamentos y tratamientos
+                        - generic [ref=f37e365]:
+                          - generic:
+                            - checkbox "Fisioterapia y rehabilitación" [disabled]
+                          - generic [ref=f37e368]: Fisioterapia y rehabilitación
+                        - generic [ref=f37e371]:
+                          - generic:
+                            - checkbox "Salud reproductiva y sexual" [disabled]
+                          - generic [ref=f37e374]: Salud reproductiva y sexual
+                    - group "Investigación en humanos" [ref=f37e379]:
+                      - generic [ref=f37e381]:
+                        - generic [ref=f37e382]: Investigación en humanos
+                        - generic [ref=f37e385]:
+                          - generic:
+                            - checkbox "Estudios de investigación, ensayos clínicos y comunidades de pacientes Las aplicaciones en las que se lleven a cabo estudios de investigación deben consultar Fit & Health Research (Investigación sobre actividad física y salud) para ver si deben cumplir requisitos adicionales" [disabled]
+                          - generic [ref=f37e388]:
+                            - generic [ref=f37e389]: Estudios de investigación, ensayos clínicos y comunidades de pacientes
+                            - generic [ref=f37e392]:
+                              - text: Las aplicaciones en las que se lleven a cabo estudios de investigación deben consultar
+                              - link "Fit & Health Research" [disabled] [ref=f37e393] [cursor=pointer]:
+                                - /url: https://docs.google.com/forms/d/1WFUG98j3kRU_muqcJB-JJBSEWdGiGqky1R75YC-rG4w/viewform
+                              - text: (Investigación sobre actividad física y salud) para ver si deben cumplir requisitos adicionales
+                    - group "Otro" [ref=f37e396]:
+                      - generic [ref=f37e398]:
+                        - generic [ref=f37e399]: Otro
+                        - generic [ref=f37e402]:
+                          - generic:
+                            - checkbox "Otro" [disabled]
+                          - generic [ref=f37e405]: Otro
+                        - strong [ref=f37e414]: O
+                        - generic [ref=f37e415] [cursor=pointer]:
+                          - checkbox "Mi aplicación no tiene ninguna función de salud" [checked] [active] [ref=f37e417]
+                          - generic [ref=f37e418]: Mi aplicación no tiene ninguna función de salud
+            - generic [ref=f37e421]: "Funciones de salud de tu aplicación: paso 1 de 2"
+          - generic [ref=f37e429]:
+            - button "Descartar" [ref=f37e430]
+            - button "Volver" [disabled] [ref=f37e434]
+            - button "Siguiente" [ref=f37e438]
+      - generic [ref=f37e30]:
+        - generic [ref=f37e444]:
+          - link "Novedades sobre productos" [ref=f37e445] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f37e446] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f37e447] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f37e448]:
+          - generic [ref=f37e449]: © 2026 Google
+          - link "Privacidad" [ref=f37e450] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f37e451] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f37e452] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

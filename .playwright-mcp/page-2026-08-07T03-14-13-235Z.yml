@@ -1,0 +1,409 @@
+- generic [ref=f73e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f73e3]:
+    - banner [ref=f73e4]:
+      - generic [ref=f73e6]:
+        - link [ref=f73e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f73e8]
+        - generic [ref=f73e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f73e45]:
+            - img [ref=f73e49]: notifications_unread
+            - generic [ref=f73e50]: Notificaciones sin leer
+          - generic [ref=f73e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f73e59] [cursor=pointer]'
+            - button [ref=f73e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f73e16]
+    - navigation [ref=f73e72]:
+      - link "Todas las aplicaciones" [ref=f73e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f73e75]: keyboard_backspace
+      - list [ref=f73e77]:
+        - listitem "Panel de control" [ref=f73e80]:
+          - button "Panel de control" [ref=f73e81] [cursor=pointer]:
+            - img [ref=f73e84]: dashboard
+        - listitem "Estadísticas" [ref=f73e88]:
+          - button "Estadísticas" [ref=f73e89] [cursor=pointer]:
+            - img [ref=f73e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f73e96]:
+          - button "Resumen de publicación" [ref=f73e97] [cursor=pointer]:
+            - img [ref=f73e100]: overview
+        - listitem "Protegida con Play" [ref=f73e104]:
+          - button "Protegida con Play" [ref=f73e105] [cursor=pointer]:
+            - img [ref=f73e108]: shield
+        - listitem "Probar y publicar" [ref=f73e112]:
+          - button "Probar y publicar" [ref=f73e113] [cursor=pointer]:
+            - img [ref=f73e116]: rocket_launch
+          - list [ref=f73e118]:
+            - generic [ref=f73e120]:
+              - listitem "Últimas versiones y app bundles" [ref=f73e122]:
+                - button "Últimas versiones y app bundles" [ref=f73e123] [cursor=pointer]
+              - listitem "Producción" [ref=f73e126]:
+                - button "Producción" [ref=f73e127] [cursor=pointer]
+              - listitem "Pruebas" [ref=f73e130]:
+                - button "Pruebas" [ref=f73e131] [cursor=pointer]:
+                  - img [ref=f73e134]: expand_less
+                - list [ref=f73e135]:
+                  - generic [ref=f73e137]:
+                    - listitem "Prueba abierta" [ref=f73e139]:
+                      - button "Prueba abierta" [ref=f73e140] [cursor=pointer]
+                    - listitem "Prueba cerrada" [ref=f73e143]:
+                      - button "Prueba cerrada" [ref=f73e144] [cursor=pointer]
+                    - listitem "Prueba interna" [ref=f73e147]:
+                      - button "Prueba interna" [ref=f73e148] [cursor=pointer]
+                    - listitem "Informe previo al lanzamiento" [ref=f73e151]:
+                      - button "Informe previo al lanzamiento" [ref=f73e152] [cursor=pointer]:
+                        - img [ref=f73e155]: expand_more
+                    - listitem "Compartir aplicaciones de forma interna" [ref=f73e157]:
+                      - button "Compartir aplicaciones de forma interna" [ref=f73e158] [cursor=pointer]
+              - listitem "Registro previo" [ref=f73e161]:
+                - button "Registro previo" [ref=f73e162] [cursor=pointer]
+              - listitem "Integridad de la app" [ref=f73e165]:
+                - button "Integridad de la app" [ref=f73e166] [cursor=pointer]
+              - listitem "Ajustes avanzados" [ref=f73e169]:
+                - button "Ajustes avanzados" [ref=f73e170] [cursor=pointer]
+        - listitem "Monitorizar y mejorar" [ref=f73e174]:
+          - button "Monitorizar y mejorar" [ref=f73e175] [cursor=pointer]:
+            - img [ref=f73e178]: vital_signs
+        - listitem "Aumentar usuarios" [ref=f73e182]:
+          - button "Aumentar usuarios" [ref=f73e183] [cursor=pointer]:
+            - img [ref=f73e186]: finance_mode
+        - listitem "Monetizar con Play" [ref=f73e190]:
+          - button "Monetizar con Play" [ref=f73e191] [cursor=pointer]:
+            - img [ref=f73e194]: sell
+    - generic [ref=f73e22]:
+      - generic [ref=f73e199]:
+        - generic [ref=f73e207]:
+          - generic [ref=f73e208]:
+            - heading "Prueba interna" [level=1] [ref=f73e213]
+            - generic [ref=f73e217]:
+              - button "Seleccionar factores de forma. Teléfonos, Tablets, Chrome OS, Android XR" [ref=f73e222] [cursor=pointer]:
+                - generic [ref=f73e223]:
+                  - img [ref=f73e227]: phonelink
+                  - generic [ref=f73e228]: Teléfonos, Tablets, Chrome OS, Android XR
+                - img [ref=f73e230]: arrow_drop_down
+              - button "Crear nueva versión" [ref=f73e231]
+          - generic [ref=f73e241]:
+            - text: Crea y gestiona versiones de pruebas internas para facilitar tu aplicación a un máximo de 100 testers internos.
+            - link "Más información sobre Prueba interna (se abre en una pestaña nueva)" [ref=f73e243] [cursor=pointer]:
+              - /url: https://play.google.com/console/about/internal-testing
+              - text: Más información
+        - generic [ref=f73e251]:
+          - generic [ref=f73e252]:
+            - heading "Resumen del canal (Teléfonos, Tablets, Chrome OS, Android XR)" [level=4] [ref=f73e257]
+            - button "Pausar canal" [ref=f73e262]
+          - list [ref=f73e268]:
+            - listitem [ref=f73e269]: Activo
+            - listitem [ref=f73e270]: "Última versión: 20 (0.1.6)"
+            - listitem [ref=f73e271]:
+              - text: "Nombre temporal de la aplicación: \"pe.leadai.rider (unreviewed)\""
+              - button "Más información" [ref=f73e274] [cursor=pointer]:
+                - img [ref=f73e275]: help
+        - tablist [ref=f73e282]:
+          - tab "Versiones" [ref=f73e283] [cursor=pointer]
+          - tab "Testers" [selected] [ref=f73e286] [cursor=pointer]
+        - generic [ref=f73e291]:
+          - generic [ref=f73e293]:
+            - generic [ref=f73e296]:
+              - heading "Testers" [level=2] [ref=f73e302]
+              - generic [ref=f73e303]: Hasta 100 testers pueden participar en tus pruebas internas. Puedes elegir más de 100, pero solo los primeros 100 podrán unirse.
+            - group "Testers" [ref=f73e312]:
+              - generic [ref=f73e323]:
+                - grid "Listas de correo electrónico" [ref=f73e329]:
+                  - row [ref=f73e330]:
+                    - gridcell [ref=f73e331]:
+                      - checkbox "Seleccionar todas las filas" [checked=mixed] [ref=f73e333] [cursor=pointer]
+                    - columnheader "Nombre de lista" [ref=f73e336]
+                    - columnheader "Usuarios" [ref=f73e337]
+                    - cell [ref=f73e338]
+                  - row [ref=f73e339]:
+                    - gridcell [ref=f73e340]:
+                      - checkbox "QA interno" [ref=f73e342] [cursor=pointer]
+                    - gridcell "QA interno" [ref=f73e345]
+                    - gridcell "8" [ref=f73e347]
+                    - gridcell [ref=f73e349]:
+                      - button "Editar la lista de correo electrónico QA interno" [ref=f73e351] [cursor=pointer]:
+                        - img [ref=f73e354]: arrow_right_alt
+                  - row [ref=f73e355]:
+                    - gridcell [ref=f73e356]:
+                      - checkbox "QA Sania" [checked] [ref=f73e358] [cursor=pointer]
+                    - gridcell "QA Sania" [ref=f73e361]
+                    - gridcell "42" [ref=f73e363]
+                    - gridcell [ref=f73e365]:
+                      - button "Editar la lista de correo electrónico QA Sania" [ref=f73e367] [cursor=pointer]:
+                        - img [ref=f73e370]: arrow_right_alt
+                - button "Crear una lista de correo electrónico" [ref=f73e373]
+          - generic [ref=f73e379]:
+            - heading "Cómo se unen los testers a la prueba" [level=3] [ref=f73e388]
+            - group "Unirse en la Web" [ref=f73e393]:
+              - generic [ref=f73e398]:
+                - generic [ref=f73e399]: Los testers pueden unirse a tu prueba en la Web
+                - 'button "Copiar enlace: https://play.google.com/apps/internaltest/4701714262972141444" [ref=f73e403]':
+                  - img [ref=f73e407]: link
+                  - generic [ref=f73e408]: Copiar enlace
+          - button "Guardar" [disabled] [ref=f73e418]
+      - generic [ref=f73e30]:
+        - generic [ref=f73e424]:
+          - link "Novedades sobre productos" [ref=f73e425] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f73e426] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f73e427] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f73e428]:
+          - generic [ref=f73e429]: © 2026 Google
+          - link "Privacidad" [ref=f73e430] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f73e431] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f73e432] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/
+  - generic:
+    - status [ref=f73e433]
+    - dialog [ref=f73e441]:
+      - generic [ref=f73e443]:
+        - heading "Editar lista de correo electrónico" [level=2] [ref=f73e444]
+        - button "Cerrar" [active] [ref=f73e445] [cursor=pointer]:
+          - img [ref=f73e448]: close
+      - region [ref=f73e449]:
+        - generic [ref=f73e453]:
+          - paragraph [ref=f73e454]: "* Campos obligatorios"
+          - generic [ref=f73e455]:
+            - group "Nombre de lista" [ref=f73e457]:
+              - generic [ref=f73e458]: Nombre de lista *
+              - generic [ref=f73e463]:
+                - textbox "Nombre de lista" [ref=f73e465]: QA Sania
+                - generic [ref=f73e466]:
+                  - paragraph [ref=f73e467]
+                  - generic [ref=f73e468]:
+                    - generic [ref=f73e469]: 8/200
+                    - generic [ref=f73e470]: El texto tiene 8 caracteres de 200
+            - group "Añadir direcciones de correo electrónico" [ref=f73e472]:
+              - generic [ref=f73e477]:
+                - generic [ref=f73e478]:
+                  - generic [ref=f73e479]:
+                    - generic: user@example.com, user@example.com
+                    - textbox "Añadir direcciones de correo electrónico" [ref=f73e480]
+                  - paragraph [ref=f73e482]: Separa las direcciones de correo con una coma y pulsa Intro para añadirlas a tu lista
+                - button "Subir archivo CSV" [ref=f73e485]
+            - group "Direcciones de correo electrónico añadidas" [ref=f73e490]:
+              - generic [ref=f73e491]: Direcciones de correo electrónico añadidas *
+              - grid "Direcciones de correo añadidas" [ref=f73e501]:
+                - row [ref=f73e502]:
+                  - gridcell "Begle.v02@gmail.com" [ref=f73e503]
+                  - gridcell [ref=f73e505]:
+                    - 'button "Quitar dirección de correo electrónico: Begle.v02@gmail.com" [ref=f73e508] [cursor=pointer]':
+                      - img [ref=f73e512]: delete
+                - row [ref=f73e513]:
+                  - gridcell "Brandonbermejo20@gmail.com" [ref=f73e514]
+                  - gridcell [ref=f73e516]:
+                    - 'button "Quitar dirección de correo electrónico: Brandonbermejo20@gmail.com" [ref=f73e519] [cursor=pointer]':
+                      - img [ref=f73e523]: delete
+                - row [ref=f73e524]:
+                  - gridcell "Ctac.giancarlo.moro@gmail.com" [ref=f73e525]
+                  - gridcell [ref=f73e527]:
+                    - 'button "Quitar dirección de correo electrónico: Ctac.giancarlo.moro@gmail.com" [ref=f73e530] [cursor=pointer]':
+                      - img [ref=f73e534]: delete
+                - row [ref=f73e535]:
+                  - gridcell "Karinabizarroq@gmail.com" [ref=f73e536]
+                  - gridcell [ref=f73e538]:
+                    - 'button "Quitar dirección de correo electrónico: Karinabizarroq@gmail.com" [ref=f73e541] [cursor=pointer]':
+                      - img [ref=f73e545]: delete
+                - row [ref=f73e546]:
+                  - gridcell "Kattyta800@gmail.com" [ref=f73e547]
+                  - gridcell [ref=f73e549]:
+                    - 'button "Quitar dirección de correo electrónico: Kattyta800@gmail.com" [ref=f73e552] [cursor=pointer]':
+                      - img [ref=f73e556]: delete
+                - row [ref=f73e557]:
+                  - gridcell "Pao_crazy154@hotmail.com" [ref=f73e558]
+                  - gridcell [ref=f73e560]:
+                    - 'button "Quitar dirección de correo electrónico: Pao_crazy154@hotmail.com" [ref=f73e563] [cursor=pointer]':
+                      - img [ref=f73e567]: delete
+                - row [ref=f73e568]:
+                  - gridcell "Peluxeo12@gmail.com" [ref=f73e569]
+                  - gridcell [ref=f73e571]:
+                    - 'button "Quitar dirección de correo electrónico: Peluxeo12@gmail.com" [ref=f73e574] [cursor=pointer]':
+                      - img [ref=f73e578]: delete
+                - row [ref=f73e579]:
+                  - gridcell "Planificacionupt@gmail.com" [ref=f73e580]
+                  - gridcell [ref=f73e582]:
+                    - 'button "Quitar dirección de correo electrónico: Planificacionupt@gmail.com" [ref=f73e585] [cursor=pointer]':
+                      - img [ref=f73e589]: delete
+                - row [ref=f73e590]:
+                  - gridcell "Rguzman.aroni@gmail.com" [ref=f73e591]
+                  - gridcell [ref=f73e593]:
+                    - 'button "Quitar dirección de correo electrónico: Rguzman.aroni@gmail.com" [ref=f73e596] [cursor=pointer]':
+                      - img [ref=f73e600]: delete
+                - row [ref=f73e601]:
+                  - gridcell "Rosaelisavelazco@gmail.com" [ref=f73e602]
+                  - gridcell [ref=f73e604]:
+                    - 'button "Quitar dirección de correo electrónico: Rosaelisavelazco@gmail.com" [ref=f73e607] [cursor=pointer]':
+                      - img [ref=f73e611]: delete
+                - row [ref=f73e612]:
+                  - gridcell "Sophitole19@gmail.com" [ref=f73e613]
+                  - gridcell [ref=f73e615]:
+                    - 'button "Quitar dirección de correo electrónico: Sophitole19@gmail.com" [ref=f73e618] [cursor=pointer]':
+                      - img [ref=f73e622]: delete
+                - row [ref=f73e623]:
+                  - gridcell "admin.ody@gmail.com" [ref=f73e624]
+                  - gridcell [ref=f73e626]:
+                    - 'button "Quitar dirección de correo electrónico: admin.ody@gmail.com" [ref=f73e629] [cursor=pointer]':
+                      - img [ref=f73e633]: delete
+                - row [ref=f73e634]:
+                  - gridcell "ajcarlos032@gmail.com" [ref=f73e635]
+                  - gridcell [ref=f73e637]:
+                    - 'button "Quitar dirección de correo electrónico: ajcarlos032@gmail.com" [ref=f73e640] [cursor=pointer]':
+                      - img [ref=f73e644]: delete
+                - row [ref=f73e645]:
+                  - gridcell "anacebendita@gmail.com" [ref=f73e646]
+                  - gridcell [ref=f73e648]:
+                    - 'button "Quitar dirección de correo electrónico: anacebendita@gmail.com" [ref=f73e651] [cursor=pointer]':
+                      - img [ref=f73e655]: delete
+                - row [ref=f73e656]:
+                  - gridcell "arianna9782@gmail.com" [ref=f73e657]
+                  - gridcell [ref=f73e659]:
+                    - 'button "Quitar dirección de correo electrónico: arianna9782@gmail.com" [ref=f73e662] [cursor=pointer]':
+                      - img [ref=f73e666]: delete
+                - row [ref=f73e667]:
+                  - gridcell "bryam.lezama70@gmail.com" [ref=f73e668]
+                  - gridcell [ref=f73e670]:
+                    - 'button "Quitar dirección de correo electrónico: bryam.lezama70@gmail.com" [ref=f73e673] [cursor=pointer]':
+                      - img [ref=f73e677]: delete
+                - row [ref=f73e678]:
+                  - gridcell "christ.zambrano@gmail.com" [ref=f73e679]
+                  - gridcell [ref=f73e681]:
+                    - 'button "Quitar dirección de correo electrónico: christ.zambrano@gmail.com" [ref=f73e684] [cursor=pointer]':
+                      - img [ref=f73e688]: delete
+                - row [ref=f73e689]:
+                  - gridcell "ciudadano.alerta.pe@gmail.com" [ref=f73e690]
+                  - gridcell [ref=f73e692]:
+                    - 'button "Quitar dirección de correo electrónico: ciudadano.alerta.pe@gmail.com" [ref=f73e695] [cursor=pointer]':
+                      - img [ref=f73e699]: delete
+                - row [ref=f73e700]:
+                  - gridcell "cristian09rp09@gmail.com" [ref=f73e701]
+                  - gridcell [ref=f73e703]:
+                    - 'button "Quitar dirección de correo electrónico: cristian09rp09@gmail.com" [ref=f73e706] [cursor=pointer]':
+                      - img [ref=f73e710]: delete
+                - row [ref=f73e711]:
+                  - gridcell "e.gaia.lopez@gmail.com" [ref=f73e712]
+                  - gridcell [ref=f73e714]:
+                    - 'button "Quitar dirección de correo electrónico: e.gaia.lopez@gmail.com" [ref=f73e717] [cursor=pointer]':
+                      - img [ref=f73e721]: delete
+                - row [ref=f73e722]:
+                  - gridcell "helppet.pe@gmail.com" [ref=f73e723]
+                  - gridcell [ref=f73e725]:
+                    - 'button "Quitar dirección de correo electrónico: helppet.pe@gmail.com" [ref=f73e728] [cursor=pointer]':
+                      - img [ref=f73e732]: delete
+                - row [ref=f73e733]:
+                  - gridcell "indomablee1987@gmail.com" [ref=f73e734]
+                  - gridcell [ref=f73e736]:
+                    - 'button "Quitar dirección de correo electrónico: indomablee1987@gmail.com" [ref=f73e739] [cursor=pointer]':
+                      - img [ref=f73e743]: delete
+                - row [ref=f73e744]:
+                  - gridcell "jlmorenos@unjbg.edu.pe" [ref=f73e745]
+                  - gridcell [ref=f73e747]:
+                    - 'button "Quitar dirección de correo electrónico: jlmorenos@unjbg.edu.pe" [ref=f73e750] [cursor=pointer]':
+                      - img [ref=f73e754]: delete
+                - row [ref=f73e755]:
+                  - gridcell "jonathan.avihua@gmail.com" [ref=f73e756]
+                  - gridcell [ref=f73e758]:
+                    - 'button "Quitar dirección de correo electrónico: jonathan.avihua@gmail.com" [ref=f73e761] [cursor=pointer]':
+                      - img [ref=f73e765]: delete
+                - row [ref=f73e766]:
+                  - gridcell "jonathan.joan.avila@gmail.com" [ref=f73e767]
+                  - gridcell [ref=f73e769]:
+                    - 'button "Quitar dirección de correo electrónico: jonathan.joan.avila@gmail.com" [ref=f73e772] [cursor=pointer]':
+                      - img [ref=f73e776]: delete
+                - row [ref=f73e777]:
+                  - gridcell "katerineorocollo@gmail.com" [ref=f73e778]
+                  - gridcell [ref=f73e780]:
+                    - 'button "Quitar dirección de correo electrónico: katerineorocollo@gmail.com" [ref=f73e783] [cursor=pointer]':
+                      - img [ref=f73e787]: delete
+                - row [ref=f73e788]:
+                  - gridcell "lesliequiber1@gmail.com" [ref=f73e789]
+                  - gridcell [ref=f73e791]:
+                    - 'button "Quitar dirección de correo electrónico: lesliequiber1@gmail.com" [ref=f73e794] [cursor=pointer]':
+                      - img [ref=f73e798]: delete
+                - row [ref=f73e799]:
+                  - gridcell "leydi.stefani.123@gmail.com" [ref=f73e800]
+                  - gridcell [ref=f73e802]:
+                    - 'button "Quitar dirección de correo electrónico: leydi.stefani.123@gmail.com" [ref=f73e805] [cursor=pointer]':
+                      - img [ref=f73e809]: delete
+                - row [ref=f73e810]:
+                  - gridcell "lezamanicolle0@gmail.com" [ref=f73e811]
+                  - gridcell [ref=f73e813]:
+                    - 'button "Quitar dirección de correo electrónico: lezamanicolle0@gmail.com" [ref=f73e816] [cursor=pointer]':
+                      - img [ref=f73e820]: delete
+                - row [ref=f73e821]:
+                  - gridcell "lezamanicolle3697@gmail.com" [ref=f73e822]
+                  - gridcell [ref=f73e824]:
+                    - 'button "Quitar dirección de correo electrónico: lezamanicolle3697@gmail.com" [ref=f73e827] [cursor=pointer]':
+                      - img [ref=f73e831]: delete
+                - row [ref=f73e832]:
+                  - gridcell "lqlucero93@gmail.com" [ref=f73e833]
+                  - gridcell [ref=f73e835]:
+                    - 'button "Quitar dirección de correo electrónico: lqlucero93@gmail.com" [ref=f73e838] [cursor=pointer]':
+                      - img [ref=f73e842]: delete
+                - row [ref=f73e843]:
+                  - gridcell "marcoa.cespedesm@gmail.com" [ref=f73e844]
+                  - gridcell [ref=f73e846]:
+                    - 'button "Quitar dirección de correo electrónico: marcoa.cespedesm@gmail.com" [ref=f73e849] [cursor=pointer]':
+                      - img [ref=f73e853]: delete
+                - row [ref=f73e854]:
+                  - gridcell "neohexgacha3@gmail.com" [ref=f73e855]
+                  - gridcell [ref=f73e857]:
+                    - 'button "Quitar dirección de correo electrónico: neohexgacha3@gmail.com" [ref=f73e860] [cursor=pointer]':
+                      - img [ref=f73e864]: delete
+                - row [ref=f73e865]:
+                  - gridcell "norac.x.producer@gmail.com" [ref=f73e866]
+                  - gridcell [ref=f73e868]:
+                    - 'button "Quitar dirección de correo electrónico: norac.x.producer@gmail.com" [ref=f73e871] [cursor=pointer]':
+                      - img [ref=f73e875]: delete
+                - row [ref=f73e876]:
+                  - gridcell "noraclabspe@gmail.com" [ref=f73e877]
+                  - gridcell [ref=f73e879]:
+                    - 'button "Quitar dirección de correo electrónico: noraclabspe@gmail.com" [ref=f73e882] [cursor=pointer]':
+                      - img [ref=f73e886]: delete
+                - row [ref=f73e887]:
+                  - gridcell "orocollokaterine@gmail.com" [ref=f73e888]
+                  - gridcell [ref=f73e890]:
+                    - 'button "Quitar dirección de correo electrónico: orocollokaterine@gmail.com" [ref=f73e893] [cursor=pointer]':
+                      - img [ref=f73e897]: delete
+                - row [ref=f73e898]:
+                  - gridcell "paolaz1992@gmail.com" [ref=f73e899]
+                  - gridcell [ref=f73e901]:
+                    - 'button "Quitar dirección de correo electrónico: paolaz1992@gmail.com" [ref=f73e904] [cursor=pointer]':
+                      - img [ref=f73e908]: delete
+                - row [ref=f73e909]:
+                  - gridcell "rosaliaolano1@gmail.com" [ref=f73e910]
+                  - gridcell [ref=f73e912]:
+                    - 'button "Quitar dirección de correo electrónico: rosaliaolano1@gmail.com" [ref=f73e915] [cursor=pointer]':
+                      - img [ref=f73e919]: delete
+                - row [ref=f73e920]:
+                  - gridcell "saniape.ai@gmail.com" [ref=f73e921]
+                  - gridcell [ref=f73e923]:
+                    - 'button "Quitar dirección de correo electrónico: saniape.ai@gmail.com" [ref=f73e926] [cursor=pointer]':
+                      - img [ref=f73e930]: delete
+                - row [ref=f73e931]:
+                  - gridcell "suareztorresr1307@gmail.com" [ref=f73e932]
+                  - gridcell [ref=f73e934]:
+                    - 'button "Quitar dirección de correo electrónico: suareztorresr1307@gmail.com" [ref=f73e937] [cursor=pointer]':
+                      - img [ref=f73e941]: delete
+                - row [ref=f73e942]:
+                  - gridcell "vittomoron@gmail.com" [ref=f73e943]
+                  - gridcell [ref=f73e945]:
+                    - 'button "Quitar dirección de correo electrónico: vittomoron@gmail.com" [ref=f73e948] [cursor=pointer]':
+                      - img [ref=f73e952]: delete
+                - row [ref=f73e953]:
+                  - gridcell "yenny.chr@gmail.com" [ref=f73e954]
+                  - gridcell [ref=f73e956]:
+                    - 'button "Quitar dirección de correo electrónico: yenny.chr@gmail.com" [ref=f73e959] [cursor=pointer]':
+                      - img [ref=f73e963]: delete
+        - generic [ref=f73e970]:
+          - button "Guardar cambios" [disabled] [ref=f73e973]
+          - generic [ref=f73e977]:
+            - button "Descartar" [disabled] [ref=f73e979]
+            - button "Eliminar lista de correo electrónico" [ref=f73e984]

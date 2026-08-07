@@ -92,6 +92,28 @@ class MotorizadosApi(private val api: ApiCliente) {
         )
 
     /**
+     * `POST /motorizados/carreras/:id/ofertar {montoCentavos}` — el rider
+     * PROPONE, el cliente elige.
+     *
+     * Reemplaza al "primero que toca gana": aceptar el precio pedido es
+     * ofertar por ese mismo monto. Reofertar actualiza la propuesta anterior
+     * en vez de duplicarla en la lista del cliente.
+     */
+    suspend fun ofertarCarrera(
+        carreraId: String,
+        montoCentavos: Long,
+        minutosLlegada: Int? = null,
+    ): Resultado<AvanzarEstadoResponseDto> =
+        api.post<JsonObject, AvanzarEstadoResponseDto>(
+            path = "/motorizados/carreras/$carreraId/ofertar",
+            body = buildJsonObject {
+                put("montoCentavos", montoCentavos)
+                if (minutosLlegada != null) put("minutosLlegada", minutosLlegada)
+            },
+            requiereSesion = true,
+        )
+
+    /**
      * `POST /motorizados/posicion {lat, lng}` (tracking nivel 2) — la última
      * posición del rider, que alimenta el mapa público `/track/:pedidoId`
      * del cliente. La manda el polling de la sala mientras hay carrera.

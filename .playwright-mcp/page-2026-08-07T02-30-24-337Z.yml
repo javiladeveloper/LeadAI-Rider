@@ -1,0 +1,103 @@
+- generic [active] [ref=f27e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f27e3]:
+    - banner [ref=f27e4]:
+      - generic [ref=f27e6]:
+        - link [ref=f27e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f27e8]
+        - generic [ref=f27e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f27e45]:
+            - img [ref=f27e49]: notifications_unread
+            - generic [ref=f27e50]: Notificaciones sin leer
+          - generic [ref=f27e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f27e59] [cursor=pointer]'
+            - button [ref=f27e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f27e16]
+    - navigation [ref=f27e72]:
+      - link "Todas las aplicaciones" [ref=f27e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f27e75]: keyboard_backspace
+      - list [ref=f27e77]:
+        - listitem "Panel de control" [ref=f27e80]:
+          - button "Panel de control" [ref=f27e81] [cursor=pointer]:
+            - img [ref=f27e84]: dashboard
+        - listitem "Estadísticas" [ref=f27e88]:
+          - button "Estadísticas" [ref=f27e89] [cursor=pointer]:
+            - img [ref=f27e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f27e96]:
+          - button "Resumen de publicación" [ref=f27e97] [cursor=pointer]:
+            - img [ref=f27e100]: overview
+        - listitem "Protegida con Play" [ref=f27e104]:
+          - button "Protegida con Play" [ref=f27e105] [cursor=pointer]:
+            - img [ref=f27e108]: shield
+        - listitem "Probar y publicar" [ref=f27e112]:
+          - button "Probar y publicar" [ref=f27e113] [cursor=pointer]:
+            - img [ref=f27e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f27e120]:
+          - button "Monitorizar y mejorar" [ref=f27e121] [cursor=pointer]:
+            - img [ref=f27e124]: vital_signs
+          - list [ref=f27e541]:
+            - generic [ref=f27e542]:
+              - listitem "Cobertura y dispositivos" [ref=f27e544]:
+                - button "Cobertura y dispositivos" [ref=f27e545] [cursor=pointer]:
+                  - img [ref=f27e548]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f27e550]:
+                - button "Valoraciones y reseñas" [ref=f27e551] [cursor=pointer]:
+                  - img [ref=f27e554]: expand_more
+              - listitem "Android vitals" [ref=f27e556]:
+                - button "Android vitals" [ref=f27e557] [cursor=pointer]:
+                  - img [ref=f27e560]: expand_more
+              - listitem "Política y programas" [ref=f27e562]:
+                - button "Política y programas" [ref=f27e563] [cursor=pointer]:
+                  - img [ref=f27e566]: expand_less
+                - list [ref=f27e567]:
+                  - generic [ref=f27e568]:
+                    - listitem "Estado según las políticas" [ref=f27e570]:
+                      - button "Estado según las políticas" [ref=f27e571] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f27e574]:
+                      - button "Contenido de la aplicación" [ref=f27e575] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f27e578]:
+                      - button "Aprobada por profesores" [ref=f27e579] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f27e128]:
+          - button "Aumentar usuarios" [ref=f27e129] [cursor=pointer]:
+            - img [ref=f27e132]: finance_mode
+        - listitem "Monetizar con Play" [ref=f27e136]:
+          - button "Monetizar con Play" [ref=f27e137] [cursor=pointer]:
+            - img [ref=f27e140]: sell
+    - generic [ref=f27e22]:
+      - generic [ref=f27e583]:
+        - generic [ref=f27e587]:
+          - link "Volver a Panel de control" [ref=f27e590] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-dashboard
+            - img [ref=f27e594]: keyboard_backspace
+            - generic [ref=f27e595]: Panel de control
+          - generic [ref=f27e599]:
+            - heading "Contenido y audiencia objetivo" [level=1] [ref=f27e604]
+            - button "Descartar cambios" [disabled] [ref=f27e609]
+        - generic [ref=f27e616]:
+          - img [ref=f27e619]: info
+          - heading "Completa la sección Datos de inicio de sesión" [level=2] [ref=f27e622]
+          - generic [ref=f27e625]:
+            - generic [ref=f27e626]: Debes completar la sección de datos de inicio de sesión para empezar el cuestionario de audiencia objetivo y contenido
+            - link "Ir a Datos de inicio de sesión" [ref=f27e630] [cursor=pointer]:
+              - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/testing-credentials
+      - generic [ref=f27e30]:
+        - generic [ref=f27e634]:
+          - link "Novedades sobre productos" [ref=f27e635] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f27e636] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f27e637] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f27e638]:
+          - generic [ref=f27e639]: © 2026 Google
+          - link "Privacidad" [ref=f27e640] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f27e641] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f27e642] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

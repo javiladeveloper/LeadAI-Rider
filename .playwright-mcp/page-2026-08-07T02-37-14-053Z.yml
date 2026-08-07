@@ -1,0 +1,206 @@
+- generic [active] [ref=f34e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f34e3]:
+    - banner [ref=f34e4]:
+      - generic [ref=f34e6]:
+        - link [ref=f34e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f34e8]
+        - generic [ref=f34e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f34e45]:
+            - img [ref=f34e49]: notifications_unread
+            - generic [ref=f34e50]: Notificaciones sin leer
+          - generic [ref=f34e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f34e59] [cursor=pointer]'
+            - button [ref=f34e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f34e16]
+    - navigation [ref=f34e72]:
+      - link "Todas las aplicaciones" [ref=f34e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f34e75]: keyboard_backspace
+      - list [ref=f34e77]:
+        - listitem "Panel de control" [ref=f34e80]:
+          - button "Panel de control" [ref=f34e81] [cursor=pointer]:
+            - img [ref=f34e84]: dashboard
+        - listitem "Estadísticas" [ref=f34e88]:
+          - button "Estadísticas" [ref=f34e89] [cursor=pointer]:
+            - img [ref=f34e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f34e96]:
+          - button "Resumen de publicación" [ref=f34e97] [cursor=pointer]:
+            - img [ref=f34e100]: overview
+        - listitem "Protegida con Play" [ref=f34e104]:
+          - button "Protegida con Play" [ref=f34e105] [cursor=pointer]:
+            - img [ref=f34e108]: shield
+        - listitem "Probar y publicar" [ref=f34e112]:
+          - button "Probar y publicar" [ref=f34e113] [cursor=pointer]:
+            - img [ref=f34e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f34e120]:
+          - button "Monitorizar y mejorar" [ref=f34e121] [cursor=pointer]:
+            - img [ref=f34e124]: vital_signs
+          - list [ref=f34e537]:
+            - generic [ref=f34e539]:
+              - listitem "Cobertura y dispositivos" [ref=f34e541]:
+                - button "Cobertura y dispositivos" [ref=f34e542] [cursor=pointer]:
+                  - img [ref=f34e545]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f34e547]:
+                - button "Valoraciones y reseñas" [ref=f34e548] [cursor=pointer]:
+                  - img [ref=f34e551]: expand_more
+              - listitem "Android vitals" [ref=f34e553]:
+                - button "Android vitals" [ref=f34e554] [cursor=pointer]:
+                  - img [ref=f34e557]: expand_more
+              - listitem "Política y programas" [ref=f34e559]:
+                - button "Política y programas" [ref=f34e560] [cursor=pointer]:
+                  - img [ref=f34e563]: expand_less
+                - list [ref=f34e564]:
+                  - generic [ref=f34e566]:
+                    - listitem "Estado según las políticas" [ref=f34e568]:
+                      - button "Estado según las políticas" [ref=f34e569] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f34e572]:
+                      - button "Contenido de la aplicación" [ref=f34e573] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f34e576]:
+                      - button "Aprobada por profesores" [ref=f34e577] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f34e128]:
+          - button "Aumentar usuarios" [ref=f34e129] [cursor=pointer]:
+            - img [ref=f34e132]: finance_mode
+        - listitem "Monetizar con Play" [ref=f34e136]:
+          - button "Monetizar con Play" [ref=f34e137] [cursor=pointer]:
+            - img [ref=f34e140]: sell
+    - generic [ref=f34e22]:
+      - generic [ref=f34e581]:
+        - generic [ref=f34e585]:
+          - link "Volver a Contenido de la aplicación" [ref=f34e588] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/overview
+            - img [ref=f34e592]: keyboard_backspace
+            - generic [ref=f34e593]: Contenido de la aplicación
+          - heading "Funciones financieras" [level=1] [ref=f34e602]
+        - generic [ref=f34e606]:
+          - generic [ref=f34e607]:
+            - tablist [ref=f34e608]:
+              - 'tab "Funciones financieras en tu aplicación: paso 1 de 2" [selected] [ref=f34e609]':
+                - generic [ref=f34e610]: "1"
+                - generic [ref=f34e613]: Funciones financieras en tu aplicación
+              - 'tab "Documentación: paso 2 de 2" [disabled] [ref=f34e616]':
+                - generic [ref=f34e617]: "2"
+                - generic [ref=f34e620]: Documentación
+            - tabpanel [ref=f34e623]:
+              - generic [ref=f34e624]:
+                - heading "Funciones financieras en tu aplicación" [level=2] [ref=f34e635]
+                - group "Selecciona todas las funciones financieras que ofrece tu aplicación. De esta forma, nos aseguraremos de que los equipos adecuados revisen tu solicitud." [ref=f34e643]:
+                  - generic [ref=f34e644]: Funciones de la aplicación
+                  - generic [ref=f34e650]:
+                    - generic [ref=f34e651]: Selecciona todas las funciones financieras que ofrece tu aplicación. De esta forma, nos aseguraremos de que los equipos adecuados revisen tu solicitud.
+                    - group "Banca y préstamos" [ref=f34e656]:
+                      - generic [ref=f34e658]:
+                        - generic [ref=f34e659]: Banca y préstamos
+                        - generic [ref=f34e662] [cursor=pointer]:
+                          - checkbox "Prestamista directo de préstamos personales" [ref=f34e664]
+                          - generic [ref=f34e665]: Prestamista directo de préstamos personales
+                        - generic [ref=f34e668] [cursor=pointer]:
+                          - checkbox "Facilitador de préstamos" [ref=f34e670]
+                          - generic [ref=f34e671]: Facilitador de préstamos
+                        - generic [ref=f34e674] [cursor=pointer]:
+                          - checkbox "Préstamos de nómina" [ref=f34e676]
+                          - generic [ref=f34e677]: Préstamos de nómina
+                        - generic [ref=f34e680] [cursor=pointer]:
+                          - checkbox "Banca" [ref=f34e682]
+                          - generic [ref=f34e683]: Banca
+                        - generic [ref=f34e686] [cursor=pointer]:
+                          - checkbox "Línea de crédito" [ref=f34e688]
+                          - generic [ref=f34e689]: Línea de crédito
+                        - generic [ref=f34e692] [cursor=pointer]:
+                          - checkbox "Anticipos de salario" [ref=f34e694]
+                          - generic [ref=f34e695]: Anticipos de salario
+                        - generic [ref=f34e698] [cursor=pointer]:
+                          - checkbox "Banca de microfinanzas" [ref=f34e700]
+                          - generic [ref=f34e701]: Banca de microfinanzas
+                    - group "Pagos y transferencias" [ref=f34e706]:
+                      - generic [ref=f34e708]:
+                        - generic [ref=f34e709]: Pagos y transferencias
+                        - generic [ref=f34e712] [cursor=pointer]:
+                          - checkbox "Pagos móviles y carteras digitales" [ref=f34e714]
+                          - generic [ref=f34e715]: Pagos móviles y carteras digitales
+                        - generic [ref=f34e718] [cursor=pointer]:
+                          - checkbox "Servicios de transferencias de dinero y transferencias bancarias" [ref=f34e720]
+                          - generic [ref=f34e721]: Servicios de transferencias de dinero y transferencias bancarias
+                    - group "Contratos de compra" [ref=f34e726]:
+                      - generic [ref=f34e728]:
+                        - generic [ref=f34e729]: Contratos de compra
+                        - generic [ref=f34e732] [cursor=pointer]:
+                          - checkbox "Recompensas, puntos, programas de fidelidad para pasajeros de avión y otros incentivos" [ref=f34e734]
+                          - generic [ref=f34e735]: Recompensas, puntos, programas de fidelidad para pasajeros de avión y otros incentivos
+                        - generic [ref=f34e738] [cursor=pointer]:
+                          - checkbox "Servicios para pago aplazado" [ref=f34e740]
+                          - generic [ref=f34e741]: Servicios para pago aplazado
+                    - group "Trading y fondos" [ref=f34e746]:
+                      - generic [ref=f34e748]:
+                        - generic [ref=f34e749]: Trading y fondos
+                        - generic [ref=f34e752] [cursor=pointer]:
+                          - checkbox "Cartera de criptomonedas" [ref=f34e754]
+                          - generic [ref=f34e755]: Cartera de criptomonedas
+                        - generic [ref=f34e758] [cursor=pointer]:
+                          - checkbox "Mercado de criptomonedas" [ref=f34e760]
+                          - generic [ref=f34e761]: Mercado de criptomonedas
+                        - generic [ref=f34e764] [cursor=pointer]:
+                          - checkbox "Ventas, trading y premios de recursos digitales tokenizados (NFT)" [ref=f34e766]
+                          - generic [ref=f34e767]: Ventas, trading y premios de recursos digitales tokenizados (NFT)
+                        - generic [ref=f34e770] [cursor=pointer]:
+                          - checkbox "Trading de acciones y gestión de carteras" [ref=f34e772]
+                          - generic [ref=f34e773]: Trading de acciones y gestión de carteras
+                        - generic [ref=f34e776] [cursor=pointer]:
+                          - checkbox "Crowdfunding y fondos chit" [ref=f34e778]
+                          - generic [ref=f34e779]: Crowdfunding y fondos chit
+                        - generic [ref=f34e782] [cursor=pointer]:
+                          - checkbox "Mercados de predicción Más información sobre el programa piloto de mercados de predicción" [ref=f34e784]
+                          - generic [ref=f34e785]:
+                            - generic [ref=f34e786]: Mercados de predicción
+                            - generic [ref=f34e789]:
+                              - text: Más información sobre el
+                              - link "programa piloto de mercados de predicción" [ref=f34e790]:
+                                - /url: https://support.google.com/googleplay/android-developer/answer/16902027
+                    - group "Servicios de asistencia" [ref=f34e793]:
+                      - generic [ref=f34e795]:
+                        - generic [ref=f34e796]: Servicios de asistencia
+                        - generic [ref=f34e799] [cursor=pointer]:
+                          - checkbox "Informes y supervisión de crédito" [ref=f34e801]
+                          - generic [ref=f34e802]: Informes y supervisión de crédito
+                        - generic [ref=f34e805] [cursor=pointer]:
+                          - checkbox "Asesoramiento financiero" [ref=f34e807]
+                          - generic [ref=f34e808]: Asesoramiento financiero
+                        - generic [ref=f34e811] [cursor=pointer]:
+                          - checkbox "Seguros" [ref=f34e813]
+                          - generic [ref=f34e814]: Seguros
+                    - group "Otro" [ref=f34e819]:
+                      - generic [ref=f34e821]:
+                        - generic [ref=f34e822]: Otro
+                        - generic [ref=f34e825] [cursor=pointer]:
+                          - checkbox "Otro" [ref=f34e827]
+                          - generic [ref=f34e828]: Otro
+                        - strong [ref=f34e837]: O
+                        - generic [ref=f34e838] [cursor=pointer]:
+                          - checkbox "Mi aplicación no proporciona funciones financieras" [ref=f34e840]
+                          - generic [ref=f34e841]: Mi aplicación no proporciona funciones financieras
+            - generic [ref=f34e844]: "Funciones financieras en tu aplicación: paso 1 de 2"
+          - generic [ref=f34e852]:
+            - button "Descartar" [disabled] [ref=f34e853]
+            - button "Volver" [disabled] [ref=f34e857]
+            - button "Guardar como borrador" [disabled] [ref=f34e861]
+            - button "Siguiente" [disabled] [ref=f34e865]
+      - generic [ref=f34e30]:
+        - generic [ref=f34e871]:
+          - link "Novedades sobre productos" [ref=f34e872] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f34e873] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f34e874] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f34e875]:
+          - generic [ref=f34e876]: © 2026 Google
+          - link "Privacidad" [ref=f34e877] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f34e878] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f34e879] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

@@ -1,0 +1,260 @@
+- generic [ref=f42e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f42e3]:
+    - banner [ref=f42e4]:
+      - generic [ref=f42e6]:
+        - link [ref=f42e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f42e8]
+        - generic [ref=f42e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f42e45]:
+            - img [ref=f42e49]: notifications_unread
+            - generic [ref=f42e50]: Notificaciones sin leer
+          - generic [ref=f42e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f42e59] [cursor=pointer]'
+            - button [ref=f42e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f42e16]
+    - navigation [ref=f42e72]:
+      - link "Todas las aplicaciones" [ref=f42e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f42e75]: keyboard_backspace
+      - list [ref=f42e77]:
+        - listitem "Panel de control" [ref=f42e80]:
+          - button "Panel de control" [ref=f42e81] [cursor=pointer]:
+            - img [ref=f42e84]: dashboard
+        - listitem "Estadísticas" [ref=f42e88]:
+          - button "Estadísticas" [ref=f42e89] [cursor=pointer]:
+            - img [ref=f42e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f42e96]:
+          - button "Resumen de publicación" [ref=f42e97] [cursor=pointer]:
+            - img [ref=f42e100]: overview
+        - listitem "Protegida con Play" [ref=f42e104]:
+          - button "Protegida con Play" [ref=f42e105] [cursor=pointer]:
+            - img [ref=f42e108]: shield
+        - listitem "Probar y publicar" [ref=f42e112]:
+          - button "Probar y publicar" [ref=f42e113] [cursor=pointer]:
+            - img [ref=f42e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f42e120]:
+          - button "Monitorizar y mejorar" [ref=f42e121] [cursor=pointer]:
+            - img [ref=f42e124]: vital_signs
+          - list [ref=f42e533]:
+            - generic [ref=f42e535]:
+              - listitem "Cobertura y dispositivos" [ref=f42e537]:
+                - button "Cobertura y dispositivos" [ref=f42e538] [cursor=pointer]:
+                  - img [ref=f42e541]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f42e543]:
+                - button "Valoraciones y reseñas" [ref=f42e544] [cursor=pointer]:
+                  - img [ref=f42e547]: expand_more
+              - listitem "Android vitals" [ref=f42e549]:
+                - button "Android vitals" [ref=f42e550] [cursor=pointer]:
+                  - img [ref=f42e553]: expand_more
+              - listitem "Política y programas" [ref=f42e555]:
+                - button "Política y programas" [ref=f42e556] [cursor=pointer]:
+                  - img [ref=f42e559]: expand_less
+                - list [ref=f42e560]:
+                  - generic [ref=f42e562]:
+                    - listitem "Estado según las políticas" [ref=f42e564]:
+                      - button "Estado según las políticas" [ref=f42e565] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f42e568]:
+                      - button "Contenido de la aplicación" [ref=f42e569] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f42e572]:
+                      - button "Aprobada por profesores" [ref=f42e573] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f42e128]:
+          - button "Aumentar usuarios" [ref=f42e129] [cursor=pointer]:
+            - img [ref=f42e132]: finance_mode
+        - listitem "Monetizar con Play" [ref=f42e136]:
+          - button "Monetizar con Play" [ref=f42e137] [cursor=pointer]:
+            - img [ref=f42e140]: sell
+    - generic [ref=f42e22]:
+      - generic [ref=f42e649]:
+        - generic [ref=f42e653]:
+          - link "Volver a Panel de control" [ref=f42e656] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-dashboard
+            - img [ref=f42e660]: keyboard_backspace
+            - generic [ref=f42e661]: Panel de control
+          - generic [ref=f42e665]:
+            - heading "Clasificaciones del contenido" [level=1] [ref=f42e670]
+            - button "Descartar cambios" [disabled] [ref=f42e675]
+        - generic [ref=f42e695]:
+          - generic [ref=f42e700]:
+            - tablist [ref=f42e701]:
+              - 'tab "Categoría: paso 1 de 3" [disabled] [ref=f42e702]':
+                - img [ref=f42e815]: check
+                - generic [ref=f42e706]: Categoría
+              - 'tab "Cuestionario: paso 2 de 3" [disabled] [ref=f42e709]':
+                - img [ref=f42e1233]: check
+                - generic [ref=f42e713]: Cuestionario
+              - 'tab "Resumen: paso 3 de 3" [active] [selected] [ref=f42e716]':
+                - generic [ref=f42e717]: "3"
+                - generic [ref=f42e720]: Resumen
+            - tabpanel [ref=f42e723]:
+              - generic [ref=f42e1234]:
+                - generic [ref=f42e1236]:
+                  - heading "Resumen" [level=2] [ref=f42e1245]
+                  - generic [ref=f42e1249]:
+                    - paragraph [ref=f42e1250]: Es posible que las clasificaciones que se indican más abajo no se correspondan con las que se muestran a los usuarios en Google Play.
+                    - list [ref=f42e1251]:
+                      - listitem [ref=f42e1252]: Google puede rechazar tu aplicación o actualización si se determina que se ha proporcionado información falsa acerca de su contenido
+                      - listitem [ref=f42e1253]: Google puede utilizar tus respuestas a las preguntas del cuestionario para generar clasificaciones correspondientes a territorios específicos si así lo exigen las leyes locales
+                      - listitem [ref=f42e1254]: Las autoridades de clasificación que forman parte de la IARC pueden cambiar la clasificación de tu aplicación después de revisarla
+                    - paragraph [ref=f42e1255]:
+                      - text: Google y la IARC compartirán con las autoridades de clasificación tu información de contacto, las respuestas que hayas proporcionado en el cuestionario, tus clasificaciones, tus solicitudes de asistencia como desarrollador y los detalles de tu aplicación.
+                      - link "Más información sobre las clasificaciones del contenido de aplicaciones y juegos, Se abre en otra pestaña" [ref=f42e1257] [cursor=pointer]:
+                        - /url: https://support.google.com/googleplay/android-developer/answer/188189
+                        - text: Más información
+                - generic [ref=f42e1258]:
+                  - generic [ref=f42e1261]:
+                    - generic [ref=f42e1263]:
+                      - generic [ref=f42e1264]: Categoría
+                      - generic [ref=f42e1266]: Todos los demás tipos de aplicaciones
+                    - generic [ref=f42e1270]:
+                      - generic [ref=f42e1271]: Varios
+                      - generic [ref=f42e1273]: Se comparte la ubicación geográfica del dispositivo
+                  - heading "Tus clasificaciones" [level=2] [ref=f42e1287]
+                  - generic [ref=f42e1289]:
+                    - generic [ref=f42e1292]:
+                      - heading "Brasil" [level=3] [ref=f42e1298]
+                      - generic [ref=f42e1299]: "Autoridad de clasificación: Classificação Indicativa (ClassInd)"
+                    - generic [ref=f42e1306]:
+                      - generic [ref=f42e1308]:
+                        - generic [ref=f42e1309]: Valoración
+                        - generic [ref=f42e1315]:
+                          - img "Todas las edades" [ref=f42e1317]
+                          - generic [ref=f42e1318]: Todas las edades
+                      - generic [ref=f42e1323]:
+                        - generic [ref=f42e1324]: Descriptores de contenido
+                        - generic [ref=f42e1326]: "-"
+                      - generic [ref=f42e1330]:
+                        - generic [ref=f42e1331]: Elementos interactivos
+                        - generic [ref=f42e1333]: Ubicación compartida
+                  - generic [ref=f42e1338]:
+                    - generic [ref=f42e1341]:
+                      - heading "Norteamérica" [level=3] [ref=f42e1347]
+                      - generic [ref=f42e1348]: "Autoridad de clasificación: Entertainment Software Rating Board (ESRB)"
+                    - generic [ref=f42e1355]:
+                      - generic [ref=f42e1357]:
+                        - generic [ref=f42e1358]: Valoración
+                        - generic [ref=f42e1364]:
+                          - img "Para todos" [ref=f42e1366]
+                          - generic [ref=f42e1367]: Para todos
+                      - generic [ref=f42e1372]:
+                        - generic [ref=f42e1373]: Descriptores de contenido
+                        - generic [ref=f42e1375]: "-"
+                      - generic [ref=f42e1379]:
+                        - generic [ref=f42e1380]: Elementos interactivos
+                        - generic [ref=f42e1382]: Ubicación compartida
+                  - generic [ref=f42e1387]:
+                    - generic [ref=f42e1390]:
+                      - heading "Europa" [level=3] [ref=f42e1396]
+                      - generic [ref=f42e1397]: "Autoridad de clasificación: Pan-European Game Information (PEGI)"
+                    - generic [ref=f42e1404]:
+                      - generic [ref=f42e1406]:
+                        - generic [ref=f42e1407]: Valoración
+                        - generic [ref=f42e1413]:
+                          - img "PEGI 3" [ref=f42e1415]
+                          - generic [ref=f42e1416]: PEGI 3
+                      - generic [ref=f42e1421]:
+                        - generic [ref=f42e1422]: Descriptores de contenido
+                        - generic [ref=f42e1424]: "-"
+                      - generic [ref=f42e1428]:
+                        - generic [ref=f42e1429]: Elementos interactivos
+                        - generic [ref=f42e1431]: Ubicación compartida
+                  - generic [ref=f42e1436]:
+                    - generic [ref=f42e1439]:
+                      - heading "Alemania" [level=3] [ref=f42e1445]
+                      - generic [ref=f42e1446]: "Autoridad de clasificación: Unterhaltungssoftware Selbstkontrolle (USK)"
+                    - generic [ref=f42e1453]:
+                      - generic [ref=f42e1455]:
+                        - generic [ref=f42e1456]: Valoración
+                        - generic [ref=f42e1462]:
+                          - 'img "USK: Para todos los públicos" [ref=f42e1464]'
+                          - generic [ref=f42e1465]: "USK: Para todos los públicos"
+                      - generic [ref=f42e1470]:
+                        - generic [ref=f42e1471]: Descriptores de contenido
+                        - generic [ref=f42e1473]: "-"
+                      - generic [ref=f42e1477]:
+                        - generic [ref=f42e1478]: Elementos interactivos
+                        - generic [ref=f42e1480]: Ubicación compartida
+                  - generic [ref=f42e1485]:
+                    - generic [ref=f42e1488]:
+                      - heading "Resto del mundo" [level=3] [ref=f42e1494]
+                      - generic [ref=f42e1495]: "Autoridad de clasificación: IARC Generic"
+                    - generic [ref=f42e1502]:
+                      - generic [ref=f42e1504]:
+                        - generic [ref=f42e1505]: Valoración
+                        - generic [ref=f42e1511]:
+                          - img "Para mayores de 3 años" [ref=f42e1513]
+                          - generic [ref=f42e1514]: Para mayores de 3 años
+                      - generic [ref=f42e1519]:
+                        - generic [ref=f42e1520]: Descriptores de contenido
+                        - generic [ref=f42e1522]: "-"
+                      - generic [ref=f42e1526]:
+                        - generic [ref=f42e1527]: Elementos interactivos
+                        - generic [ref=f42e1529]: Ubicación compartida
+                  - generic [ref=f42e1534]:
+                    - generic [ref=f42e1537]:
+                      - heading "Rusia" [level=3] [ref=f42e1543]
+                      - generic [ref=f42e1544]: "Autoridad de clasificación: Google Play"
+                    - generic [ref=f42e1551]:
+                      - generic [ref=f42e1553]:
+                        - generic [ref=f42e1554]: Valoración
+                        - generic [ref=f42e1560]:
+                          - img "Para mayores de 3 años" [ref=f42e1562]
+                          - generic [ref=f42e1563]: Para mayores de 3 años
+                      - generic [ref=f42e1568]:
+                        - generic [ref=f42e1569]: Descriptores de contenido
+                        - generic [ref=f42e1571]: "-"
+                      - generic [ref=f42e1575]:
+                        - generic [ref=f42e1576]: Elementos interactivos
+                        - generic [ref=f42e1578]: Ubicación compartida
+                  - generic [ref=f42e1583]:
+                    - generic [ref=f42e1586]:
+                      - heading "Corea del Sur" [level=3] [ref=f42e1592]
+                      - generic [ref=f42e1593]: "Autoridad de clasificación: Google Play"
+                    - generic [ref=f42e1596]:
+                      - generic [ref=f42e1600]:
+                        - img [ref=f42e1604]: warning
+                        - generic [ref=f42e1605]:
+                          - generic [ref=f42e1606]: Puede que los juegos no adecuados para menores de 19 años se retiren de Google Play en Corea del Sur, a menos que el GRAC les asigne una clasificación.
+                          - link "Más información sobre el GRAC, Se abre en otra pestaña" [ref=f42e1608] [cursor=pointer]:
+                            - /url: https://www.grac.or.kr/english/enforcement/Enforcement.aspx
+                            - text: Más información
+                      - generic [ref=f42e1612]:
+                        - generic [ref=f42e1614]:
+                          - generic [ref=f42e1615]: Valoración
+                          - generic [ref=f42e1621]:
+                            - img "Para mayores de 3 años" [ref=f42e1623]
+                            - generic [ref=f42e1624]: Para mayores de 3 años
+                        - generic [ref=f42e1629]:
+                          - generic [ref=f42e1630]: Descriptores de contenido
+                          - generic [ref=f42e1632]: "-"
+                        - generic [ref=f42e1636]:
+                          - generic [ref=f42e1637]: Elementos interactivos
+                          - generic [ref=f42e1639]: Ubicación compartida
+          - generic [ref=f42e1646]:
+            - generic [ref=f42e1647]:
+              - img [ref=f42e1651]: check_circle
+              - generic [ref=f42e1652]: Si guardas los cambios, se guardarán en Resumen de publicación y podrás enviarlos a revisión.
+            - generic [ref=f42e1655]:
+              - button "Volver" [ref=f42e1657]
+              - button "Guardar" [ref=f42e1662] [cursor=pointer]
+      - generic [ref=f42e30]:
+        - generic [ref=f42e685]:
+          - link "Novedades sobre productos" [ref=f42e686] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f42e687] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f42e688] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f42e689]:
+          - generic [ref=f42e690]: © 2026 Google
+          - link "Privacidad" [ref=f42e691] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f42e692] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f42e693] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/
+  - status [ref=f42e1227]

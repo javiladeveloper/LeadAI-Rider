@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import pe.leadai.rider.datos.CarreraClienteDto
+import pe.leadai.rider.datos.OfertaDto
+import pe.leadai.rider.datos.SugerenciaDireccionDto
 import pe.leadai.rider.datos.CarrerasClienteApi
 import pe.leadai.rider.datos.MotorizadosApi
 import pe.leadai.rider.datos.PerfilApi
@@ -69,11 +71,38 @@ data class ClienteUiState(
     val montoSugerido: Long? = null,
     val kmEstimado: Double? = null,
     val pidiendo: Boolean = false,
+    /**
+     * `true` mientras el cliente ajusta cuánto ofrece, antes de publicar.
+     *
+     * La carrera NO sale al aire hasta que confirme acá: el precio es su
+     * decisión, no una tarifa que la app le impone.
+     */
+    val ajustandoPrecio: Boolean = false,
     /** Las carreras ya cerradas — alimenta la pestaña "Viajes". */
     val historial: List<CarreraClienteDto> = emptyList(),
     /** Mi perfil: el celular sale de acá, no de un campo por pedido. */
     val perfil: PerfilPersonaDto? = null,
     val guardandoPerfil: Boolean = false,
+
+    // ── Buscador de ruta ────────────────────────────────────────────────
+    /** Cuál de los dos campos se está escribiendo. */
+    val editandoOrigen: Boolean = true,
+    val sugerencias: List<SugerenciaDireccionDto> = emptyList(),
+    val buscandoDirecciones: Boolean = false,
+
+    // ── Mercado de ofertas ──────────────────────────────────────────────
+    /** Las propuestas que llegaron, de la más barata a la más cara. */
+    val ofertas: List<OfertaDto> = emptyList(),
+    /** Id de la oferta que se está eligiendo (deshabilita el resto). */
+    val eligiendoOferta: String? = null,
+    /**
+     * La carrera recién terminada, esperando que el cliente la califique.
+     *
+     * Se guarda aparte de `miCarrera` porque para cuando hay que preguntar,
+     * `miCarrera` ya es `null` — el backend deja de devolverla al cerrarse.
+     */
+    val carreraPorCalificar: CarreraClienteDto? = null,
+    val calificando: Boolean = false,
 )
 
 private const val MENSAJE_SIN_ORIGEN = "Falta el origen"
@@ -212,7 +241,7 @@ class ClienteViewModel(
     fun refrescar() {
         viewModelScope.launch(dispatcher) {
             when (val r = api.miCarrera()) {
-                is Resultado.Ok -> _estado.update { it.copy(miCarrera = r.valor) }
+                is Resultado.Ok -> _estado.update { alLlegarLaCarrera(it, r.valor) }
                 is Resultado.Error -> Unit
             }
         }
@@ -232,6 +261,143 @@ class ClienteViewModel(
         }
     }
 
+    // ── Buscador de direcciones ─────────────────────────────────────────
+
+    /**
+     * Cancela la búsqueda anterior cuando el cliente sigue escribiendo.
+     *
+     * Sin esto, "bolognesi" dispara 9 llamadas (una por letra) y Nominatim
+     * —que admite 1 por segundo para todo el mundo— las rechaza. Peor: las
+     * respuestas llegan desordenadas y la lista parpadea con resultados de
+     * consultas viejas.
+     */
+    private var busquedaEnCurso: kotlinx.coroutines.Job? = null
+
+    /** Cuál de los dos campos está escribiendo: define a quién le aplica la sugerencia. */
+    fun enfocarCampo(esOrigen: Boolean) {
+        _estado.update { it.copy(editandoOrigen = esOrigen, sugerencias = emptyList()) }
+    }
+
+    /** Busca direcciones con lo que lleva escrito. */
+    private fun buscarDirecciones(texto: String) {
+        busquedaEnCurso?.cancel()
+        if (texto.trim().length < 3) {
+            _estado.update { it.copy(sugerencias = emptyList(), buscandoDirecciones = false) }
+            return
+        }
+        busquedaEnCurso = viewModelScope.launch(dispatcher) {
+            // Espera a que deje de tipear: 400 ms es el punto donde ya no se
+            // siente lento y se ahorran casi todas las llamadas.
+            kotlinx.coroutines.delay(400)
+            _estado.update { it.copy(buscandoDirecciones = true) }
+            val a = _estado.value
+            when (val r = api.buscarDirecciones(texto, a.origenLat, a.origenLng)) {
+                is Resultado.Ok -> _estado.update {
+                    it.copy(sugerencias = r.valor, buscandoDirecciones = false)
+                }
+                is Resultado.Error -> _estado.update {
+                    // Sin sugerencias igual puede escribir a mano: no se
+                    // muestra un error por algo que es una ayuda.
+                    it.copy(sugerencias = emptyList(), buscandoDirecciones = false)
+                }
+            }
+        }
+    }
+
+    /** El cliente toca una sugerencia: se fija el texto Y sus coordenadas. */
+    fun elegirSugerencia(s: SugerenciaDireccionDto) {
+        _estado.update {
+            if (it.editandoOrigen) {
+                it.copy(
+                    origen = s.texto, origenLat = s.lat, origenLng = s.lng,
+                    sugerencias = emptyList(),
+                )
+            } else {
+                it.copy(destino = s.texto, sugerencias = emptyList())
+            }
+        }
+        // Con los dos puntos ya se puede calcular cuánto conviene ofrecer.
+        pedirSugerencia()
+    }
+
+    // ── Mercado de ofertas ──────────────────────────────────────────────
+
+    /**
+     * Las propuestas que llegaron. Silencioso: se llama en cada vuelta del
+     * polling y un fallo puntual no debe borrar las que ya se ven.
+     */
+    fun refrescarOfertas() {
+        val carrera = _estado.value.miCarrera ?: return
+        // Solo mientras nadie la tomó: después las ofertas ya no importan.
+        if (carrera.estado != "disponible") return
+        viewModelScope.launch(dispatcher) {
+            when (val r = api.ofertas(carrera.id)) {
+                is Resultado.Ok -> _estado.update { it.copy(ofertas = r.valor.ofertas) }
+                is Resultado.Error -> Unit
+            }
+        }
+    }
+
+    /** El cliente elige a un rider: esa oferta gana y la carrera se le asigna. */
+    fun elegirOferta(oferta: OfertaDto) {
+        val carrera = _estado.value.miCarrera ?: return
+        if (_estado.value.eligiendoOferta != null) return
+        _estado.update { it.copy(eligiendoOferta = oferta.id) }
+        viewModelScope.launch(dispatcher) {
+            when (val r = api.elegir(carrera.id, oferta.id)) {
+                is Resultado.Ok -> {
+                    _estado.update { it.copy(eligiendoOferta = null, ofertas = emptyList()) }
+                    avisos.mostrar("🏍️ ¡Listo! " + (oferta.rider.nombre ?: "Tu motorizado") + " va en camino")
+                    refrescar()
+                }
+                is Resultado.Error -> {
+                    _estado.update { it.copy(eligiendoOferta = null) }
+                    // 409: otro rider retiró su oferta, o ya eligió desde
+                    // otro lado. Se refresca para mostrar lo que queda.
+                    avisos.mostrar(r.mensaje.ifBlank { "Esa oferta ya no está disponible" })
+                    refrescarOfertas()
+                }
+            }
+        }
+    }
+
+    /**
+     * Sube lo que ofrece porque nadie le ofertó.
+     *
+     * Sin esto solo podría cancelar y volver a pedir, perdiendo las ofertas
+     * que ya tenía y su lugar en la cola.
+     */
+    fun subirMonto(nuevoCentavos: Long) {
+        val carrera = _estado.value.miCarrera ?: return
+        viewModelScope.launch(dispatcher) {
+            when (api.cambiarMonto(carrera.id, nuevoCentavos)) {
+                is Resultado.Ok -> {
+                    avisos.mostrar("Subiste tu oferta. Avisamos a los motorizados de tu zona.")
+                    refrescar()
+                }
+                is Resultado.Error -> avisos.mostrar("No se pudo cambiar el monto")
+            }
+        }
+    }
+
+    /** Califica al rider tras la entrega. */
+    fun calificar(carreraId: String, estrellas: Int, comentario: String? = null) {
+        if (_estado.value.calificando) return
+        _estado.update { it.copy(calificando = true) }
+        viewModelScope.launch(dispatcher) {
+            when (api.calificar(carreraId, estrellas, comentario)) {
+                is Resultado.Ok -> avisos.mostrar("¡Gracias por calificar!")
+                is Resultado.Error -> avisos.mostrar("No se pudo enviar tu calificación")
+            }
+            // Se cierra pase lo que pase: si el envío falló, insistir con el
+            // diálogo abierto solo deja al cliente atrapado tras su viaje.
+            _estado.update { it.copy(calificando = false, carreraPorCalificar = null) }
+        }
+    }
+
+    /** "Ahora no": se cierra sin calificar y no se vuelve a preguntar por esa carrera. */
+    fun omitirCalificacion() = _estado.update { it.copy(carreraPorCalificar = null) }
+
     fun elegirTipo(tipo: String) {
         _estado.update {
             // Un pasajero no manda al rider a comprar nada: si cambia de tipo,
@@ -245,11 +411,19 @@ class ClienteViewModel(
     }
 
     fun cambiarOrigen(valor: String) {
-        // Si escribe el origen a mano, el GPS deja de aplicar.
-        _estado.update { it.copy(origen = valor, origenLat = null, origenLng = null, error = null) }
+        // Si escribe el origen a mano, el GPS deja de aplicar: lo que vale es
+        // lo que elija de las sugerencias.
+        _estado.update {
+            it.copy(origen = valor, origenLat = null, origenLng = null, error = null,
+                editandoOrigen = true)
+        }
+        buscarDirecciones(valor)
     }
 
-    fun cambiarDestino(valor: String) = _estado.update { it.copy(destino = valor, error = null) }
+    fun cambiarDestino(valor: String) {
+        _estado.update { it.copy(destino = valor, error = null, editandoOrigen = false) }
+        buscarDirecciones(valor)
+    }
 
     /** El FLETE, en soles. */
     fun cambiarMonto(valor: String) =
@@ -289,6 +463,35 @@ class ClienteViewModel(
         }
     }
 
+    /**
+     * Paso previo a publicar: valida la ruta y abre el ajuste de precio.
+     *
+     * Se valida ACÁ y no dentro del popup para que el cliente no descubra que
+     * le falta el destino recién después de elegir cuánto paga.
+     */
+    fun revisarPrecio() {
+        val a = _estado.value
+        if (a.pidiendo || a.ajustandoPrecio) return
+        if (a.origen.isBlank()) {
+            _estado.update { it.copy(error = MENSAJE_SIN_ORIGEN) }
+            return
+        }
+        if (a.destino.isBlank()) {
+            _estado.update { it.copy(error = MENSAJE_SIN_DESTINO) }
+            return
+        }
+        _estado.update { it.copy(ajustandoPrecio = true, error = null) }
+        // Si todavía no hay cálculo, se pide ahora: el popup arranca con la
+        // referencia puesta en vez de un campo vacío.
+        if (a.montoSugerido == null) pedirSugerencia()
+    }
+
+    fun cerrarAjustePrecio() = _estado.update { it.copy(ajustandoPrecio = false) }
+
+    /** El precio que el cliente ofrece, en centavos (viene de los +/- del popup). */
+    fun cambiarMontoCentavos(centavos: Long) =
+        _estado.update { it.copy(monto = (centavos / 100).toString(), error = null) }
+
     fun pedir() {
         val a = _estado.value
         if (a.pidiendo) return
@@ -321,7 +524,7 @@ class ClienteViewModel(
                 )
             ) {
                 is Resultado.Ok -> {
-                    _estado.update { it.copy(pidiendo = false) }
+                    _estado.update { it.copy(pidiendo = false, ajustandoPrecio = false) }
                     avisos.mostrar("🛵 Buscando motorizado…")
                     refrescar()
                 }
@@ -339,6 +542,8 @@ class ClienteViewModel(
         viewModelScope.launch(dispatcher) {
             when (val r = api.cancelar(id)) {
                 is Resultado.Ok -> {
+                    // Sin `carreraPorCalificar`: nadie califica un viaje que
+                    // canceló él mismo.
                     _estado.update { it.copy(miCarrera = null) }
                     avisos.mostrar("Carrera cancelada")
                 }
@@ -354,3 +559,37 @@ private fun soloNumeros(valor: String): String = valor.filter { it.isDigit() }.t
 /** Soles como texto → centavos. Vacío = null (que el backend sugiera). */
 private fun aCentavos(soles: String): Long? =
     soles.trim().takeIf { it.isNotBlank() }?.toLongOrNull()?.let { it * 100 }
+
+/** Los estados en que la carrera ya tiene un motorizado a cargo. */
+private val ESTADOS_CON_RIDER = setOf("aceptada", "recogida")
+
+/**
+ * Aplica la carrera que trajo el polling y decide si toca calificar.
+ *
+ * La calificación se dispara por la TRANSICIÓN, no por el estado: hay que
+ * haber visto la carrera con un rider asignado y que después desaparezca o
+ * quede entregada. Mirando solo el estado actual, el diálogo reaparecería en
+ * cada vuelta del polling.
+ *
+ * Solo con rider: una carrera que nadie tomó y venció no tiene a quién
+ * calificar.
+ */
+internal fun alLlegarLaCarrera(
+    actual: ClienteUiState,
+    nueva: CarreraClienteDto?,
+): ClienteUiState {
+    val anterior = actual.miCarrera
+    // `aceptada`/`recogida` son justo los estados en que hay un rider asignado.
+    val teniaRider = anterior != null && anterior.estado in ESTADOS_CON_RIDER
+    val termino = teniaRider && (nueva == null || nueva.estado == "entregada")
+    if (!termino) return actual.copy(miCarrera = nueva)
+
+    // Ya la calificó (o dijo "ahora no") en esta misma sesión: no se insiste.
+    val yaPreguntamos = actual.carreraPorCalificar?.id == anterior!!.id
+    return actual.copy(
+        miCarrera = nueva,
+        carreraPorCalificar = if (yaPreguntamos) actual.carreraPorCalificar else anterior,
+        // Las ofertas viejas no tienen sentido en la próxima carrera.
+        ofertas = emptyList(),
+    )
+}

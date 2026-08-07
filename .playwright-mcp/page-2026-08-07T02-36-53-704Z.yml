@@ -1,0 +1,135 @@
+- generic [ref=f32e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f32e3]:
+    - banner [ref=f32e4]:
+      - generic [ref=f32e6]:
+        - link [ref=f32e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f32e8]
+        - generic [ref=f32e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f32e345]:
+            - img [ref=f32e19]: notifications_unread
+            - generic [ref=f32e20]: Notificaciones sin leer
+          - generic [ref=f32e22]:
+            - 'button "Light Drive: moto y envíos" [ref=f32e30] [cursor=pointer]'
+            - button [ref=f32e45] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f32e47]
+    - navigation [ref=f32e53]:
+      - link "Todas las aplicaciones" [ref=f32e54] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f32e56]: keyboard_backspace
+      - list [ref=f32e58]:
+        - listitem "Panel de control" [ref=f32e61]:
+          - button "Panel de control" [ref=f32e62] [cursor=pointer]:
+            - img [ref=f32e65]: dashboard
+        - listitem "Estadísticas" [ref=f32e69]:
+          - button "Estadísticas" [ref=f32e70] [cursor=pointer]:
+            - img [ref=f32e73]: bar_chart
+        - listitem "Resumen de publicación" [ref=f32e77]:
+          - button "Resumen de publicación" [ref=f32e78] [cursor=pointer]:
+            - img [ref=f32e81]: overview
+        - listitem "Protegida con Play" [ref=f32e85]:
+          - button "Protegida con Play" [ref=f32e86] [cursor=pointer]:
+            - img [ref=f32e89]: shield
+        - listitem "Probar y publicar" [ref=f32e93]:
+          - button "Probar y publicar" [ref=f32e94] [cursor=pointer]:
+            - img [ref=f32e97]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f32e101]:
+          - button "Monitorizar y mejorar" [ref=f32e102] [cursor=pointer]:
+            - img [ref=f32e105]: vital_signs
+          - list [ref=f32e107]:
+            - generic [ref=f32e109]:
+              - listitem "Cobertura y dispositivos" [ref=f32e111]:
+                - button "Cobertura y dispositivos" [ref=f32e112] [cursor=pointer]:
+                  - img [ref=f32e115]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f32e117]:
+                - button "Valoraciones y reseñas" [ref=f32e118] [cursor=pointer]:
+                  - img [ref=f32e121]: expand_more
+              - listitem "Android vitals" [ref=f32e123]:
+                - button "Android vitals" [ref=f32e124] [cursor=pointer]:
+                  - img [ref=f32e127]: expand_more
+              - listitem "Política y programas" [ref=f32e129]:
+                - button "Política y programas" [ref=f32e130] [cursor=pointer]:
+                  - img [ref=f32e133]: expand_less
+                - list [ref=f32e134]:
+                  - generic [ref=f32e136]:
+                    - listitem "Estado según las políticas" [ref=f32e138]:
+                      - button "Estado según las políticas" [ref=f32e139] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f32e142]:
+                      - button "Contenido de la aplicación" [ref=f32e143] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f32e146]:
+                      - button "Aprobada por profesores" [ref=f32e147] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f32e151]:
+          - button "Aumentar usuarios" [ref=f32e152] [cursor=pointer]:
+            - img [ref=f32e155]: finance_mode
+        - listitem "Monetizar con Play" [ref=f32e159]:
+          - button "Monetizar con Play" [ref=f32e160] [cursor=pointer]:
+            - img [ref=f32e163]: sell
+    - generic [ref=f32e166]:
+      - generic [ref=f32e173]:
+        - generic [ref=f32e177]:
+          - link "Volver a Contenido de la aplicación" [ref=f32e180] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/overview
+            - img [ref=f32e184]: keyboard_backspace
+            - generic [ref=f32e185]: Contenido de la aplicación
+          - generic [ref=f32e189]:
+            - heading "Contenido y audiencia objetivo" [level=1] [ref=f32e194]
+            - button "Descartar cambios" [disabled] [ref=f32e199]
+        - generic [ref=f32e207]:
+          - tablist [ref=f32e208]:
+            - 'tab "Edad objetivo: paso 1 de 5" [disabled] [ref=f32e209]':
+              - img [ref=f32e365]: check
+              - generic [ref=f32e213]: Edad objetivo
+            - 'tab "Detalles de la aplicación: paso 2 de 5" [disabled] [ref=f32e216]':
+              - generic [ref=f32e217]: "2"
+              - generic [ref=f32e220]: Detalles de la aplicación
+            - 'tab "Anuncios: paso 3 de 5" [disabled] [ref=f32e223]':
+              - generic [ref=f32e224]: "3"
+              - generic [ref=f32e227]: Anuncios
+            - 'tab "Presencia en Google Play Store: paso 4 de 5" [disabled] [ref=f32e230]':
+              - generic [ref=f32e231]: "4"
+              - generic [ref=f32e234]: Presencia en Google Play Store
+            - 'tab "Resumen: paso 5 de 5" [selected] [ref=f32e237]':
+              - generic [ref=f32e238]: "5"
+              - generic [ref=f32e241]: Resumen
+          - tabpanel [ref=f32e244]:
+            - generic [ref=f32e368]:
+              - heading "Información aportada" [level=2] [ref=f32e377]
+              - generic [ref=f32e383]:
+                - generic [ref=f32e384]: Edad objetivo
+                - generic [ref=f32e386]: "Grupo de edad objetivo de tu aplicación: A partir de 18 años"
+        - generic [ref=f32e391]:
+          - generic [ref=f32e392]:
+            - img [ref=f32e411]: check_circle
+            - generic [ref=f32e393]: Cambio guardado. Para enviarlo a revisión, ve a Resumen de publicación.
+          - generic [ref=f32e396]:
+            - button "Volver" [ref=f32e413]
+            - button "Guardar" [disabled] [ref=f32e418]
+      - generic [ref=f32e335]:
+        - generic [ref=f32e336]:
+          - link "Novedades sobre productos" [ref=f32e337] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f32e338] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f32e339] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f32e340]:
+          - generic [ref=f32e341]: © 2026 Google
+          - link "Privacidad" [ref=f32e342] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f32e343] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f32e344] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/
+  - dialog [ref=f32e426]:
+    - generic [ref=f32e427]:
+      - heading "¿Ir a Resumen de publicación?" [level=1] [ref=f32e428]
+      - button "Cerrar" [ref=f32e429] [cursor=pointer]:
+        - img [ref=f32e432]: close
+    - generic [ref=f32e433]: Tu cambio se ha guardado. Si quieres enviarlo a Google para revisión, ve a Resumen de publicación.
+    - generic [ref=f32e440]:
+      - button "Ahora no" [ref=f32e441]
+      - button "Acceder a la información general" [active] [ref=f32e445]

@@ -97,6 +97,79 @@ class CarrerasClienteApi(private val api: ApiCliente) {
             is Resultado.Error -> respuesta
         }
 
+    /**
+     * `GET /carreras/direcciones` — direcciones que coinciden con lo escrito.
+     *
+     * Las coordenadas del cliente van en la consulta para acotar a SU ciudad:
+     * hay una "Av. Bolognesi" en casi toda ciudad del Perú, y sin eso la
+     * primera sugerencia sería la de Lima.
+     */
+    suspend fun buscarDirecciones(
+        consulta: String,
+        lat: Double? = null,
+        lng: Double? = null,
+    ): Resultado<List<SugerenciaDireccionDto>> {
+        val coords = if (lat != null && lng != null) "&lat=$lat&lng=$lng" else ""
+        return when (
+            val r = api.get<SugerenciasDireccionDto>("/carreras/direcciones?q=$consulta$coords")
+        ) {
+            is Resultado.Ok -> Resultado.Ok(r.valor.sugerencias)
+            is Resultado.Error -> r
+        }
+    }
+
+    /** `GET /carreras/direccion-en` — qué dirección hay en un punto del mapa. */
+    suspend fun direccionEn(lat: Double, lng: Double): Resultado<String?> =
+        when (val r = api.get<DireccionEnPuntoDto>("/carreras/direccion-en?lat=$lat&lng=$lng")) {
+            is Resultado.Ok -> Resultado.Ok(r.valor.direccion)
+            is Resultado.Error -> r
+        }
+
+    /** `GET /carreras/:id/ofertas` — quiénes quieren llevarla y por cuánto. */
+    suspend fun ofertas(carreraId: String): Resultado<OfertasResponseDto> =
+        api.get<OfertasResponseDto>("/carreras/$carreraId/ofertas")
+
+    /**
+     * `POST /carreras/:id/elegir` — el cliente elige a un rider.
+     *
+     * 409 si otra cosa pasó mientras miraba (el rider retiró su oferta, o él
+     * mismo eligió desde otro lado).
+     */
+    suspend fun elegir(carreraId: String, ofertaId: String): Resultado<AvanzarEstadoResponseDto> =
+        api.post<JsonObject, AvanzarEstadoResponseDto>(
+            path = "/carreras/$carreraId/elegir",
+            body = buildJsonObject { put("ofertaId", ofertaId) },
+            requiereSesion = true,
+        )
+
+    /**
+     * `POST /carreras/:id/monto` — subir lo que ofrece porque nadie le ofertó.
+     *
+     * Sin esto solo podría cancelar y volver a pedir, perdiendo las ofertas
+     * que ya tenía.
+     */
+    suspend fun cambiarMonto(carreraId: String, montoCentavos: Long): Resultado<AvanzarEstadoResponseDto> =
+        api.post<JsonObject, AvanzarEstadoResponseDto>(
+            path = "/carreras/$carreraId/monto",
+            body = buildJsonObject { put("montoCentavos", montoCentavos) },
+            requiereSesion = true,
+        )
+
+    /** `POST /carreras/:id/calificar` — 1 a 5 estrellas al terminar. */
+    suspend fun calificar(
+        carreraId: String,
+        estrellas: Int,
+        comentario: String? = null,
+    ): Resultado<AvanzarEstadoResponseDto> =
+        api.post<JsonObject, AvanzarEstadoResponseDto>(
+            path = "/carreras/$carreraId/calificar",
+            body = buildJsonObject {
+                put("estrellas", estrellas)
+                if (!comentario.isNullOrBlank()) put("comentario", comentario)
+            },
+            requiereSesion = true,
+        )
+
     /** `POST /carreras/:id/cancelar` — 409 si un rider ya la tomó (está yendo). */
     suspend fun cancelar(carreraId: String): Resultado<AvanzarEstadoResponseDto> =
         api.post<JsonObject, AvanzarEstadoResponseDto>(

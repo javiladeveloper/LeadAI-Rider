@@ -1,0 +1,331 @@
+- generic [ref=f16e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f16e3]:
+    - banner [ref=f16e4]:
+      - generic [ref=f16e6]:
+        - link [ref=f16e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f16e8]
+        - generic [ref=f16e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f16e15]:
+            - img [ref=f16e19]: notifications_unread
+            - generic [ref=f16e20]: Notificaciones sin leer
+          - generic [ref=f16e22]:
+            - 'button "Jala: Moto y encomiendas" [ref=f16e30] [cursor=pointer]'
+            - button [ref=f16e45] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f16e47]
+    - generic [ref=f16e49]:
+      - generic [ref=f16e643]:
+        - button "Ocultar panel lateral" [ref=f16e644] [cursor=pointer]:
+          - img [ref=f16e647]: chevron_right
+        - button "Cerrar panel lateral" [ref=f16e649] [cursor=pointer]:
+          - img [ref=f16e652]: close
+      - generic [ref=f16e1016]:
+        - generic [ref=f16e1017]:
+          - generic [ref=f16e1018]:
+            - generic [ref=f16e1019]:
+              - search "Buscar elementos":
+                - generic [ref=f16e1021]:
+                  - generic:
+                    - img: search
+                  - generic: Buscar elementos
+                  - textbox "Buscar elementos" [ref=f16e1022]
+            - button "Filtrar (2)" [ref=f16e1029] [cursor=pointer]:
+              - img [ref=f16e1033]: filter_list
+              - generic [ref=f16e1034]:
+                - text: Filtrar
+                - generic [ref=f16e1035]: (2)
+          - toolbar "Filtros seleccionados" [ref=f16e1036]:
+            - row "Listas para usarse Necesita recorte" [ref=f16e1037]:
+              - gridcell "Listas para usarse":
+                - button "Quitar" [ref=f16e1038] [cursor=pointer]:
+                  - img [ref=f16e1041]: close
+              - gridcell "Necesita recorte":
+                - button "Quitar" [ref=f16e1042] [cursor=pointer]:
+                  - img [ref=f16e1045]: close
+        - button "Más recientes" [ref=f16e1046]:
+          - img [ref=f16e1050]: swap_vert
+        - list "Lista de recursos" [ref=f16e1054]:
+          - listitem "Asset row" [ref=f16e1056]:
+            - generic [ref=f16e1057]:
+              - generic [ref=f16e1059]:
+                - 'group "Desactivado: recurso destacado-1024x500.png" [ref=f16e1060]'
+                - generic [ref=f16e1063]: "Desactivado: recurso destacado-1024x500.png"
+              - generic [ref=f16e1064]:
+                - generic [ref=f16e1065]: destacado-1024x500.png
+                - generic "Propiedades del recurso" [ref=f16e1067]:
+                  - list [ref=f16e1068]:
+                    - 'listitem "Dimensiones: 1024x500px" [ref=f16e1069]': 1024x500px
+                    - listitem "Subido el 6/8/2026" [ref=f16e1070]: 6/8/2026
+          - listitem "Asset row" [ref=f16e1072]:
+            - generic [ref=f16e1073]:
+              - generic [ref=f16e1075]:
+                - 'group "Desactivado: recurso icono-512.png" [ref=f16e1076]'
+                - generic [ref=f16e1079]: "Desactivado: recurso icono-512.png"
+              - generic [ref=f16e1080]:
+                - generic [ref=f16e1081]: icono-512.png
+                - generic "Propiedades del recurso" [ref=f16e1083]:
+                  - list [ref=f16e1084]:
+                    - 'listitem "Relación de aspecto: 1∶1" [ref=f16e1085]': 1∶1
+                    - 'listitem "Dimensiones: 512x512px" [ref=f16e1086]': 512x512px
+                    - listitem "Subido el 6/8/2026" [ref=f16e1087]: 6/8/2026
+        - generic [ref=f16e1091]:
+          - button "Subir" [ref=f16e1095]:
+            - img [ref=f16e1099]: upload
+          - button "Add from Drive" [ref=f16e1103]:
+            - img [ref=f16e1107]: drive
+    - navigation [ref=f16e53]:
+      - link "Todas las aplicaciones" [ref=f16e54] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f16e56]: keyboard_backspace
+      - list [ref=f16e58]:
+        - listitem "Panel de control" [ref=f16e61]:
+          - button "Panel de control" [ref=f16e62] [cursor=pointer]:
+            - img [ref=f16e65]: dashboard
+        - listitem "Estadísticas" [ref=f16e69]:
+          - button "Estadísticas" [ref=f16e70] [cursor=pointer]:
+            - img [ref=f16e73]: bar_chart
+        - listitem "Resumen de publicación" [ref=f16e77]:
+          - button "Resumen de publicación" [ref=f16e78] [cursor=pointer]:
+            - img [ref=f16e81]: overview
+        - listitem "Protegida con Play" [ref=f16e85]:
+          - button "Protegida con Play" [ref=f16e86] [cursor=pointer]:
+            - img [ref=f16e89]: shield
+        - listitem "Probar y publicar" [ref=f16e93]:
+          - button "Probar y publicar" [ref=f16e94] [cursor=pointer]:
+            - img [ref=f16e97]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f16e101]:
+          - button "Monitorizar y mejorar" [ref=f16e102] [cursor=pointer]:
+            - img [ref=f16e105]: vital_signs
+        - listitem "Aumentar usuarios" [ref=f16e109]:
+          - button "Aumentar usuarios" [ref=f16e110] [cursor=pointer]:
+            - img [ref=f16e113]: finance_mode
+          - list [ref=f16e115]:
+            - generic [ref=f16e117]:
+              - listitem "Presencia en Google Play Store" [ref=f16e119]:
+                - button "Presencia en Google Play Store" [ref=f16e120] [cursor=pointer]:
+                  - img [ref=f16e123]: expand_less
+                - list [ref=f16e124]:
+                  - generic [ref=f16e126]:
+                    - listitem "Fichas de Play Store" [ref=f16e128]:
+                      - button "Fichas de Play Store" [ref=f16e129] [cursor=pointer]
+                    - listitem "Configuración de la tienda" [ref=f16e132]:
+                      - button "Configuración de la tienda" [ref=f16e133] [cursor=pointer]
+              - listitem "Rendimiento en Play Store" [ref=f16e136]:
+                - button "Rendimiento en Play Store" [ref=f16e137] [cursor=pointer]:
+                  - img [ref=f16e140]: expand_more
+              - listitem "Traducciones" [ref=f16e142]:
+                - button "Traducciones" [ref=f16e143] [cursor=pointer]:
+                  - img [ref=f16e146]: expand_more
+              - listitem "Enlaces profundos" [ref=f16e148]:
+                - button "Enlaces profundos" [ref=f16e149] [cursor=pointer]
+        - listitem "Monetizar con Play" [ref=f16e153]:
+          - button "Monetizar con Play" [ref=f16e154] [cursor=pointer]:
+            - img [ref=f16e157]: sell
+    - generic [ref=f16e160]:
+      - generic [ref=f16e167]:
+        - generic [ref=f16e171]:
+          - generic:
+            - generic:
+              - link "Volver a Fichas de Play Store":
+                - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/store-listings
+                - generic [ref=f16e176] [cursor=pointer]
+                - img [ref=f16e178] [cursor=pointer]: keyboard_backspace
+                - generic [ref=f16e179] [cursor=pointer]: Fichas de Play Store
+          - heading "Crear ficha de Play Store predeterminada" [level=1] [ref=f16e188]
+        - generic [ref=f16e197]:
+          - generic [ref=f16e201]:
+            - generic [ref=f16e202]: "Predeterminado: Español (Latinoamérica) (es-419)"
+            - button "Gestionar traducciones" [ref=f16e208] [cursor=pointer]:
+              - img [ref=f16e213]: arrow_drop_down
+          - paragraph [ref=f16e216]: "* Campos obligatorios. Rellena todos los campos en Español (Latinoamérica) – es-419."
+          - generic [ref=f16e218]:
+            - heading "Recursos de la ficha" [level=2] [ref=f16e230]
+            - paragraph [ref=f16e234]:
+              - generic [ref=f16e236]:
+                - text: Consulta la
+                - link "Ver política de metadatos (se abre en una pestaña nueva)" [ref=f16e237] [cursor=pointer]:
+                  - /url: https://play.google.com/about/storelisting-promotional/metadata
+                  - text: Política de metadatos
+                - text: y las
+                - link "Ver guía del Centro de Ayuda (se abre en una pestaña nueva)" [ref=f16e238] [cursor=pointer]:
+                  - /url: https://support.google.com/googleplay/android-developer/answer/9866151
+                  - text: indicaciones del Centro de Ayuda
+                - text: para evitar los problemas habituales con tu ficha de Play Store. Consulta todas las
+                - link "Ver políticas del programa (se abre en una pestaña nueva)" [ref=f16e239] [cursor=pointer]:
+                  - /url: https://play.google.com/about/developer-content-policy
+                  - text: políticas del programa
+                - text: antes de enviar tu aplicación.Si cumples los requisitos para
+                - link "Ver ayuda sobre el aviso con antelación (se abre en una pestaña nueva)" [ref=f16e240] [cursor=pointer]:
+                  - /url: https://support.google.com/googleplay/android-developer/answer/6320428
+                  - text: enviar información por adelantado
+                - text: al equipo de revisión de aplicaciones de Google Play, ponte en contacto con nosotros antes de publicar tu ficha de Play Store.
+            - generic [ref=f16e244]:
+              - group "Nombre de la aplicación" [ref=f16e246]:
+                - generic [ref=f16e247]: Nombre de la aplicación *
+                - generic [ref=f16e255]:
+                  - textbox "Nombre de la aplicación" [ref=f16e257]: "Light Drive: moto y envíos"
+                  - generic [ref=f16e258]:
+                    - paragraph [ref=f16e259]: Este es el nombre que tendrá tu aplicación en Google Play
+                    - generic [ref=f16e260]:
+                      - generic [ref=f16e261]: 26/30
+                      - generic [ref=f16e262]: El texto tiene 26 caracteres de 30
+              - group "Descripción breve" [ref=f16e264]:
+                - generic [ref=f16e265]: Descripción breve *
+                - generic [ref=f16e273]:
+                  - textbox "Descripción corta de la aplicación" [invalid] [ref=f16e275]: Moto, encomiendas y delivery en Tacna. Vos ponés el precio.
+                  - generic [ref=f16e276]:
+                    - alert "Añade una descripción breve de tu aplicación." [ref=f16e690]
+                    - generic [ref=f16e278]:
+                      - generic [ref=f16e279]: 59/80
+                      - generic [ref=f16e280]: El texto tiene 59 caracteres de 80
+              - group "Descripción completa" [ref=f16e282]:
+                - generic [ref=f16e283]: Descripción completa *
+                - generic [ref=f16e291]:
+                  - textbox "Descripción completa de la aplicación" [ref=f16e294]: "Light Drive conecta a quien necesita algo con el motorizado que lo puede hacer. En Tacna, al toque. QUÉ PODÉS PEDIR 🚕 Pasajero — que te lleven a donde vas. 🍔 Delivery — que te traigan comida del local que quieras. 📦 Envío — que lleven o traigan un paquete. VOS PONÉS EL PRECIO Acá no hay tarifa impuesta. La app sugiere un monto según la distancia, pero lo podés cambiar: ofrecés lo que te parece justo y lo acordás con el motorizado. El pago es en efectivo, entre ustedes dos. SEGUÍ TU VIAJE Mirá en el mapa dónde viene tu motorizado, en vivo. Escribile por WhatsApp o llamalo si necesitás darle una indicación — el timbre que no anda, el color de la casa, si va con ají o sin ají. MOTORIZADOS VERIFICADOS Antes de tomar carreras, cada motorizado pasa por una verificación de identidad: documento, foto y licencia de conducir, revisados por una persona. ¿SOS MOTORIZADO? La misma app. Tocás \"Quiero manejar\" y empezás a recibir carreras de tu zona. Ves cuánto vas a ganar ANTES de aceptar, sin sorpresas ni descuentos raros. Tus ganancias del día, la semana y el mes, siempre a la vista. Hecho en Tacna."
+                  - generic [ref=f16e295]:
+                    - paragraph [ref=f16e296]
+                    - generic [ref=f16e297]:
+                      - generic [ref=f16e298]: 1118/4000
+                      - generic [ref=f16e299]: El texto tiene 1118 caracteres de 4000
+            - heading "Gráficos" [level=2] [ref=f16e311]
+            - paragraph [ref=f16e315]:
+              - generic [ref=f16e317]:
+                - text: Gestiona el icono, las capturas de pantalla y los vídeos de tu aplicación para promocionarla en Google Play. Revisa las
+                - link "Ver directrices de contenido (se abre en una pestaña nueva)" [ref=f16e318] [cursor=pointer]:
+                  - /url: https://support.google.com/googleplay/android-developer/answer/9866151#zippy=%2Capp-icon
+                  - text: directrices de contenido
+                - text: antes de subir nuevos elementos gráficos. Si añades traducciones de tu ficha de Play Store que no incluyan elementos gráficos localizados, usaremos los gráficos del idioma predeterminado.
+            - generic [ref=f16e322]:
+              - group "Icono de la aplicación" [ref=f16e324]:
+                - generic [ref=f16e325]: Icono de la aplicación *
+                - generic [ref=f16e332]:
+                  - generic [ref=f16e817]:
+                    - generic [ref=f16e820]:
+                      - img "icono-512.png" [ref=f16e821]
+                      - generic [ref=f16e822]:
+                        - button "Quitar icono-512.png" [ref=f16e823] [cursor=pointer]:
+                          - img [ref=f16e826]: delete
+                        - button "Ver detalles de icono-512.png" [ref=f16e827] [cursor=pointer]:
+                          - img [ref=f16e830]: arrow_right_alt
+                    - generic [ref=f16e831]:
+                      - generic "Icono 1 de 1" [ref=f16e832]: 1 de 1
+                      - button "Añadir recursos" [ref=f16e834]
+                  - paragraph [ref=f16e342]:
+                    - generic [ref=f16e344]:
+                      - text: El icono de tu aplicación debe ser un archivo PNG o JPEG de 1 MB como máximo y 512x512 px, y debe cumplir nuestras
+                      - link "Ver especificaciones de diseño (se abre en una pestaña nueva)" [ref=f16e345] [cursor=pointer]:
+                        - /url: https://developer.android.com/google-play/resources/icon-design-specifications
+                        - text: especificaciones de diseño
+                      - text: y nuestra
+                      - link "Ver política de metadatos (se abre en una pestaña nueva)" [ref=f16e346] [cursor=pointer]:
+                        - /url: https://support.google.com/googleplay/android-developer/answer/9898842
+                        - text: política de metadatos
+              - group "Gráfico de funciones" [ref=f16e348]:
+                - generic [ref=f16e349]: Gráfico de funciones *
+                - generic [ref=f16e356]:
+                  - generic [ref=f16e994]:
+                    - generic [ref=f16e997]:
+                      - img "destacado-1024x500.png" [ref=f16e998]
+                      - generic [ref=f16e999]:
+                        - button "Quitar destacado-1024x500.png" [ref=f16e1000] [cursor=pointer]:
+                          - img [ref=f16e1003]: delete
+                        - button "Ver detalles de destacado-1024x500.png" [ref=f16e1004] [cursor=pointer]:
+                          - img [ref=f16e1007]: arrow_right_alt
+                    - generic [ref=f16e1008]:
+                      - generic "Imagen 1 de 1" [ref=f16e1009]: 1 de 1
+                      - button "Añadir recursos" [ref=f16e1011]
+                  - paragraph [ref=f16e366]:
+                    - generic [ref=f16e367]: Tu gráfico de funciones debe ser un archivo PNG o JPEG de 15 MB como máximo y medir 1024x500 px
+              - group "Vídeo" [ref=f16e369]:
+                - generic [ref=f16e378]:
+                  - generic [ref=f16e379]:
+                    - generic: https://www.youtube.com/watch?v=
+                    - textbox "URL del vídeo de YouTube promocional de la aplicación" [ref=f16e380]
+                  - paragraph [ref=f16e382]: Añade un vídeo introduciendo una URL de YouTube. El vídeo debe ser público o estar oculto, los anuncios deben estar desactivados y no debe tener restricción de edad.
+            - heading "Teléfono" [level=3] [ref=f16e394]
+            - group "Capturas de pantalla de teléfonos" [ref=f16e400]:
+              - generic [ref=f16e401]: Capturas de pantalla de teléfonos *
+              - generic [ref=f16e405]:
+                - generic [ref=f16e408]:
+                  - button "Añadir recursos" [ref=f16e413] [cursor=pointer]
+                  - paragraph [ref=f16e418]:
+                    - generic [ref=f16e419]: Sube entre 2 y 8 capturas de pantalla de teléfono. Las capturas deben ser archivos PNG o JPEG de hasta 8 MB cada uno y tener una relación de aspecto de 16:9 o 9:16. Sus lados deben medir entre 320 y 3840 px.
+                - generic [ref=f16e420]:
+                  - img [ref=f16e423]: info
+                  - generic [ref=f16e424]: Para que tu aplicación pueda promocionarse, incluye al menos 4 capturas de pantalla de 1080x1080 píxeles como mínimo.
+                  - link "Ver directrices de contenido sobre las capturas de pantalla de teléfono (se abre en una pestaña nueva)" [ref=f16e433] [cursor=pointer]:
+                    - /url: https://support.google.com/googleplay/android-developer/answer/9866151#screenshots
+                    - generic [ref=f16e436]: Ver directrices de contenido
+            - heading "Tablet" [level=3] [ref=f16e448]
+            - generic [ref=f16e452]:
+              - group "Capturas de pantalla para tablets de 7 pulgadas" [ref=f16e454]:
+                - generic [ref=f16e455]: Capturas de pantalla para tablets de 7 pulgadas *
+                - generic [ref=f16e462]:
+                  - button "Añadir recursos" [ref=f16e467]
+                  - paragraph [ref=f16e472]:
+                    - generic [ref=f16e473]: Sube hasta 8 capturas de pantalla para tablets de 7 pulgadas. Las capturas deben ser archivos PNG o JPEG de hasta 8 MB cada uno y tener una relación de aspecto de 16:9 o 9:16. Sus lados deben medir entre 320 y 3840 px.
+              - group "Capturas de pantalla de tablets de 10 pulgadas" [ref=f16e475]:
+                - generic [ref=f16e476]: Capturas de pantalla de tablets de 10 pulgadas *
+                - generic [ref=f16e483]:
+                  - button "Añadir recursos" [ref=f16e488]
+                  - paragraph [ref=f16e493]:
+                    - generic [ref=f16e494]: Sube hasta 8 capturas de pantalla para tablets de 10 pulgadas. Las capturas deben ser archivos PNG o JPEG de hasta 8 MB cada uno y deben tener una relación de aspecto de 16:9 o 9:16. Sus lados deben medir entre 1080 y 7680 px.
+            - heading "Chromebook" [level=3] [ref=f16e506]
+            - group "Capturas de pantalla de Chromebook" [ref=f16e512]:
+              - generic [ref=f16e520]:
+                - button "Añadir recursos" [ref=f16e525]
+                - paragraph [ref=f16e530]:
+                  - generic [ref=f16e531]: Sube entre 4 y 8 capturas de pantalla. Las capturas deben ser archivos PNG o JPEG de hasta 8 MB cada uno y deben tener una relación de aspecto de 16:9 o 9:16. Sus lados deben medir entre 1080 y 7680 px.
+            - heading "Android XR" [level=3] [ref=f16e543]
+            - generic [ref=f16e547]:
+              - group "Capturas de pantalla de Android XR" [ref=f16e549]:
+                - generic [ref=f16e557]:
+                  - button "Añadir recursos" [ref=f16e562]
+                  - paragraph [ref=f16e567]:
+                    - generic [ref=f16e568]: "Sube entre 4 y 8 capturas de pantalla. Las capturas deben ser archivos PNG o JPEG de hasta 15 MB cada uno y tener una relación de aspecto de 16:9 o 9:16: Sus lados deben medir entre 720 y 7680 px."
+              - group "Vídeo de XR espacial" [ref=f16e570]:
+                - generic [ref=f16e578]:
+                  - generic [ref=f16e580]:
+                    - generic: https://www.youtube.com/watch?v=
+                    - textbox "https://www.youtube.com/watch?v=" [ref=f16e581]
+                  - paragraph [ref=f16e583]:
+                    - generic [ref=f16e585]:
+                      - text: Introduce una URL de YouTube para añadir un
+                      - link "Ver directrices de vídeos de RE espacial (se abre en una pestaña nueva)" [ref=f16e586] [cursor=pointer]:
+                        - /url: https://support.google.com/googleplay/android-developer/answer/9866151#zippy=%2Cpreview-video
+                        - text: vídeo de RE espacial
+                      - text: con el que ofrecer una vista previa inmersiva de tus funciones. El vídeo debe ser en 360°, 180° o 3D y ser público o estar oculto, los anuncios deben estar desactivados y no debe tener restricción de edad.
+              - group "Vídeo de RE no espacial" [ref=f16e588]:
+                - generic [ref=f16e596]:
+                  - generic [ref=f16e598]:
+                    - generic: https://www.youtube.com/watch?v=
+                    - textbox "https://www.youtube.com/watch?v=" [ref=f16e599]
+                  - paragraph [ref=f16e601]:
+                    - generic [ref=f16e602]: Introduce una URL de YouTube para añadir un vídeo de RE no espacial. El vídeo debe ser público o estar oculto, los anuncios deben estar desactivados y no debe tener restricciones de edad.
+        - generic [ref=f16e606]:
+          - generic [ref=f16e607]: Si guardas los cambios, se guardarán en Resumen de publicación y podrás enviarlos a revisión.
+          - generic [ref=f16e609]:
+            - button "Descartar" [ref=f16e693]
+            - generic [ref=f16e616]:
+              - button "Guardar como borrador" [ref=f16e698]
+              - button "Guardar" [ref=f16e703]
+      - generic [ref=f16e633]:
+        - generic [ref=f16e634]:
+          - link "Novedades sobre productos" [ref=f16e635] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f16e636] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f16e637] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f16e638]:
+          - generic [ref=f16e639]: © 2026 Google
+          - link "Privacidad" [ref=f16e640] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f16e641] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f16e642] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

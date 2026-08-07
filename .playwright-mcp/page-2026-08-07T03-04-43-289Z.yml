@@ -1,0 +1,312 @@
+- generic [ref=f47e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f47e3]:
+    - banner [ref=f47e4]:
+      - generic [ref=f47e6]:
+        - link [ref=f47e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f47e8]
+        - generic [ref=f47e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f47e45]:
+            - img [ref=f47e49]: notifications_unread
+            - generic [ref=f47e50]: Notificaciones sin leer
+          - generic [ref=f47e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f47e59] [cursor=pointer]'
+            - button [ref=f47e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f47e16]
+    - navigation [ref=f47e72]:
+      - link "Todas las aplicaciones" [ref=f47e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f47e75]: keyboard_backspace
+      - list [ref=f47e77]:
+        - listitem "Panel de control" [ref=f47e80]:
+          - button "Panel de control" [ref=f47e81] [cursor=pointer]:
+            - img [ref=f47e84]: dashboard
+        - listitem "Estadísticas" [ref=f47e88]:
+          - button "Estadísticas" [ref=f47e89] [cursor=pointer]:
+            - img [ref=f47e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f47e96]:
+          - button "Resumen de publicación" [ref=f47e97] [cursor=pointer]:
+            - img [ref=f47e100]: overview
+        - listitem "Protegida con Play" [ref=f47e104]:
+          - button "Protegida con Play" [ref=f47e105] [cursor=pointer]:
+            - img [ref=f47e108]: shield
+        - listitem "Probar y publicar" [ref=f47e112]:
+          - button "Probar y publicar" [ref=f47e113] [cursor=pointer]:
+            - img [ref=f47e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f47e120]:
+          - button "Monitorizar y mejorar" [ref=f47e121] [cursor=pointer]:
+            - img [ref=f47e124]: vital_signs
+          - list [ref=f47e126]:
+            - generic [ref=f47e128]:
+              - listitem "Cobertura y dispositivos" [ref=f47e130]:
+                - button "Cobertura y dispositivos" [ref=f47e131] [cursor=pointer]:
+                  - img [ref=f47e134]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f47e136]:
+                - button "Valoraciones y reseñas" [ref=f47e137] [cursor=pointer]:
+                  - img [ref=f47e140]: expand_more
+              - listitem "Android vitals" [ref=f47e142]:
+                - button "Android vitals" [ref=f47e143] [cursor=pointer]:
+                  - img [ref=f47e146]: expand_more
+              - listitem "Política y programas" [ref=f47e148]:
+                - button "Política y programas" [ref=f47e149] [cursor=pointer]:
+                  - img [ref=f47e152]: expand_less
+                - list [ref=f47e153]:
+                  - generic [ref=f47e155]:
+                    - listitem "Estado según las políticas" [ref=f47e157]:
+                      - button "Estado según las políticas" [ref=f47e158] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f47e161]:
+                      - button "Contenido de la aplicación" [ref=f47e162] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f47e165]:
+                      - button "Aprobada por profesores" [ref=f47e166] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f47e170]:
+          - button "Aumentar usuarios" [ref=f47e171] [cursor=pointer]:
+            - img [ref=f47e174]: finance_mode
+        - listitem "Monetizar con Play" [ref=f47e178]:
+          - button "Monetizar con Play" [ref=f47e179] [cursor=pointer]:
+            - img [ref=f47e182]: sell
+    - generic [ref=f47e22]:
+      - generic [ref=f47e187]:
+        - generic [ref=f47e191]:
+          - generic:
+            - generic:
+              - link "Volver a Contenido de la aplicación":
+                - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/overview
+                - generic [ref=f47e196] [cursor=pointer]
+                - img [ref=f47e198] [cursor=pointer]: keyboard_backspace
+                - generic [ref=f47e199] [cursor=pointer]: Contenido de la aplicación
+          - generic [ref=f47e203]:
+            - heading "Seguridad de los datos" [level=1] [ref=f47e208]
+            - generic [ref=f47e213]:
+              - button "Exportar a CSV" [ref=f47e214]
+              - button "Importar desde CSV" [ref=f47e218]
+        - generic [ref=f47e233]:
+          - tablist [ref=f47e234]:
+            - 'tab "Introducción: paso 1 de 5" [disabled] [ref=f47e235]':
+              - img [ref=f47e364]: check
+              - generic [ref=f47e239]: Introducción
+            - 'tab "Recogida de datos y seguridad: paso 2 de 5" [disabled] [ref=f47e242]':
+              - img [ref=f47e600]: check
+              - generic [ref=f47e246]: Recogida de datos y seguridad
+            - 'tab "Tipos de datos: paso 3 de 5" [disabled] [ref=f47e249]':
+              - img [ref=f47e1227]: check
+              - generic [ref=f47e253]: Tipos de datos
+            - 'tab "Uso y gestión de datos: paso 4 de 5" [selected] [ref=f47e256] [cursor=pointer]':
+              - generic [ref=f47e257]: "4"
+              - generic [ref=f47e260]: Uso y gestión de datos
+            - 'tab "Vista previa: paso 5 de 5" [disabled] [ref=f47e263]':
+              - generic [ref=f47e264]: "5"
+              - generic [ref=f47e267]: Vista previa
+          - tabpanel [ref=f47e270]:
+            - generic [ref=f47e1228]:
+              - generic [ref=f47e1230]:
+                - heading "Uso y gestión de datos" [level=2] [ref=f47e1239]
+                - generic [ref=f47e1243]:
+                  - paragraph [ref=f47e1244]: Junto a cada tipo de datos de usuario que recoja o comparta tu aplicación, selecciona Empezar para responder preguntas sobre cómo se usan y tratan los datos.
+                  - paragraph [ref=f47e1245]: Para cambiar los tipos de datos de usuario seleccionados, retrocede al paso anterior.
+              - generic [ref=f47e1250]:
+                - generic [ref=f47e1251]:
+                  - heading "Información personal" [level=3] [ref=f47e1256]
+                  - 'button "Mostrar contenido: Información personal" [ref=f47e6197]':
+                    - generic [ref=f47e1262]: Mostrar
+                    - img [ref=f47e1264]: expand_more
+                - generic [ref=f47e6199]:
+                  - img [ref=f47e6202]: check_circle
+                  - generic [ref=f47e6480]: 5 de 5 completados
+                  - img [ref=f47e6482]: brightness_1
+                  - generic [ref=f47e6483]: Nombre, Dirección de correo electrónico, IDs de usuario, Dirección, Número de teléfono
+              - generic [ref=f47e1277]:
+                - generic [ref=f47e1278]:
+                  - heading "Ubicación" [level=3] [ref=f47e1283]
+                  - 'button "Mostrar contenido: Ubicación" [ref=f47e1905]':
+                    - generic [ref=f47e1289]: Mostrar
+                    - img [ref=f47e1291]: expand_more
+                - generic [ref=f47e1909]:
+                  - img [ref=f47e1912]: check_circle
+                  - generic [ref=f47e6484]: 1 de 1 completados
+                  - img [ref=f47e6486]: brightness_1
+                  - generic [ref=f47e6487]: Ubicación precisa
+              - generic [ref=f47e1328]:
+                - generic [ref=f47e1332]:
+                  - heading "Fotos y vídeos" [level=3] [ref=f47e1337]
+                  - 'button "Ocultar contenido: Fotos y vídeos" [expanded] [ref=f47e6207]':
+                    - generic [ref=f47e1343]: Ocultar
+                    - img [ref=f47e1345]: expand_less
+                - grid "Datos de Fotos y vídeos" [ref=f47e6218]:
+                  - row [ref=f47e6488]:
+                    - columnheader "Tipo de datos" [ref=f47e6489] [cursor=pointer]
+                    - columnheader "Estado" [ref=f47e6490] [cursor=pointer]
+                    - cell [ref=f47e6491]
+                  - row [ref=f47e6492]:
+                    - gridcell "Fotos" [ref=f47e6493]
+                    - gridcell "Respuesta obligatoria" [ref=f47e6495]:
+                      - generic [ref=f47e6498]:
+                        - img [ref=f47e6502]: error
+                        - generic [ref=f47e6503]: Respuesta obligatoria
+                    - gridcell [ref=f47e6504]:
+                      - button "Abrir preguntas de Fotos" [ref=f47e6506]:
+                        - generic [ref=f47e6509]: Editar
+                        - img [ref=f47e6511]: arrow_right_alt
+              - generic [ref=f47e1358]:
+                - generic [ref=f47e1359]:
+                  - heading "IDs de dispositivo o de otro tipo" [level=3] [ref=f47e1364]
+                  - 'button "Mostrar contenido: IDs de dispositivo o de otro tipo" [ref=f47e1367]':
+                    - generic [ref=f47e1370]: Mostrar
+                    - img [ref=f47e1372]: expand_more
+                - generic [ref=f47e1376]:
+                  - img [ref=f47e1379]: info
+                  - generic [ref=f47e6512]: 0 de 1 completados
+          - generic [ref=f47e332]: "Uso y gestión de datos: paso 4 de 5"
+        - generic [ref=f47e339]:
+          - button "Siguiente" [disabled] [ref=f47e341]
+          - button "Más opciones" [ref=f47e347] [cursor=pointer]:
+            - img [ref=f47e351]: more_vert
+      - generic [ref=f47e30]:
+        - generic [ref=f47e354]:
+          - link "Novedades sobre productos" [ref=f47e355] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f47e356] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f47e357] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f47e358]:
+          - generic [ref=f47e359]: © 2026 Google
+          - link "Privacidad" [ref=f47e360] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f47e361] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f47e362] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/
+  - generic:
+    - status [ref=f47e1784]
+    - dialog [ref=f47e6248]:
+      - generic [ref=f47e6250]:
+        - heading "Fotos" [level=2] [ref=f47e6251]
+        - button "Cerrar" [ref=f47e6252] [cursor=pointer]:
+          - img [ref=f47e6255]: close
+      - region [ref=f47e6256]:
+        - group "¿Tu aplicación recoge estos datos, los comparte o hace ambas cosas?" [ref=f47e6258]:
+          - generic [ref=f47e6263]:
+            - paragraph [ref=f47e6264]:
+              - text: Selecciona todas las opciones que correspondan. Algunas formas de recoger y compartir datos están exentas.
+              - link "Ver definiciones y exenciones, Se abre en otra pestaña" [ref=f47e6266] [cursor=pointer]:
+                - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es
+                - text: Ver definiciones y exenciones
+            - generic [ref=f47e6267] [cursor=pointer]:
+              - checkbox "Se recogen Estos datos se transfieren fuera del dispositivo del usuario, ya sea a ti (el desarrollador) o a un tercero. Esto incluye los datos que se procesan de forma temporal o que se almacenan durante más tiempo." [checked] [ref=f47e6269]
+              - generic [ref=f47e6270]:
+                - text: Se recogen
+                - generic [ref=f47e6271]: Estos datos se transfieren fuera del dispositivo del usuario, ya sea a ti (el desarrollador) o a un tercero. Esto incluye los datos que se procesan de forma temporal o que se almacenan durante más tiempo.
+            - generic [ref=f47e6272] [cursor=pointer]:
+              - checkbox "Se comparten Estos datos se transfieren a un tercero, ya sea dentro o fuera del dispositivo del usuario." [ref=f47e6274]
+              - generic [ref=f47e6275]:
+                - text: Se comparten
+                - generic [ref=f47e6276]: Estos datos se transfieren a un tercero, ya sea dentro o fuera del dispositivo del usuario.
+        - group "¿Se tratan estos datos de forma temporal?" [ref=f47e6329]:
+          - generic [ref=f47e6334]:
+            - generic [ref=f47e6335]:
+              - paragraph [ref=f47e6336]: Tratar los datos de forma temporal significa acceder a ellos y utilizarlos cuando están almacenados solo en la memoria, conservándolos únicamente durante el tiempo necesario para atender una solicitud concreta en tiempo real.
+              - paragraph [ref=f47e6337]:
+                - text: Debes informar sobre los datos que se recojan de esta forma, pero no se mostrarán a los usuarios en tu ficha de Play Store.
+                - link "Ver definiciones y exenciones, Se abre en otra pestaña" [ref=f47e6339] [cursor=pointer]:
+                  - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#collection
+                  - text: Más información
+            - radiogroup "¿Se tratan estos datos de forma temporal?" [ref=f47e6340]:
+              - generic [ref=f47e6341] [cursor=pointer]:
+                - radio "Sí, estos datos recogidos se procesan de forma temporal" [ref=f47e6343]
+                - generic [ref=f47e6346]: Sí, estos datos recogidos se procesan de forma temporal
+              - generic [ref=f47e6347] [cursor=pointer]:
+                - radio "No, estos datos recogidos no se procesan de forma temporal" [checked] [ref=f47e6349]
+                - generic [ref=f47e6352]: No, estos datos recogidos no se procesan de forma temporal
+        - group [ref=f47e6354]:
+          - generic [ref=f47e6358]:
+            - text: ¿Son estos datos necesarios para usar tu aplicación o pueden los usuarios elegir si se recogen o no?
+            - link "Ver definiciones y exenciones, Se abre en otra pestaña" [ref=f47e6360] [cursor=pointer]:
+              - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#other
+              - text: Más información
+          - radiogroup "¿Son estos datos necesarios para usar tu aplicación o pueden los usuarios elegir si se recogen o no?" [ref=f47e6363]:
+            - generic [ref=f47e6364] [cursor=pointer]:
+              - radio "La recogida de datos es necesaria (los usuarios no pueden desactivarla)" [ref=f47e6366]
+              - generic [ref=f47e6369]: La recogida de datos es necesaria (los usuarios no pueden desactivarla)
+            - generic [ref=f47e6370] [cursor=pointer]:
+              - radio "Los usuarios pueden elegir si se recogen estos datos o no" [checked] [active] [ref=f47e6372]
+              - generic [ref=f47e6375]:
+                - text: Los usuarios pueden elegir si se recogen estos datos o no
+                - generic [ref=f47e6376]: La recogida de datos se mostrará como opcional en tu ficha de Play Store
+        - group [ref=f47e6378]:
+          - generic [ref=f47e6382]:
+            - text: ¿Por qué se recogen estos datos de usuario? Selecciona todas las opciones que correspondan.
+            - link "Consultar más información y ver ejemplos., Se abre en otra pestaña" [ref=f47e6384] [cursor=pointer]:
+              - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#data_purposes
+              - text: Consultar más información y ver ejemplos.
+          - generic [ref=f47e6387]:
+            - generic [ref=f47e6389] [cursor=pointer]:
+              - checkbox "Funcionalidad de la aplicación Se usan para las funciones de tu aplicación. Por ejemplo, para permitir ciertas funciones o autenticar usuarios. Más información acerca de Funcionalidad de la aplicación, Se abre en otra pestaña" [ref=f47e6391]
+              - generic [ref=f47e6392]:
+                - text: Funcionalidad de la aplicación
+                - generic [ref=f47e6393]:
+                  - text: Se usan para las funciones de tu aplicación. Por ejemplo, para permitir ciertas funciones o autenticar usuarios.
+                  - link "Más información acerca de Funcionalidad de la aplicación, Se abre en otra pestaña" [ref=f47e6395]:
+                    - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#data_purposes
+                    - text: Más información
+            - generic [ref=f47e6397] [cursor=pointer]:
+              - checkbox "Análisis Se utilizan para recoger datos sobre el uso que le dan los usuarios a tu aplicación o sobre el rendimiento de esta. Por ejemplo, para ver cuántos usuarios usan una función concreta, para monitorizar el estado de la aplicación, para diagnosticar y solucionar errores o bloqueos, o para mejorar el rendimiento en el futuro. Más información acerca de Análisis, Se abre en otra pestaña" [ref=f47e6399]
+              - generic [ref=f47e6400]:
+                - text: Análisis
+                - generic [ref=f47e6401]:
+                  - text: Se utilizan para recoger datos sobre el uso que le dan los usuarios a tu aplicación o sobre el rendimiento de esta. Por ejemplo, para ver cuántos usuarios usan una función concreta, para monitorizar el estado de la aplicación, para diagnosticar y solucionar errores o bloqueos, o para mejorar el rendimiento en el futuro.
+                  - link "Más información acerca de Análisis, Se abre en otra pestaña" [ref=f47e6403]:
+                    - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#data_purposes
+                    - text: Más información
+            - generic [ref=f47e6405] [cursor=pointer]:
+              - checkbox "Comunicaciones del desarrollador Se usan para enviar noticias o notificaciones sobre ti o sobre tu aplicación. Por ejemplo, para enviar una notificación push que informe a los usuarios sobre una actualización importante de seguridad o para informar a los usuarios sobre nuevas funciones de la aplicación. Más información acerca de Comunicaciones del desarrollador, Se abre en otra pestaña" [ref=f47e6407]
+              - generic [ref=f47e6408]:
+                - text: Comunicaciones del desarrollador
+                - generic [ref=f47e6409]:
+                  - text: Se usan para enviar noticias o notificaciones sobre ti o sobre tu aplicación. Por ejemplo, para enviar una notificación push que informe a los usuarios sobre una actualización importante de seguridad o para informar a los usuarios sobre nuevas funciones de la aplicación.
+                  - link "Más información acerca de Comunicaciones del desarrollador, Se abre en otra pestaña" [ref=f47e6411]:
+                    - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#data_purposes
+                    - text: Más información
+            - generic [ref=f47e6413] [cursor=pointer]:
+              - checkbox "Publicidad o marketing Se usan para mostrar o segmentar anuncios o comunicaciones de marketing, o para medir el rendimiento de los anuncios. Por ejemplo, para mostrar anuncios en tu aplicación, para enviar notificaciones push con el fin de promocionar otros productos o servicios, o para compartir datos con partners publicitarios. Más información acerca de Publicidad o marketing, Se abre en otra pestaña" [ref=f47e6415]
+              - generic [ref=f47e6416]:
+                - text: Publicidad o marketing
+                - generic [ref=f47e6417]:
+                  - text: Se usan para mostrar o segmentar anuncios o comunicaciones de marketing, o para medir el rendimiento de los anuncios. Por ejemplo, para mostrar anuncios en tu aplicación, para enviar notificaciones push con el fin de promocionar otros productos o servicios, o para compartir datos con partners publicitarios.
+                  - link "Más información acerca de Publicidad o marketing, Se abre en otra pestaña" [ref=f47e6419]:
+                    - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#data_purposes
+                    - text: Más información
+            - generic [ref=f47e6421] [cursor=pointer]:
+              - checkbox "Prevención de fraudes, seguridad y cumplimiento Se usan para prevenir fraudes, para proteger la seguridad o para cumplir la legislación (por ejemplo, para monitorizar intentos fallidos de inicio de sesión e identificar posibles actividades fraudulentas). Más información acerca de Prevención de fraudes, seguridad y cumplimiento, Se abre en otra pestaña" [ref=f47e6423]
+              - generic [ref=f47e6424]:
+                - text: Prevención de fraudes, seguridad y cumplimiento
+                - generic [ref=f47e6425]:
+                  - text: Se usan para prevenir fraudes, para proteger la seguridad o para cumplir la legislación (por ejemplo, para monitorizar intentos fallidos de inicio de sesión e identificar posibles actividades fraudulentas).
+                  - link "Más información acerca de Prevención de fraudes, seguridad y cumplimiento, Se abre en otra pestaña" [ref=f47e6427]:
+                    - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#data_purposes
+                    - text: Más información
+            - generic [ref=f47e6429] [cursor=pointer]:
+              - checkbox "Personalización Se usan para personalizar tu aplicación y ofrecer opciones como mostrar contenido recomendado o sugerencias (por ejemplo, para sugerir listas de reproducción en función de los hábitos de escucha del usuario o para proporcionar noticias locales según la ubicación del usuario). Más información acerca de Personalización, Se abre en otra pestaña" [ref=f47e6431]
+              - generic [ref=f47e6432]:
+                - text: Personalización
+                - generic [ref=f47e6433]:
+                  - text: Se usan para personalizar tu aplicación y ofrecer opciones como mostrar contenido recomendado o sugerencias (por ejemplo, para sugerir listas de reproducción en función de los hábitos de escucha del usuario o para proporcionar noticias locales según la ubicación del usuario).
+                  - link "Más información acerca de Personalización, Se abre en otra pestaña" [ref=f47e6435]:
+                    - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#data_purposes
+                    - text: Más información
+            - generic [ref=f47e6437] [cursor=pointer]:
+              - checkbox "Gestión de cuentas Se usan para configurar o gestionar las cuentas de usuario. Por ejemplo, para permitir a los usuarios crear cuentas, para añadir información a las cuentas que proporciones, para usarla en todos tus servicios, para iniciar sesión en tu aplicación o para verificar sus credenciales. Más información acerca de Gestión de cuentas, Se abre en otra pestaña" [ref=f47e6439]
+              - generic [ref=f47e6440]:
+                - text: Gestión de cuentas
+                - generic [ref=f47e6441]:
+                  - text: Se usan para configurar o gestionar las cuentas de usuario. Por ejemplo, para permitir a los usuarios crear cuentas, para añadir información a las cuentas que proporciones, para usarla en todos tus servicios, para iniciar sesión en tu aplicación o para verificar sus credenciales.
+                  - link "Más información acerca de Gestión de cuentas, Se abre en otra pestaña" [ref=f47e6443]:
+                    - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#data_purposes
+                    - text: Más información
+        - generic [ref=f47e6284]:
+          - button "Guardar" [disabled] [ref=f47e6285]
+          - button "Descartar cambios" [ref=f47e6289]
+  - status [ref=f47e6514]

@@ -1,0 +1,174 @@
+- generic [ref=f13e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f13e3]:
+    - banner [ref=f13e4]:
+      - generic [ref=f13e6]:
+        - link [ref=f13e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f13e8]
+        - generic [ref=f13e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f13e45]:
+            - img [ref=f13e49]: notifications_unread
+            - generic [ref=f13e50]: Notificaciones sin leer
+          - generic [ref=f13e10]:
+            - 'button "Jala: Moto y encomiendas" [ref=f13e59] [cursor=pointer]'
+            - button [ref=f13e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f13e16]
+    - navigation [ref=f13e72]:
+      - link "Todas las aplicaciones" [ref=f13e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f13e75]: keyboard_backspace
+      - list [ref=f13e77]:
+        - listitem "Panel de control" [ref=f13e80]:
+          - button "Panel de control" [ref=f13e81] [cursor=pointer]:
+            - img [ref=f13e84]: dashboard
+        - listitem "Estadísticas" [ref=f13e88]:
+          - button "Estadísticas" [ref=f13e89] [cursor=pointer]:
+            - img [ref=f13e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f13e96]:
+          - button "Resumen de publicación" [ref=f13e97] [cursor=pointer]:
+            - img [ref=f13e100]: overview
+        - listitem "Protegida con Play" [ref=f13e104]:
+          - button "Protegida con Play" [ref=f13e105] [cursor=pointer]:
+            - img [ref=f13e108]: shield
+        - listitem "Probar y publicar" [ref=f13e112]:
+          - button "Probar y publicar" [ref=f13e113] [cursor=pointer]:
+            - img [ref=f13e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f13e120]:
+          - button "Monitorizar y mejorar" [ref=f13e121] [cursor=pointer]:
+            - img [ref=f13e124]: vital_signs
+        - listitem "Aumentar usuarios" [ref=f13e128]:
+          - button "Aumentar usuarios" [ref=f13e129] [cursor=pointer]:
+            - img [ref=f13e132]: finance_mode
+        - listitem "Monetizar con Play" [ref=f13e136]:
+          - button "Monetizar con Play" [ref=f13e137] [cursor=pointer]:
+            - img [ref=f13e140]: sell
+    - generic [ref=f13e22]:
+      - generic [ref=f13e145]:
+        - generic [ref=f13e147]:
+          - heading "Panel de control" [level=1] [ref=f13e158]
+          - generic [ref=f13e164]:
+            - heading "Prepárate para publicar tu aplicación" [level=2] [ref=f13e173]
+            - paragraph [ref=f13e174]:
+              - generic [ref=f13e175]: Has dado el primer paso para hacer que tu aplicación esté disponible para miles de millones de usuarios en Google Play. Puedes empezar a probar la aplicación de inmediato ejecutando pruebas internas. Si quieres publicar la aplicación y que esté disponible para todo el mundo, termina de configurarla, completa una prueba cerrada y solicita el acceso a producción.
+            - generic [ref=f13e178]:
+              - link "Más información sobre Panel de control (se abre en una pestaña nueva)" [ref=f13e180] [cursor=pointer]:
+                - /url: https://support.google.com/googleplay/android-developer/answer/14151465
+                - generic [ref=f13e183]: Más información
+              - button "Ocultar descripción detallada de Panel de control" [ref=f13e185]:
+                - generic [ref=f13e188]: Ocultar
+        - generic [ref=f13e195]:
+          - 'img "Jala: Moto y encomiendas" [ref=f13e197]'
+          - generic [ref=f13e198]:
+            - generic [ref=f13e199]:
+              - 'heading "Jala: Moto y encomiendas" [level=2] [ref=f13e204]'
+              - link "Ver resumen de versiones" [ref=f13e209] [cursor=pointer]:
+                - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/releases/overview
+            - list [ref=f13e215]:
+              - listitem [ref=f13e216]: pe.leadai.rider
+              - listitem [ref=f13e217]: Borrador de aplicación
+              - listitem [ref=f13e218]:
+                - text: "Nombre temporal de la aplicación: \"pe.leadai.rider (unreviewed)\""
+                - button "Más información" [ref=f13e221] [cursor=pointer]:
+                  - img [ref=f13e222]: help
+        - generic [ref=f13e226]:
+          - generic [ref=f13e229]:
+            - heading "Producción" [level=3] [ref=f13e238]
+            - generic [ref=f13e239]: Inactivo
+          - button "Mostrar canales de prueba" [ref=f13e248]:
+            - img [ref=f13e253]: expand_more
+        - generic [ref=f13e255]:
+          - heading "Termina de configurar tu aplicación" [level=2] [ref=f13e264]
+          - generic [ref=f13e274]:
+            - generic [ref=f13e277]:
+              - heading "Proporciona información de la aplicación y crea una ficha de Play Store" [level=3] [ref=f13e283]
+              - generic [ref=f13e284]: Explícanos qué contenido tiene tu aplicación y gestiona cómo se organiza y presenta en Google Play
+            - generic [ref=f13e288]:
+              - button "Ocultar 0 de 11 tareas completadas de Proporciona información de la aplicación y crea una ficha de Play Store" [expanded] [active] [ref=f13e445] [cursor=pointer]:
+                - generic [ref=f13e295]: Ocultar tareas
+                - img [ref=f13e297]: expand_less
+              - generic [ref=f13e448]:
+                - generic [ref=f13e449]:
+                  - generic [ref=f13e450]: Explícanos qué tipo de contenido tiene tu aplicación
+                  - generic [ref=f13e452]:
+                    - button "Establece la política de privacidad" [ref=f13e459] [cursor=pointer]:
+                      - img [ref=f13e462]: chevron_right
+                    - button "Datos de inicio de sesión" [ref=f13e469] [cursor=pointer]:
+                      - img [ref=f13e472]: chevron_right
+                    - button "Anuncios" [ref=f13e479] [cursor=pointer]:
+                      - img [ref=f13e482]: chevron_right
+                    - button "Clasificación de contenido" [ref=f13e489] [cursor=pointer]:
+                      - img [ref=f13e492]: chevron_right
+                    - button "Audiencia objetivo" [ref=f13e499] [cursor=pointer]:
+                      - img [ref=f13e502]: chevron_right
+                    - button "Seguridad de los datos" [ref=f13e509] [cursor=pointer]:
+                      - img [ref=f13e512]: chevron_right
+                    - button "Aplicaciones gubernamentales" [ref=f13e519] [cursor=pointer]:
+                      - img [ref=f13e522]: chevron_right
+                    - button "Funciones financieras" [ref=f13e529] [cursor=pointer]:
+                      - img [ref=f13e532]: chevron_right
+                    - button "Salud" [ref=f13e539] [cursor=pointer]:
+                      - img [ref=f13e542]: chevron_right
+                - generic [ref=f13e545]:
+                  - generic [ref=f13e546]: Gestiona cómo se organiza y se muestra tu aplicación
+                  - generic [ref=f13e548]:
+                    - button "Selecciona una categoría de la aplicación y proporciona datos de contacto" [ref=f13e555] [cursor=pointer]:
+                      - img [ref=f13e558]: chevron_right
+                    - button "Configura la Ficha de Play Store" [ref=f13e564] [cursor=pointer]:
+                      - img [ref=f13e567]: chevron_right
+        - generic [ref=f13e310]:
+          - heading "Prueba cerrada" [level=2] [ref=f13e319]
+          - generic [ref=f13e329]:
+            - generic [ref=f13e332]:
+              - heading "Identifica problemas en tu aplicación, recibe comentarios y obtén acceso a producción" [level=3] [ref=f13e338]
+              - generic [ref=f13e343]:
+                - text: Las pruebas cerradas te permiten compartir tu aplicación con un amplio grupo de usuarios que puedes controlar. De esta forma, puedes identificar problemas, recibir comentarios y asegurarte de que tu aplicación esté lista antes de lanzarla. Debes ejecutar una prueba cerrada antes de solicitar que se publique tu aplicación para todo el mundo en el canal de producción.
+                - link "Más información" [ref=f13e344] [cursor=pointer]:
+                  - /url: https://support.google.com/googleplay/android-developer/answer/14151465
+            - generic [ref=f13e346]:
+              - generic [ref=f13e348]:
+                - img [ref=f13e351]: lock
+                - generic [ref=f13e352]: Para iniciar una prueba cerrada, termina de configurar tu aplicación
+              - button "Ver tareas de Identifica problemas en tu aplicación, recibe comentarios y obtén acceso a producción" [ref=f13e355]:
+                - generic [ref=f13e358]: Ver tareas
+                - img [ref=f13e360]: expand_more
+        - generic [ref=f13e368]:
+          - heading "Producción" [level=2] [ref=f13e377]
+          - generic [ref=f13e381]:
+            - generic [ref=f13e386]:
+              - generic [ref=f13e389]:
+                - heading "Solicitar acceso a producción" [level=3] [ref=f13e395]
+                - generic [ref=f13e398]:
+                  - text: El canal de producción es donde pones tu aplicación a disposición de miles de millones de usuarios en Google Play. Para poder solicitar acceso a producción, debes realizar una prueba cerrada que cumpla nuestros criterios. Al enviar tu solicitud, también deberás responder a algunas preguntas sobre la prueba cerrada.
+                  - link "Vista previa de las preguntas" [ref=f13e399] [cursor=pointer]:
+                    - /url: https://support.google.com/googleplay/android-developer/answer/14151465#production
+              - generic [ref=f13e403]:
+                - generic [ref=f13e404]: Publicar una versión de prueba cerrada
+                - generic [ref=f13e416]:
+                  - text: Tener al menos 12 testers que hayan aceptado participar en tu prueba cerrada
+                  - emphasis [ref=f13e418]: 0 testers han aceptado participar
+                - generic [ref=f13e419]: Ejecutar la prueba cerrada con 12 testers como mínimo y durante al menos 14 días
+            - generic [ref=f13e426]:
+              - button "Solicitar acceso a producción" [disabled] [ref=f13e427]
+              - link "Más información sobre Production Access (se abre en una pestaña nueva)" [ref=f13e432] [cursor=pointer]:
+                - /url: https://support.google.com/googleplay/android-developer/answer/14151465
+                - generic [ref=f13e435]: Más información
+      - generic [ref=f13e30]:
+        - generic [ref=f13e436]:
+          - link "Novedades sobre productos" [ref=f13e437] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f13e438] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f13e439] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f13e440]:
+          - generic [ref=f13e441]: © 2026 Google
+          - link "Privacidad" [ref=f13e442] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f13e443] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f13e444] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

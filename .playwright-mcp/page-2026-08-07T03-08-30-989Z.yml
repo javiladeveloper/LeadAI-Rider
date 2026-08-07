@@ -1,0 +1,147 @@
+- generic [active] [ref=f55e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f55e3]:
+    - banner [ref=f55e4]:
+      - generic [ref=f55e6]:
+        - link [ref=f55e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f55e8]
+        - generic [ref=f55e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f55e15]:
+            - img [ref=f55e19]: notifications_unread
+            - generic [ref=f55e20]: Notificaciones sin leer
+          - generic [ref=f55e22]:
+            - 'button "Light Drive: moto y envíos" [ref=f55e30] [cursor=pointer]'
+            - button [ref=f55e45] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f55e47]
+    - navigation [ref=f55e53]:
+      - link "Todas las aplicaciones" [ref=f55e54] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f55e56]: keyboard_backspace
+      - list [ref=f55e58]:
+        - listitem "Panel de control" [ref=f55e61]:
+          - button "Panel de control" [ref=f55e62] [cursor=pointer]:
+            - img [ref=f55e65]: dashboard
+        - listitem "Estadísticas" [ref=f55e69]:
+          - button "Estadísticas" [ref=f55e70] [cursor=pointer]:
+            - img [ref=f55e73]: bar_chart
+        - listitem "Resumen de publicación" [ref=f55e77]:
+          - button "Resumen de publicación" [ref=f55e78] [cursor=pointer]:
+            - img [ref=f55e81]: overview
+        - listitem "Protegida con Play" [ref=f55e85]:
+          - button "Protegida con Play" [ref=f55e86] [cursor=pointer]:
+            - img [ref=f55e89]: shield
+        - listitem "Probar y publicar" [ref=f55e93]:
+          - button "Probar y publicar" [ref=f55e94] [cursor=pointer]:
+            - img [ref=f55e97]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f55e101]:
+          - button "Monitorizar y mejorar" [ref=f55e102] [cursor=pointer]:
+            - img [ref=f55e105]: vital_signs
+        - listitem "Aumentar usuarios" [ref=f55e109]:
+          - button "Aumentar usuarios" [ref=f55e110] [cursor=pointer]:
+            - img [ref=f55e113]: finance_mode
+          - list [ref=f55e524]:
+            - generic [ref=f55e526]:
+              - listitem "Presencia en Google Play Store" [ref=f55e528]:
+                - button "Presencia en Google Play Store" [ref=f55e529] [cursor=pointer]:
+                  - img [ref=f55e532]: expand_less
+                - list [ref=f55e533]:
+                  - generic [ref=f55e535]:
+                    - listitem "Fichas de Play Store" [ref=f55e537]:
+                      - button "Fichas de Play Store" [ref=f55e538] [cursor=pointer]
+                    - listitem "Configuración de la tienda" [ref=f55e541]:
+                      - button "Configuración de la tienda" [ref=f55e542] [cursor=pointer]
+              - listitem "Rendimiento en Play Store" [ref=f55e545]:
+                - button "Rendimiento en Play Store" [ref=f55e546] [cursor=pointer]:
+                  - img [ref=f55e549]: expand_more
+              - listitem "Traducciones" [ref=f55e551]:
+                - button "Traducciones" [ref=f55e552] [cursor=pointer]:
+                  - img [ref=f55e555]: expand_more
+              - listitem "Enlaces profundos" [ref=f55e557]:
+                - button "Enlaces profundos" [ref=f55e558] [cursor=pointer]
+        - listitem "Monetizar con Play" [ref=f55e117]:
+          - button "Monetizar con Play" [ref=f55e118] [cursor=pointer]:
+            - img [ref=f55e121]: sell
+    - generic [ref=f55e124]:
+      - generic [ref=f55e562]:
+        - generic [ref=f55e569]:
+          - heading "Configuración de la tienda" [level=1] [ref=f55e575]
+          - generic [ref=f55e576]: Gestiona cómo se organiza tu aplicación en Google Play y cómo pueden los usuarios ponerse en contacto contigo
+        - generic [ref=f55e596]:
+          - generic [ref=f55e598]:
+            - generic [ref=f55e601]:
+              - generic [ref=f55e602]:
+                - heading "Categoría de la aplicación" [level=2] [ref=f55e607]
+                - button "Editar" [ref=f55e613]
+              - generic [ref=f55e617]: Elige un tipo de aplicación, su categoría y las etiquetas que mejor describan el contenido o la función principal de tu aplicación. Esto ayuda a los usuarios a descubrir aplicaciones en Google Play.
+            - generic [ref=f55e623]:
+              - group "Aplicación o juego" [ref=f55e625]:
+                - generic [ref=f55e629]: Aplicación
+              - group "Categoría" [ref=f55e633]:
+                - generic [ref=f55e637]: Mapas y navegación
+              - group "Etiquetas" [ref=f55e642]:
+                - button "Gestionar etiquetas" [ref=f55e651]
+          - generic [ref=f55e656]:
+            - generic [ref=f55e659]:
+              - generic [ref=f55e660]:
+                - heading "Datos de contacto de la ficha de Play Store" [level=2] [ref=f55e665]
+                - button "Editar" [ref=f55e671]
+              - generic [ref=f55e675]: Esta información se muestra a los usuarios de Google Play
+            - generic [ref=f55e681]:
+              - group "Dirección de correo electrónico" [ref=f55e683]
+              - group "Número de teléfono" [ref=f55e691]
+              - group "Sitio web" [ref=f55e699]
+          - generic [ref=f55e707]:
+            - generic [ref=f55e710]:
+              - heading "Marketing externo" [level=2] [ref=f55e716]
+              - generic [ref=f55e717]: Desactiva el marketing externo si no quieres que tu aplicación se anuncie fuera de Google Play
+            - group "Marketing externo" [ref=f55e725]:
+              - generic [ref=f55e731] [cursor=pointer]:
+                - checkbox "Anunciar mi aplicación fuera de Google Play Los cambios pueden tardar 60 días en aplicarse" [checked] [ref=f55e733]
+                - generic [ref=f55e734]:
+                  - text: Anunciar mi aplicación fuera de Google Play
+                  - paragraph [ref=f55e735]: Los cambios pueden tardar 60 días en aplicarse
+      - generic [ref=f55e142]:
+        - generic [ref=f55e587]:
+          - link "Novedades sobre productos" [ref=f55e588] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f55e589] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f55e590] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f55e591]:
+          - generic [ref=f55e592]: © 2026 Google
+          - link "Privacidad" [ref=f55e593] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f55e594] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f55e595] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/
+  - dialog [ref=f55e739]:
+    - generic [ref=f55e740]:
+      - generic [ref=f55e741]:
+        - heading "Categoría de la aplicación" [level=2] [ref=f55e742]
+        - button "Cerrar" [ref=f55e743] [cursor=pointer]:
+          - img [ref=f55e746]: close
+      - generic [ref=f55e747]: Elige un tipo de aplicación, su categoría y las etiquetas que mejor describan el contenido o la función principal de tu aplicación. Esto ayuda a los usuarios a descubrir aplicaciones en Google Play.
+    - region [ref=f55e752]:
+      - paragraph [ref=f55e753]: "* - Campos obligatorios"
+      - generic [ref=f55e756]:
+        - group "Aplicación o juego" [ref=f55e758]:
+          - generic [ref=f55e759]: Aplicación o juego *
+          - button "Aplicación o juego Campo obligatorio Aplicación" [ref=f55e766] [cursor=pointer]:
+            - generic [ref=f55e767]: Aplicación
+            - img [ref=f55e769]: arrow_drop_down
+        - group "Categoría" [ref=f55e771]:
+          - generic [ref=f55e772]: Categoría *
+          - button "Categoría Campo obligatorio Mapas y navegación" [ref=f55e873] [cursor=pointer]:
+            - generic [ref=f55e780]: Mapas y navegación
+            - img [ref=f55e782]: arrow_drop_down
+      - generic [ref=f55e786]:
+        - generic [ref=f55e787]: Si guardas los cambios, se guardarán en Resumen de publicación y podrás enviarlos a revisión.
+        - generic [ref=f55e790]:
+          - button "Descartar" [ref=f55e876]
+          - button "Guardar" [ref=f55e881]

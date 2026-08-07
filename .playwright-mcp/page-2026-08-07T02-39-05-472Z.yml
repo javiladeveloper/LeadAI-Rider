@@ -1,0 +1,275 @@
+- generic [active] [ref=f39e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f39e3]:
+    - banner [ref=f39e4]:
+      - generic [ref=f39e6]:
+        - link [ref=f39e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f39e8]
+        - generic [ref=f39e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f39e15]:
+            - img [ref=f39e19]: notifications_unread
+            - generic [ref=f39e20]: Notificaciones sin leer
+          - button [ref=f39e26] [cursor=pointer]:
+            - img "Cambiar de cuenta de desarrollador" [ref=f39e28]
+    - navigation [ref=f39e34]:
+      - list [ref=f39e35]:
+        - listitem "Inicio" [ref=f39e38]:
+          - button "Inicio" [ref=f39e39] [cursor=pointer]:
+            - img [ref=f39e42]: features
+        - listitem "Estado según las políticas" [ref=f39e46]:
+          - button "Estado según las políticas" [ref=f39e47] [cursor=pointer]:
+            - img [ref=f39e50]: android_security_privacy_safe
+        - listitem "Usuarios y permisos" [ref=f39e54]:
+          - button "Usuarios y permisos" [ref=f39e55] [cursor=pointer]:
+            - img [ref=f39e58]: user_attributes
+        - listitem "Gestión de pedidos" [ref=f39e62]:
+          - button "Gestión de pedidos" [ref=f39e63] [cursor=pointer]:
+            - img [ref=f39e66]: credit_card
+        - listitem "Descargar informes" [ref=f39e70]:
+          - button "Descargar informes" [ref=f39e71] [cursor=pointer]:
+            - img [ref=f39e73]: arrow_right
+            - img [ref=f39e76]: download
+        - listitem "Cuenta de desarrollador" [ref=f39e80]:
+          - button "Cuenta de desarrollador" [ref=f39e81] [cursor=pointer]:
+            - img [ref=f39e84]: badge
+        - listitem "Registro de actividad" [ref=f39e88]:
+          - button "Registro de actividad" [ref=f39e89] [cursor=pointer]:
+            - img [ref=f39e92]: description
+        - listitem "Ajustes" [ref=f39e96]:
+          - button "Ajustes" [ref=f39e97] [cursor=pointer]:
+            - img [ref=f39e100]: settings
+        - listitem "Ayuda" [ref=f39e104]:
+          - button "Ayuda" [ref=f39e105] [cursor=pointer]:
+            - img [ref=f39e108]: contact_support
+        - listitem "Verificación de desarrolladores de Android" [ref=f39e112]:
+          - button "Verificación de desarrolladores de Android" [ref=f39e113] [cursor=pointer]:
+            - img [ref=f39e116]: app_promotion
+    - generic [ref=f39e119]:
+      - generic [ref=f39e126]:
+        - generic [ref=f39e135]:
+          - heading "Norac" [level=1] [ref=f39e141]
+          - generic [ref=f39e148]:
+            - generic [ref=f39e149]: Cuenta personal
+            - img [ref=f39e151]: brightness_1
+            - generic [ref=f39e152]: "ID de cuenta: 7542318249525056400"
+        - generic [ref=f39e159]:
+          - heading "Todas tus aplicaciones se han registrado correctamente para cumplir los requisitos de verificación de desarrolladores de Android." [level=3] [ref=f39e168]
+          - generic [ref=f39e169]: Ve a la página de verificación de desarrolladores de Android para ver los nombres de paquete registrados y los requisitos detallados, y para registrar las aplicaciones que distribuyas fuera de Google Play.
+          - generic [ref=f39e171]:
+            - button "Ir a la verificación de desarrolladores de Android" [ref=f39e172]
+            - button "Cerrar" [ref=f39e176]
+        - generic [ref=f39e184]:
+          - generic [ref=f39e186]:
+            - heading "Aplicaciones fijadas" [level=2] [ref=f39e190]
+            - button "Más información sobre Aplicaciones fijadas" [ref=f39e193] [cursor=pointer]:
+              - img [ref=f39e194]: help
+          - generic [ref=f39e195]: Fija aplicaciones para acceder a ellas rápidamente y consultar métricas clave
+        - generic [ref=f39e199]:
+          - generic [ref=f39e203]:
+            - heading "7 aplicaciones" [level=2] [ref=f39e208]
+            - link "Crear aplicación" [ref=f39e214] [cursor=pointer]:
+              - /url: /console/u/0/developers/7542318249525056400/create-new-app
+          - generic [ref=f39e218]:
+            - generic [ref=f39e219]:
+              - generic [ref=f39e222]:
+                - generic [ref=f39e223]: Filtrar por
+                - button "Filtrar por Todas" [ref=f39e226] [cursor=pointer]:
+                  - generic [ref=f39e227]: Todas
+                  - img [ref=f39e231]: arrow_drop_down
+              - generic [ref=f39e235]:
+                - search "Busca por nombre de aplicación o paquete":
+                  - generic [ref=f39e237]:
+                    - generic:
+                      - img: search
+                    - generic: Busca por nombre de aplicación o paquete
+                    - textbox "Busca por nombre de aplicación o paquete" [ref=f39e238]
+            - generic [ref=f39e243]:
+              - grid "Todas las aplicaciones" [ref=f39e248]:
+                - row [ref=f39e249]:
+                  - columnheader "Aplicación" [ref=f39e250] [cursor=pointer]
+                  - columnheader "Usuarios con la aplicación descargada" [ref=f39e251] [cursor=pointer]:
+                    - text: Usuarios con la aplicación descargada
+                    - img [ref=f39e253]: help_outline
+                  - columnheader "Estado de la aplicación" [ref=f39e254] [cursor=pointer]
+                  - columnheader "Estado de actualización" [ref=f39e255] [cursor=pointer]
+                  - columnheader "Última actualización" [ref=f39e256] [cursor=pointer]
+                  - cell [ref=f39e257]
+                  - cell [ref=f39e258]
+                  - cell [ref=f39e259]
+                - row [ref=f39e260]:
+                  - gridcell "Ciudadano Alerta pe.vecinoalerta.app" [ref=f39e261]:
+                    - generic [ref=f39e268]:
+                      - generic [ref=f39e269]: Ciudadano Alerta
+                      - generic [ref=f39e272]: pe.vecinoalerta.app
+                  - gridcell "9" [ref=f39e276]
+                  - gridcell "Prueba cerrada" [ref=f39e281]
+                  - gridcell [ref=f39e286]
+                  - gridcell "1 ago 2026" [ref=f39e287]
+                  - gridcell [ref=f39e289]
+                  - gridcell [ref=f39e290]:
+                    - button "Fijar Ciudadano Alerta" [ref=f39e292] [cursor=pointer]:
+                      - img [ref=f39e296]: keep
+                  - gridcell [ref=f39e297]:
+                    - link "Ver Ciudadano Alerta" [ref=f39e299] [cursor=pointer]:
+                      - /url: /console/u/0/developers/7542318249525056400/app/4973712418225177265/app-dashboard
+                      - generic [ref=f39e302]: Ver aplicación
+                      - img [ref=f39e304]: arrow_right_alt
+                - row [ref=f39e305]:
+                  - 'gridcell "FitCore: tu gimnasio en app pe.fitcore.app" [ref=f39e306]':
+                    - generic [ref=f39e313]:
+                      - generic [ref=f39e314]: "FitCore: tu gimnasio en app"
+                      - generic [ref=f39e317]: pe.fitcore.app
+                  - gridcell "11" [ref=f39e321]
+                  - gridcell "Producción" [ref=f39e326]
+                  - gridcell [ref=f39e331]
+                  - gridcell "4 ago 2026" [ref=f39e332]
+                  - gridcell [ref=f39e334]
+                  - gridcell [ref=f39e335]:
+                    - 'button "Fijar FitCore: tu gimnasio en app" [ref=f39e337] [cursor=pointer]':
+                      - img [ref=f39e341]: keep
+                  - gridcell [ref=f39e342]:
+                    - 'link "Ver FitCore: tu gimnasio en app" [ref=f39e344] [cursor=pointer]':
+                      - /url: /console/u/0/developers/7542318249525056400/app/4972923086606709051/app-dashboard
+                      - generic [ref=f39e347]: Ver aplicación
+                      - img [ref=f39e349]: arrow_right_alt
+                - row [ref=f39e350]:
+                  - gridcell "HelpPet com.helppet" [ref=f39e351]:
+                    - generic [ref=f39e358]:
+                      - generic [ref=f39e359]: HelpPet
+                      - generic [ref=f39e362]: com.helppet
+                  - gridcell "2" [ref=f39e366]
+                  - gridcell "Prueba cerrada" [ref=f39e371]
+                  - gridcell [ref=f39e376]
+                  - gridcell "30 jul 2026" [ref=f39e377]
+                  - gridcell [ref=f39e379]
+                  - gridcell [ref=f39e380]:
+                    - button "Fijar HelpPet" [ref=f39e382] [cursor=pointer]:
+                      - img [ref=f39e386]: keep
+                  - gridcell [ref=f39e387]:
+                    - link "Ver HelpPet" [ref=f39e389] [cursor=pointer]:
+                      - /url: /console/u/0/developers/7542318249525056400/app/4975865541851690080/app-dashboard
+                      - generic [ref=f39e392]: Ver aplicación
+                      - img [ref=f39e394]: arrow_right_alt
+                - row [ref=f39e395]:
+                  - gridcell "InClinic com.inclinic.app" [ref=f39e396]:
+                    - generic [ref=f39e403]:
+                      - generic [ref=f39e404]: InClinic
+                      - generic [ref=f39e407]: com.inclinic.app
+                  - gridcell "0" [ref=f39e411]
+                  - gridcell "Borrador Prueba interna" [ref=f39e416]:
+                    - generic [ref=f39e418]:
+                      - generic [ref=f39e419]: Borrador
+                      - generic [ref=f39e421]: Prueba interna
+                  - gridcell [ref=f39e422]
+                  - gridcell "21 jun 2026" [ref=f39e423]
+                  - gridcell [ref=f39e425]
+                  - gridcell [ref=f39e426]:
+                    - button "Fijar InClinic" [ref=f39e428] [cursor=pointer]:
+                      - img [ref=f39e432]: keep
+                  - gridcell [ref=f39e433]:
+                    - link "Ver InClinic" [ref=f39e435] [cursor=pointer]:
+                      - /url: /console/u/0/developers/7542318249525056400/app/4974560728653981570/app-dashboard
+                      - generic [ref=f39e438]: Ver aplicación
+                      - img [ref=f39e440]: arrow_right_alt
+                - row [ref=f39e441]:
+                  - gridcell "LeadAI — Pedidos y Ventas pe.leadai.app" [ref=f39e442]:
+                    - generic [ref=f39e449]:
+                      - generic [ref=f39e450]: LeadAI — Pedidos y Ventas
+                      - generic [ref=f39e453]: pe.leadai.app
+                  - gridcell "0" [ref=f39e457]
+                  - gridcell "Prueba cerrada" [ref=f39e462]
+                  - gridcell [ref=f39e467]
+                  - gridcell "28 jul 2026" [ref=f39e468]
+                  - gridcell [ref=f39e470]
+                  - gridcell [ref=f39e471]:
+                    - button "Fijar LeadAI — Pedidos y Ventas" [ref=f39e473] [cursor=pointer]:
+                      - img [ref=f39e477]: keep
+                  - gridcell [ref=f39e478]:
+                    - link "Ver LeadAI — Pedidos y Ventas" [ref=f39e480] [cursor=pointer]:
+                      - /url: /console/u/0/developers/7542318249525056400/app/4974309106291192302/app-dashboard
+                      - generic [ref=f39e483]: Ver aplicación
+                      - img [ref=f39e485]: arrow_right_alt
+                - row [ref=f39e486]:
+                  - 'gridcell "Light Drive: moto y envíos pe.leadai.rider" [ref=f39e487]':
+                    - generic [ref=f39e494]:
+                      - generic [ref=f39e495]: "Light Drive: moto y envíos"
+                      - generic [ref=f39e498]: pe.leadai.rider
+                  - gridcell "0" [ref=f39e502]
+                  - gridcell "Borrador Prueba interna" [ref=f39e507]:
+                    - generic [ref=f39e509]:
+                      - generic [ref=f39e510]: Borrador
+                      - generic [ref=f39e512]: Prueba interna
+                  - gridcell [ref=f39e513]
+                  - gridcell "7 ago 2026" [ref=f39e514]
+                  - gridcell [ref=f39e516]
+                  - gridcell [ref=f39e517]:
+                    - 'button "Fijar Light Drive: moto y envíos" [ref=f39e519] [cursor=pointer]':
+                      - img [ref=f39e523]: keep
+                  - gridcell [ref=f39e524]:
+                    - 'link "Ver Light Drive: moto y envíos" [ref=f39e526] [cursor=pointer]':
+                      - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-dashboard
+                      - generic [ref=f39e529]: Ver aplicación
+                      - img [ref=f39e531]: arrow_right_alt
+                - row [ref=f39e532]:
+                  - gridcell "Sania pe.saniape.app" [ref=f39e533]:
+                    - generic [ref=f39e540]:
+                      - generic [ref=f39e541]: Sania
+                      - generic [ref=f39e544]: pe.saniape.app
+                  - gridcell "11" [ref=f39e548]
+                  - gridcell "Producción" [ref=f39e553]
+                  - gridcell [ref=f39e558]
+                  - gridcell "7 ago 2026" [ref=f39e559]
+                  - gridcell [ref=f39e561]
+                  - gridcell [ref=f39e562]:
+                    - button "Fijar Sania" [ref=f39e564] [cursor=pointer]:
+                      - img [ref=f39e568]: keep
+                  - gridcell [ref=f39e569]:
+                    - link "Ver Sania" [ref=f39e571] [cursor=pointer]:
+                      - /url: /console/u/0/developers/7542318249525056400/app/4972729656535384517/app-dashboard
+                      - generic [ref=f39e574]: Ver aplicación
+                      - img [ref=f39e576]: arrow_right_alt
+              - generic [ref=f39e579]:
+                - generic [ref=f39e580]:
+                  - generic [ref=f39e581]: "Mostrar filas:"
+                  - 'button "Mostrar filas: 10 seleccionadas." [ref=f39e584] [cursor=pointer]':
+                    - generic [ref=f39e585]: "10"
+                    - img [ref=f39e587]: arrow_drop_down
+                - generic [ref=f39e588]:
+                  - generic [ref=f39e589]: 1 - 7 de 7
+                  - generic [ref=f39e591]:
+                    - button "Ir a la primera página" [disabled] [ref=f39e592]:
+                      - generic:
+                        - generic:
+                          - img: first_page
+                    - button "Ir a la página anterior" [disabled] [ref=f39e593]:
+                      - generic:
+                        - generic:
+                          - img: chevron_left
+                    - button "Ir a la página siguiente" [disabled] [ref=f39e594]:
+                      - generic:
+                        - generic:
+                          - img: chevron_right
+                    - button "Ir a la última página" [disabled] [ref=f39e595]:
+                      - generic:
+                        - generic:
+                          - img: last_page
+      - generic [ref=f39e600]:
+        - generic [ref=f39e601]:
+          - link "Novedades sobre productos" [ref=f39e602] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f39e603] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f39e604] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support
+        - generic [ref=f39e605]:
+          - generic [ref=f39e606]: © 2026 Google
+          - link "Privacidad" [ref=f39e607] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f39e608] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f39e609] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

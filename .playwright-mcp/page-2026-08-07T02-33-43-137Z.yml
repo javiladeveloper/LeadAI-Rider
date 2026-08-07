@@ -1,0 +1,221 @@
+- generic [ref=f30e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f30e3]:
+    - banner [ref=f30e4]:
+      - generic [ref=f30e6]:
+        - link [ref=f30e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f30e8]
+        - generic [ref=f30e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f30e45]:
+            - img [ref=f30e49]: notifications_unread
+            - generic [ref=f30e50]: Notificaciones sin leer
+          - generic [ref=f30e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f30e59] [cursor=pointer]'
+            - button [ref=f30e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f30e16]
+    - navigation [ref=f30e72]:
+      - link "Todas las aplicaciones" [ref=f30e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f30e75]: keyboard_backspace
+      - list [ref=f30e77]:
+        - listitem "Panel de control" [ref=f30e80]:
+          - button "Panel de control" [ref=f30e81] [cursor=pointer]:
+            - img [ref=f30e84]: dashboard
+        - listitem "Estadísticas" [ref=f30e88]:
+          - button "Estadísticas" [ref=f30e89] [cursor=pointer]:
+            - img [ref=f30e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f30e96]:
+          - button "Resumen de publicación" [ref=f30e97] [cursor=pointer]:
+            - img [ref=f30e100]: overview
+        - listitem "Protegida con Play" [ref=f30e104]:
+          - button "Protegida con Play" [ref=f30e105] [cursor=pointer]:
+            - img [ref=f30e108]: shield
+        - listitem "Probar y publicar" [ref=f30e112]:
+          - button "Probar y publicar" [ref=f30e113] [cursor=pointer]:
+            - img [ref=f30e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f30e120]:
+          - button "Monitorizar y mejorar" [ref=f30e121] [cursor=pointer]:
+            - img [ref=f30e124]: vital_signs
+          - list [ref=f30e126]:
+            - generic [ref=f30e128]:
+              - listitem "Cobertura y dispositivos" [ref=f30e130]:
+                - button "Cobertura y dispositivos" [ref=f30e131] [cursor=pointer]:
+                  - img [ref=f30e134]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f30e136]:
+                - button "Valoraciones y reseñas" [ref=f30e137] [cursor=pointer]:
+                  - img [ref=f30e140]: expand_more
+              - listitem "Android vitals" [ref=f30e142]:
+                - button "Android vitals" [ref=f30e143] [cursor=pointer]:
+                  - img [ref=f30e146]: expand_more
+              - listitem "Política y programas" [ref=f30e148]:
+                - button "Política y programas" [ref=f30e149] [cursor=pointer]:
+                  - img [ref=f30e152]: expand_less
+                - list [ref=f30e153]:
+                  - generic [ref=f30e155]:
+                    - listitem "Estado según las políticas" [ref=f30e157]:
+                      - button "Estado según las políticas" [ref=f30e158] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f30e161]:
+                      - button "Contenido de la aplicación" [ref=f30e162] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f30e165]:
+                      - button "Aprobada por profesores" [ref=f30e166] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f30e170]:
+          - button "Aumentar usuarios" [ref=f30e171] [cursor=pointer]:
+            - img [ref=f30e174]: finance_mode
+        - listitem "Monetizar con Play" [ref=f30e178]:
+          - button "Monetizar con Play" [ref=f30e179] [cursor=pointer]:
+            - img [ref=f30e182]: sell
+    - generic [ref=f30e22]:
+      - generic [ref=f30e187]:
+        - generic [ref=f30e191]:
+          - link "Volver a Contenido de la aplicación" [ref=f30e194] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/overview
+            - img [ref=f30e198]: keyboard_backspace
+            - generic [ref=f30e199]: Contenido de la aplicación
+          - heading "Datos de inicio de sesión" [level=1] [ref=f30e208]
+        - generic [ref=f30e211]:
+          - generic [ref=f30e212]: Esta declaración antes se llamaba "Acceso a la aplicación".
+          - paragraph [ref=f30e214]:
+            - text: Para revisar tu aplicación, necesitamos poder acceder a todas sus partes usando los datos de inicio de sesión. Si no podemos acceder por completo a tu aplicación, es posible que se rechace en la revisión. No podemos crear cuentas, usar cuentas personales para hacer compras ni usar pruebas sin coste para revisar tu aplicación.
+            - link "Más información sobre los datos de inicio de sesión (se abre en una pestaña nueva)" [ref=f30e215] [cursor=pointer]:
+              - /url: https://support.google.com/googleplay/android-developer/answer/9859455?#app_access
+              - text: Más información
+          - group "Datos de inicio de sesión" [ref=f30e218]:
+            - generic [ref=f30e223]:
+              - paragraph [ref=f30e224]: ¿Alguna parte de tu aplicación está restringida?
+              - generic [ref=f30e226]:
+                - generic [ref=f30e228] [cursor=pointer]:
+                  - radio "Sí" [checked] [ref=f30e230]
+                  - generic [ref=f30e233]:
+                    - generic [ref=f30e234]: Sí
+                    - generic [ref=f30e237]:
+                      - paragraph [ref=f30e238]: "Si tu aplicación incluye alguno de los siguientes elementos:"
+                      - list [ref=f30e239]:
+                        - listitem [ref=f30e240]: detalles de inicio de sesión de la cuenta, como una dirección de correo, un nombre de usuario, el inicio de sesión en la cuenta de Google o el SSO
+                        - listitem [ref=f30e241]: pagos, como productos únicos, suscripciones o niveles de acceso
+                        - listitem [ref=f30e242]: códigos de referencia o códigos QR
+                        - listitem [ref=f30e243]: PINs únicos o verificación en dos pasos
+                        - listitem [ref=f30e244]: autenticación biométrica
+                        - listitem [ref=f30e245]: acciones que deban realizarse en otro dispositivo
+                - generic [ref=f30e296]:
+                  - strong [ref=f30e297]: Datos de inicio de sesión
+                  - button "Añade detalles" [ref=f30e298]:
+                    - img [ref=f30e302]: add
+              - generic [ref=f30e249] [cursor=pointer]:
+                - radio "No" [ref=f30e251]
+                - generic [ref=f30e254]:
+                  - generic [ref=f30e255]: "No"
+                  - generic [ref=f30e258]:
+                    - paragraph [ref=f30e259]: "Si tu aplicación cumple las siguientes condiciones:"
+                    - list [ref=f30e260]:
+                      - listitem [ref=f30e261]: ninguna parte de tu aplicación está restringida
+                      - listitem [ref=f30e262]: no es necesario iniciar sesión con una cuenta en ningún país o territorio
+                      - listitem [ref=f30e263]: no es necesario iniciar sesión con una cuenta y ningún contenido requiere pago
+        - generic [ref=f30e271]:
+          - button "Descartar" [ref=f30e305]
+          - button "Guardar" [disabled] [ref=f30e310]
+      - generic [ref=f30e30]:
+        - generic [ref=f30e284]:
+          - link "Novedades sobre productos" [ref=f30e285] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f30e286] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f30e287] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f30e288]:
+          - generic [ref=f30e289]: © 2026 Google
+          - link "Privacidad" [ref=f30e290] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f30e291] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f30e292] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/
+  - dialog [ref=f30e320]:
+    - generic [ref=f30e322]:
+      - heading "Añadir datos de inicio de sesión" [level=2] [ref=f30e323]
+      - button "Cerrar" [active] [ref=f30e324] [cursor=pointer]:
+        - img [ref=f30e327]: close
+    - region [ref=f30e328]:
+      - generic [ref=f30e331]:
+        - paragraph [ref=f30e332]: Añade los datos de inicio de sesión para que Google Play pueda acceder a las partes restringidas de tu aplicación. Debes asegurarte de que esta información esté actualizada. Usaremos la información que proporciones para revisar tu aplicación cada vez que envíes una actualización. La información se debe proporcionar en inglés. No te pongas en contacto con nuestro equipo de Asistencia de Políticas para facilitar esta información, ya que eso podría retrasar el proceso de revisión.
+        - generic [ref=f30e333]:
+          - group "Nombre" [ref=f30e335]:
+            - generic [ref=f30e336]: Nombre *
+            - generic [ref=f30e340]:
+              - paragraph [ref=f30e341]: Asigna un nombre a este conjunto de datos de inicio de sesión para que podamos reconocer para qué sirven. Por ejemplo, "Cuenta de administrador" o "Cuenta de usuario".
+              - generic [ref=f30e342]:
+                - textbox [ref=f30e344]
+                - generic [ref=f30e345]:
+                  - paragraph [ref=f30e346]
+                  - generic [ref=f30e347]:
+                    - generic [ref=f30e348]: 0/60
+                    - generic [ref=f30e349]: El texto tiene 0 caracteres de 60
+          - generic [ref=f30e350]:
+            - group "Nombre de usuario y contraseña" [ref=f30e352]:
+              - generic [ref=f30e357]:
+                - paragraph [ref=f30e358]: Si tu aplicación requiere un nombre de usuario, una dirección de correo o un número de teléfono, facilítanos uno de estos datos que podamos usar para acceder a la aplicación.
+                - generic [ref=f30e359]:
+                  - generic [ref=f30e360]:
+                    - generic: Nombre de usuario, dirección de correo electrónico o número de teléfono
+                    - textbox "Nombre de usuario, dirección de correo electrónico o número de teléfono" [ref=f30e361]
+                  - generic [ref=f30e362]:
+                    - paragraph [ref=f30e363]: En el caso de los números de teléfono, incluye el código de país y el prefijo
+                    - generic [ref=f30e364]:
+                      - generic [ref=f30e365]: 0/100
+                      - generic [ref=f30e366]: El texto tiene 0 caracteres de 100
+            - group [ref=f30e368]:
+              - generic [ref=f30e372]:
+                - paragraph [ref=f30e373]: Si tu aplicación requiere una contraseña, proporciónanos una que podamos usar.
+                - generic [ref=f30e374]:
+                  - generic [ref=f30e375]:
+                    - generic: Contraseña
+                    - textbox "Contraseña" [ref=f30e376]
+                  - generic [ref=f30e377]:
+                    - paragraph [ref=f30e378]
+                    - generic [ref=f30e379]:
+                      - generic [ref=f30e380]: 0/100
+                      - generic [ref=f30e381]: El texto tiene 0 caracteres de 100
+            - group [ref=f30e383]:
+              - generic [ref=f30e388]:
+                - img [ref=f30e391]: info
+                - generic [ref=f30e392]: Si se necesita más información además de un nombre de usuario y una contraseña para acceder a tu aplicación, proporciona esta información en el campo "Cualquier otra información necesaria para acceder a tu aplicación", que aparece abajo
+            - generic [ref=f30e395]:
+              - generic [ref=f30e398]:
+                - heading "Cualquier otra información necesaria para acceder a tu aplicación" [level=4] [ref=f30e407]
+                - paragraph [ref=f30e408]: "Proporciona cualquier otra información que sea necesaria para acceder a tu aplicación. Si tu aplicación solo requiere un nombre de usuario y una contraseña, escríbelos en los campos de arriba. Entre los ejemplos de acceso restringido que no son el nombre de usuario ni la contraseña se incluyen los siguientes:"
+                - list [ref=f30e409]:
+                  - listitem [ref=f30e410]: Verificación en dos pasos
+                  - listitem [ref=f30e411]: Códigos QR
+                  - listitem [ref=f30e412]: Acceso basado en la ubicación
+                  - listitem [ref=f30e413]: Suscripciones
+                  - listitem [ref=f30e414]: Inicios de sesión biométricos (por ejemplo, huellas digitales o reconocimiento facial)
+                - paragraph [ref=f30e415]: "La información que proporciones aquí podría incluir, por ejemplo:"
+                - list [ref=f30e416]:
+                  - listitem [ref=f30e417]: Instrucciones sobre cómo acceder a cuentas de demostración o a un modo para invitados
+                  - listitem [ref=f30e418]: Instrucciones sobre cómo evitar los inicios de sesión biométricos o la verificación en dos pasos
+                  - listitem [ref=f30e419]: URLs estáticas con acceso a códigos QR o códigos de barras necesarios para acceder a tu aplicación
+                - group [ref=f30e421]:
+                  - generic [ref=f30e424]:
+                    - textbox [ref=f30e427]
+                    - generic [ref=f30e428]:
+                      - paragraph [ref=f30e429]
+                      - generic [ref=f30e430]:
+                        - generic [ref=f30e431]: 0/500
+                        - generic [ref=f30e432]: El texto tiene 0 caracteres de 500
+                - paragraph [ref=f30e433]: Si no podemos revisar tu aplicación, es posible que se te impida publicar actualizaciones o que la aplicación se retire de Google Play. Los revisores no pueden crear cuentas, usar sus propias cuentas que ya tengan ni utilizar pruebas gratuitas para acceder a tu aplicación. Tampoco pueden ponerse en contacto contigo para solicitar más información.
+              - generic [ref=f30e436]:
+                - text: Instrucciones adicionales
+                - paragraph [ref=f30e437]: Si tus datos de inicio de sesión no son numéricos ni alfanuméricos (por ejemplo, un código QR o un código de barras), proporciona una URL estática para acceder a ellos.
+                - paragraph [ref=f30e438]: Si tu aplicación normalmente requiere la verificación en dos pasos o un PIN de un solo uso, proporciona datos de inicio de sesión reutilizables que no caduquen.
+                - paragraph [ref=f30e439]: Si tu aplicación normalmente usa una contraseña que depende de la ubicación (por ejemplo, una restricción geográfica), proporciona datos de inicio de sesión válidos independientemente de la ubicación del usuario.
+                - paragraph [ref=f30e440]: Si tus datos de inicio de sesión suelen estar en un idioma distinto del inglés, proporciona una versión en inglés de todas las credenciales de inicio de sesión necesarias.
+          - group [ref=f30e442]:
+            - generic [ref=f30e445] [cursor=pointer]:
+              - checkbox "Los detalles de inicio de sesión de esta declaración proporcionan acceso completo a todas las funciones y todo el contenido de esta aplicación, incluido contenido premium o de pago" [ref=f30e447]
+              - generic [ref=f30e448]: Los detalles de inicio de sesión de esta declaración proporcionan acceso completo a todas las funciones y todo el contenido de esta aplicación, incluido contenido premium o de pago
+      - generic [ref=f30e457]:
+        - button "Añadir" [disabled] [ref=f30e458]
+        - button "Descartar cambios" [disabled] [ref=f30e462]

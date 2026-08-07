@@ -1,0 +1,200 @@
+- generic [ref=f47e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f47e3]:
+    - banner [ref=f47e4]:
+      - generic [ref=f47e6]:
+        - link [ref=f47e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f47e8]
+        - generic [ref=f47e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f47e45]:
+            - img [ref=f47e49]: notifications_unread
+            - generic [ref=f47e50]: Notificaciones sin leer
+          - generic [ref=f47e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f47e59] [cursor=pointer]'
+            - button [ref=f47e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f47e16]
+    - navigation [ref=f47e72]:
+      - link "Todas las aplicaciones" [ref=f47e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f47e75]: keyboard_backspace
+      - list [ref=f47e77]:
+        - listitem "Panel de control" [ref=f47e80]:
+          - button "Panel de control" [ref=f47e81] [cursor=pointer]:
+            - img [ref=f47e84]: dashboard
+        - listitem "Estadísticas" [ref=f47e88]:
+          - button "Estadísticas" [ref=f47e89] [cursor=pointer]:
+            - img [ref=f47e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f47e96]:
+          - button "Resumen de publicación" [ref=f47e97] [cursor=pointer]:
+            - img [ref=f47e100]: overview
+        - listitem "Protegida con Play" [ref=f47e104]:
+          - button "Protegida con Play" [ref=f47e105] [cursor=pointer]:
+            - img [ref=f47e108]: shield
+        - listitem "Probar y publicar" [ref=f47e112]:
+          - button "Probar y publicar" [ref=f47e113] [cursor=pointer]:
+            - img [ref=f47e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f47e120]:
+          - button "Monitorizar y mejorar" [ref=f47e121] [cursor=pointer]:
+            - img [ref=f47e124]: vital_signs
+          - list [ref=f47e126]:
+            - generic [ref=f47e128]:
+              - listitem "Cobertura y dispositivos" [ref=f47e130]:
+                - button "Cobertura y dispositivos" [ref=f47e131] [cursor=pointer]:
+                  - img [ref=f47e134]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f47e136]:
+                - button "Valoraciones y reseñas" [ref=f47e137] [cursor=pointer]:
+                  - img [ref=f47e140]: expand_more
+              - listitem "Android vitals" [ref=f47e142]:
+                - button "Android vitals" [ref=f47e143] [cursor=pointer]:
+                  - img [ref=f47e146]: expand_more
+              - listitem "Política y programas" [ref=f47e148]:
+                - button "Política y programas" [ref=f47e149] [cursor=pointer]:
+                  - img [ref=f47e152]: expand_less
+                - list [ref=f47e153]:
+                  - generic [ref=f47e155]:
+                    - listitem "Estado según las políticas" [ref=f47e157]:
+                      - button "Estado según las políticas" [ref=f47e158] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f47e161]:
+                      - button "Contenido de la aplicación" [ref=f47e162] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f47e165]:
+                      - button "Aprobada por profesores" [ref=f47e166] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f47e170]:
+          - button "Aumentar usuarios" [ref=f47e171] [cursor=pointer]:
+            - img [ref=f47e174]: finance_mode
+        - listitem "Monetizar con Play" [ref=f47e178]:
+          - button "Monetizar con Play" [ref=f47e179] [cursor=pointer]:
+            - img [ref=f47e182]: sell
+    - generic [ref=f47e22]:
+      - generic [ref=f47e187]:
+        - generic [ref=f47e191]:
+          - link "Volver a Contenido de la aplicación" [ref=f47e194] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/overview
+            - img [ref=f47e198]: keyboard_backspace
+            - generic [ref=f47e199]: Contenido de la aplicación
+          - generic [ref=f47e202]:
+            - generic [ref=f47e203]:
+              - heading "Seguridad de los datos" [level=1] [ref=f47e208]
+              - generic [ref=f47e213]:
+                - button "Exportar a CSV" [ref=f47e214]
+                - button "Importar desde CSV" [ref=f47e218]
+            - generic [ref=f47e226]:
+              - text: Ayuda a los usuarios a entender cómo recoge y comparte sus datos tu aplicación.
+              - button "Mostrar más información sobre Seguridad de los datos" [ref=f47e227] [cursor=pointer]: Mostrar más
+        - generic [ref=f47e233]:
+          - tablist [ref=f47e234]:
+            - 'tab "Introducción: paso 1 de 5" [disabled] [ref=f47e235]':
+              - img [ref=f47e364]: check
+              - generic [ref=f47e239]: Introducción
+            - 'tab "Recogida de datos y seguridad: paso 2 de 5" [selected] [ref=f47e242] [cursor=pointer]':
+              - generic [ref=f47e243]: "2"
+              - generic [ref=f47e246]: Recogida de datos y seguridad
+            - 'tab "Tipos de datos: paso 3 de 5" [disabled] [ref=f47e249]':
+              - generic [ref=f47e250]: "3"
+              - generic [ref=f47e253]: Tipos de datos
+            - 'tab "Uso y gestión de datos: paso 4 de 5" [disabled] [ref=f47e256]':
+              - generic [ref=f47e257]: "4"
+              - generic [ref=f47e260]: Uso y gestión de datos
+            - 'tab "Vista previa: paso 5 de 5" [disabled] [ref=f47e263]':
+              - generic [ref=f47e264]: "5"
+              - generic [ref=f47e267]: Vista previa
+          - tabpanel [ref=f47e270]:
+            - generic [ref=f47e367]:
+              - heading "Recogida de datos y seguridad" [level=2] [ref=f47e376]
+              - generic [ref=f47e380]:
+                - group [ref=f47e382]:
+                  - generic [ref=f47e385]:
+                    - text: Revisa la lista de tipos de datos de usuario requeridos que tienes que divulgar.
+                    - link "Ver los tipos de datos requeridos, Se abre en otra pestaña" [ref=f47e387] [cursor=pointer]:
+                      - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#types
+                      - text: Ver los tipos de datos requeridos
+                - group [ref=f47e389]:
+                  - generic [ref=f47e391]:
+                    - generic [ref=f47e392]: ¿Tu aplicación recoge o comparte datos de usuario de alguno de los tipos requeridos?
+                    - radiogroup "¿Tu aplicación recoge o comparte datos de usuario de alguno de los tipos requeridos?" [ref=f47e393]:
+                      - generic [ref=f47e394] [cursor=pointer]:
+                        - radio "Sí" [checked] [ref=f47e396]
+                        - generic [ref=f47e399]: Sí
+                    - generic [ref=f47e461]:
+                      - group [ref=f47e463]:
+                        - generic [ref=f47e465]:
+                          - generic [ref=f47e466]:
+                            - text: ¿Los datos de usuario que recoge tu aplicación se cifran en tránsito?
+                            - link "Información sobre cómo deberías responder, Se abre en otra pestaña" [ref=f47e468] [cursor=pointer]:
+                              - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#other
+                              - text: Información sobre cómo deberías responder
+                          - radiogroup "¿Los datos de usuario que recoge tu aplicación se cifran en tránsito?" [ref=f47e469]:
+                            - generic [ref=f47e470] [cursor=pointer]:
+                              - radio "Sí" [checked] [active] [ref=f47e472]
+                              - generic [ref=f47e475]: Sí
+                            - generic [ref=f47e476] [cursor=pointer]:
+                              - radio "No" [ref=f47e478]
+                              - generic [ref=f47e481]: "No"
+                      - group [ref=f47e483]:
+                        - generic [ref=f47e485]:
+                          - generic [ref=f47e486]:
+                            - text: ¿Cuáles de los siguientes métodos de creación de cuentas se admiten en tu aplicación? Selecciona todas las opciones que correspondan.
+                            - paragraph [ref=f47e487]: Esto incluye la opción de crear cuentas íntegramente dentro de tu aplicación o la opción de redirigir a los usuarios a una página web donde pueden crear una cuenta.
+                            - paragraph [ref=f47e488]: Los nombres de usuario incluyen IDs de usuario, direcciones de correo electrónico y números de teléfono. La autenticación incluye la autenticación de dos factores, una contraseña de un solo uso, la autenticación biométrica o el inicio de sesión único.
+                          - group "¿Cuáles de los siguientes métodos de creación de cuentas se admiten en tu aplicación? Selecciona todas las opciones que correspondan." [ref=f47e489]:
+                            - generic [ref=f47e491] [cursor=pointer]:
+                              - checkbox "Nombre de usuario y contraseña" [ref=f47e493]
+                              - generic [ref=f47e494]: Nombre de usuario y contraseña
+                            - generic [ref=f47e496] [cursor=pointer]:
+                              - checkbox "Nombre de usuario y otros métodos de autenticación" [ref=f47e498]
+                              - generic [ref=f47e499]: Nombre de usuario y otros métodos de autenticación
+                            - generic [ref=f47e501] [cursor=pointer]:
+                              - checkbox "Nombre de usuario, contraseña y otros métodos de autenticación" [ref=f47e503]
+                              - generic [ref=f47e504]: Nombre de usuario, contraseña y otros métodos de autenticación
+                            - generic [ref=f47e506] [cursor=pointer]:
+                              - checkbox "OAuth" [ref=f47e508]
+                              - generic [ref=f47e509]: OAuth
+                            - generic [ref=f47e511] [cursor=pointer]:
+                              - checkbox "Otro" [ref=f47e513]
+                              - generic [ref=f47e514]: Otro
+                            - generic [ref=f47e516] [cursor=pointer]:
+                              - checkbox "Mi aplicación no permite que los usuarios creen una cuenta" [ref=f47e518]
+                              - generic [ref=f47e519]: Mi aplicación no permite que los usuarios creen una cuenta
+                    - radiogroup "¿Tu aplicación recoge o comparte datos de usuario de alguno de los tipos requeridos?" [ref=f47e400]:
+                      - generic [ref=f47e401] [cursor=pointer]:
+                        - radio "No" [ref=f47e403]
+                        - generic [ref=f47e406]: "No"
+                - generic [ref=f47e409]:
+                  - heading "Insignias adicionales" [level=3] [ref=f47e415]
+                  - generic [ref=f47e416]: Es posible que puedas mostrar insignias adicionales en tu ficha de Play Store. Mostrar insignias en tu ficha de Play Store puede ayudar a destacar tu aplicación y a aumentar la confianza de los usuarios.
+                - group [ref=f47e419]:
+                  - generic [ref=f47e421]:
+                    - heading "Revisión de seguridad independiente" [level=4] [ref=f47e430]
+                    - text: Haz que tu aplicación sea revisada de forma independiente de acuerdo con una normativa de seguridad internacional.
+                    - button "Más información sobre la revisión de seguridad independiente" [ref=f47e434] [cursor=pointer]:
+                      - generic [ref=f47e437]: Más información
+                - group [ref=f47e439]:
+                  - generic [ref=f47e441]:
+                    - heading "Pagos de UPI verificados" [level=4] [ref=f47e450]
+                    - text: Si tienes una aplicación financiera con la interfaz Unified Payments Interface (UPI) que opera en la India, puedes acreditar tu aplicación ante la Corporación Nacional de Pagos de la India (NPCI).
+                    - button "Más información sobre los pagos de UPI" [ref=f47e454] [cursor=pointer]:
+                      - generic [ref=f47e457]: Más información
+          - generic [ref=f47e332]: "Recogida de datos y seguridad: paso 2 de 5"
+        - generic [ref=f47e339]:
+          - button "Siguiente" [disabled] [ref=f47e341]
+          - button "Más opciones" [ref=f47e347] [cursor=pointer]:
+            - img [ref=f47e351]: more_vert
+      - generic [ref=f47e30]:
+        - generic [ref=f47e354]:
+          - link "Novedades sobre productos" [ref=f47e355] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f47e356] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f47e357] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f47e358]:
+          - generic [ref=f47e359]: © 2026 Google
+          - link "Privacidad" [ref=f47e360] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f47e361] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f47e362] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

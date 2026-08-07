@@ -1,0 +1,90 @@
+- generic [ref=f22e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f22e3]:
+    - banner [ref=f22e4]:
+      - generic [ref=f22e6]:
+        - link [ref=f22e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f22e8]
+        - generic [ref=f22e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f22e45]:
+            - img [ref=f22e49]: notifications_unread
+            - generic [ref=f22e50]: Notificaciones sin leer
+          - generic [ref=f22e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f22e59] [cursor=pointer]'
+            - button [ref=f22e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f22e16]
+    - navigation [ref=f22e72]:
+      - link "Todas las aplicaciones" [ref=f22e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f22e75]: keyboard_backspace
+      - list [ref=f22e77]:
+        - listitem "Panel de control" [ref=f22e80]:
+          - button "Panel de control" [ref=f22e81] [cursor=pointer]:
+            - img [ref=f22e84]: dashboard
+        - listitem "Estadísticas" [ref=f22e88]:
+          - button "Estadísticas" [ref=f22e89] [cursor=pointer]:
+            - img [ref=f22e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f22e96]:
+          - button "Resumen de publicación" [ref=f22e97] [cursor=pointer]:
+            - img [ref=f22e100]: overview
+        - listitem "Protegida con Play" [ref=f22e104]:
+          - button "Protegida con Play" [ref=f22e105] [cursor=pointer]:
+            - img [ref=f22e108]: shield
+        - listitem "Probar y publicar" [ref=f22e112]:
+          - button "Probar y publicar" [ref=f22e113] [cursor=pointer]:
+            - img [ref=f22e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f22e120]:
+          - button "Monitorizar y mejorar" [ref=f22e121] [cursor=pointer]:
+            - img [ref=f22e124]: vital_signs
+        - listitem "Aumentar usuarios" [ref=f22e128]:
+          - button "Aumentar usuarios" [ref=f22e129] [cursor=pointer]:
+            - img [ref=f22e132]: finance_mode
+        - listitem "Monetizar con Play" [ref=f22e136]:
+          - button "Monetizar con Play" [ref=f22e137] [cursor=pointer]:
+            - img [ref=f22e140]: sell
+    - generic [ref=f22e22]:
+      - generic [ref=f22e145]:
+        - generic [ref=f22e149]:
+          - link "Volver a Contenido de la aplicación" [ref=f22e152] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/overview
+            - img [ref=f22e156]: keyboard_backspace
+            - generic [ref=f22e157]: Contenido de la aplicación
+          - heading "Aplicaciones gubernamentales" [level=1] [ref=f22e166]
+        - generic [ref=f22e170]:
+          - img [ref=f22e173]: warning
+          - generic [ref=f22e174]: Si no completas esta sección, supondremos que tu aplicación no es gubernamental
+        - group [ref=f22e182]:
+          - generic [ref=f22e184]:
+            - paragraph [ref=f22e185]: ¿Tu aplicación ha sido desarrollada por o en nombre de una entidad gubernamental? Por ejemplo, una aplicación del sistema nacional de salud, de aparcamiento urbano o de concesión de licencias estatales. Si seleccionas "Sí" y proporcionas pruebas de que tu aplicación cumple nuestros requisitos, puedes obtener una etiqueta de institución gubernamental en tu ficha de Play Store.
+            - radiogroup [ref=f22e186]:
+              - generic [ref=f22e187] [cursor=pointer]:
+                - radio "Sí" [ref=f22e189]
+                - generic [ref=f22e192]: Sí
+              - generic [ref=f22e193] [cursor=pointer]:
+                - radio "No" [checked] [active] [ref=f22e195]
+                - generic [ref=f22e198]: "No"
+        - generic [ref=f22e202]:
+          - generic [ref=f22e203]: Si guardas los cambios, se guardarán en Resumen de publicación y podrás enviarlos a revisión.
+          - generic [ref=f22e206]:
+            - button "Descartar" [ref=f22e230]
+            - button "Guardar" [ref=f22e235]
+      - generic [ref=f22e30]:
+        - generic [ref=f22e219]:
+          - link "Novedades sobre productos" [ref=f22e220] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f22e221] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f22e222] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f22e223]:
+          - generic [ref=f22e224]: © 2026 Google
+          - link "Privacidad" [ref=f22e225] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f22e226] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f22e227] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

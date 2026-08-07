@@ -1,0 +1,234 @@
+- generic [ref=f47e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f47e3]:
+    - banner [ref=f47e4]:
+      - generic [ref=f47e6]:
+        - link [ref=f47e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f47e8]
+        - generic [ref=f47e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f47e45]:
+            - img [ref=f47e49]: notifications_unread
+            - generic [ref=f47e50]: Notificaciones sin leer
+          - generic [ref=f47e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f47e59] [cursor=pointer]'
+            - button [ref=f47e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f47e16]
+    - navigation [ref=f47e72]:
+      - link "Todas las aplicaciones" [ref=f47e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f47e75]: keyboard_backspace
+      - list [ref=f47e77]:
+        - listitem "Panel de control" [ref=f47e80]:
+          - button "Panel de control" [ref=f47e81] [cursor=pointer]:
+            - img [ref=f47e84]: dashboard
+        - listitem "Estadísticas" [ref=f47e88]:
+          - button "Estadísticas" [ref=f47e89] [cursor=pointer]:
+            - img [ref=f47e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f47e96]:
+          - button "Resumen de publicación" [ref=f47e97] [cursor=pointer]:
+            - img [ref=f47e100]: overview
+        - listitem "Protegida con Play" [ref=f47e104]:
+          - button "Protegida con Play" [ref=f47e105] [cursor=pointer]:
+            - img [ref=f47e108]: shield
+        - listitem "Probar y publicar" [ref=f47e112]:
+          - button "Probar y publicar" [ref=f47e113] [cursor=pointer]:
+            - img [ref=f47e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f47e120]:
+          - button "Monitorizar y mejorar" [ref=f47e121] [cursor=pointer]:
+            - img [ref=f47e124]: vital_signs
+          - list [ref=f47e126]:
+            - generic [ref=f47e128]:
+              - listitem "Cobertura y dispositivos" [ref=f47e130]:
+                - button "Cobertura y dispositivos" [ref=f47e131] [cursor=pointer]:
+                  - img [ref=f47e134]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f47e136]:
+                - button "Valoraciones y reseñas" [ref=f47e137] [cursor=pointer]:
+                  - img [ref=f47e140]: expand_more
+              - listitem "Android vitals" [ref=f47e142]:
+                - button "Android vitals" [ref=f47e143] [cursor=pointer]:
+                  - img [ref=f47e146]: expand_more
+              - listitem "Política y programas" [ref=f47e148]:
+                - button "Política y programas" [ref=f47e149] [cursor=pointer]:
+                  - img [ref=f47e152]: expand_less
+                - list [ref=f47e153]:
+                  - generic [ref=f47e155]:
+                    - listitem "Estado según las políticas" [ref=f47e157]:
+                      - button "Estado según las políticas" [ref=f47e158] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f47e161]:
+                      - button "Contenido de la aplicación" [ref=f47e162] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f47e165]:
+                      - button "Aprobada por profesores" [ref=f47e166] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f47e170]:
+          - button "Aumentar usuarios" [ref=f47e171] [cursor=pointer]:
+            - img [ref=f47e174]: finance_mode
+        - listitem "Monetizar con Play" [ref=f47e178]:
+          - button "Monetizar con Play" [ref=f47e179] [cursor=pointer]:
+            - img [ref=f47e182]: sell
+    - generic [ref=f47e22]:
+      - generic [ref=f47e187]:
+        - generic [ref=f47e191]:
+          - link "Volver a Contenido de la aplicación" [ref=f47e194] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/overview
+            - img [ref=f47e198]: keyboard_backspace
+            - generic [ref=f47e199]: Contenido de la aplicación
+          - generic [ref=f47e202]:
+            - generic [ref=f47e203]:
+              - heading "Seguridad de los datos" [level=1] [ref=f47e208]
+              - generic [ref=f47e213]:
+                - button "Exportar a CSV" [ref=f47e214]
+                - button "Importar desde CSV" [ref=f47e218]
+            - generic [ref=f47e226]:
+              - text: Ayuda a los usuarios a entender cómo recoge y comparte sus datos tu aplicación.
+              - button "Mostrar más información sobre Seguridad de los datos" [ref=f47e227] [cursor=pointer]: Mostrar más
+        - generic [ref=f47e233]:
+          - tablist [ref=f47e234]:
+            - 'tab "Introducción: paso 1 de 5" [disabled] [ref=f47e235]':
+              - img [ref=f47e364]: check
+              - generic [ref=f47e239]: Introducción
+            - 'tab "Recogida de datos y seguridad: paso 2 de 5" [disabled] [ref=f47e242]':
+              - img [ref=f47e600]: check
+              - generic [ref=f47e246]: Recogida de datos y seguridad
+            - 'tab "Tipos de datos: paso 3 de 5" [disabled] [ref=f47e249]':
+              - img [ref=f47e1227]: check
+              - generic [ref=f47e253]: Tipos de datos
+            - 'tab "Uso y gestión de datos: paso 4 de 5" [disabled] [ref=f47e256]':
+              - img [ref=f47e6956]: check
+              - generic [ref=f47e260]: Uso y gestión de datos
+            - 'tab "Vista previa: paso 5 de 5" [active] [selected] [ref=f47e263] [cursor=pointer]':
+              - generic [ref=f47e264]: "5"
+              - generic [ref=f47e267]: Vista previa
+          - tabpanel [ref=f47e270]:
+            - generic [ref=f47e6957]:
+              - generic [ref=f47e6962]:
+                - generic [ref=f47e6963]:
+                  - heading "Vista previa de la ficha de Play Store" [level=2] [ref=f47e6968]
+                  - button "Mostrar todo" [ref=f47e6973]
+                - generic [ref=f47e6977]: "Teniendo en cuenta lo que nos has indicado, los usuarios verán la siguiente información en Google Play:"
+              - generic [ref=f47e6981]:
+                - generic [ref=f47e6984]:
+                  - heading "Datos compartidos" [level=3] [ref=f47e6990]
+                  - generic [ref=f47e6991]: Datos que pueden compartirse con otras empresas u organizaciones
+                - generic [ref=f47e6995]:
+                  - generic [ref=f47e6998]:
+                    - generic [ref=f47e6999]:
+                      - img [ref=f47e7002]: account_circle
+                      - strong [ref=f47e7005]: Información personal
+                    - generic [ref=f47e7007]:
+                      - generic [ref=f47e7008]: Nombre, Dirección, Número de teléfono
+                      - img [ref=f47e7012]: brightness_1
+                      - button "Mostrar detalles" [ref=f47e7015]:
+                        - img [ref=f47e7020]: expand_more
+                  - generic [ref=f47e7023]:
+                    - generic [ref=f47e7024]:
+                      - img [ref=f47e7027]: location_on
+                      - strong [ref=f47e7030]: Ubicación
+                    - generic [ref=f47e7032]:
+                      - generic [ref=f47e7033]: Ubicación precisa
+                      - img [ref=f47e7037]: brightness_1
+                      - button "Mostrar detalles" [ref=f47e7040]:
+                        - img [ref=f47e7045]: expand_more
+              - generic [ref=f47e7047]:
+                - generic [ref=f47e7050]:
+                  - heading "Datos recogidos" [level=3] [ref=f47e7056]
+                  - generic [ref=f47e7057]: Datos que esta aplicación puede recoger
+                - generic [ref=f47e7061]:
+                  - generic [ref=f47e7064]:
+                    - generic [ref=f47e7065]:
+                      - img [ref=f47e7068]: account_circle
+                      - strong [ref=f47e7071]: Información personal
+                    - generic [ref=f47e7073]:
+                      - generic [ref=f47e7074]: Nombre, Dirección de correo electrónico, IDs de usuario, Dirección, Número de teléfono
+                      - img [ref=f47e7078]: brightness_1
+                      - button "Mostrar detalles" [ref=f47e7081]:
+                        - img [ref=f47e7086]: expand_more
+                  - generic [ref=f47e7089]:
+                    - generic [ref=f47e7090]:
+                      - img [ref=f47e7093]: location_on
+                      - strong [ref=f47e7096]: Ubicación
+                    - generic [ref=f47e7098]:
+                      - generic [ref=f47e7099]: Ubicación precisa
+                      - img [ref=f47e7103]: brightness_1
+                      - button "Mostrar detalles" [ref=f47e7106]:
+                        - img [ref=f47e7111]: expand_more
+                  - generic [ref=f47e7114]:
+                    - generic [ref=f47e7115]:
+                      - img [ref=f47e7118]: filter
+                      - strong [ref=f47e7121]: Fotos y vídeos
+                    - generic [ref=f47e7123]:
+                      - generic [ref=f47e7124]: Fotos
+                      - img [ref=f47e7128]: brightness_1
+                      - button "Mostrar detalles" [ref=f47e7131]:
+                        - img [ref=f47e7136]: expand_more
+                  - generic [ref=f47e7139]:
+                    - generic [ref=f47e7140]:
+                      - img [ref=f47e7143]: perm_device_information
+                      - strong [ref=f47e7146]: IDs de dispositivo o de otro tipo
+                    - generic [ref=f47e7148]:
+                      - generic [ref=f47e7149]: IDs de dispositivo o de otro tipo
+                      - img [ref=f47e7153]: brightness_1
+                      - button "Mostrar detalles" [ref=f47e7156]:
+                        - img [ref=f47e7161]: expand_more
+              - generic [ref=f47e7163]:
+                - heading "Eliminación de datos" [level=3] [ref=f47e7172]
+                - generic [ref=f47e7173]:
+                  - generic [ref=f47e7174]: Datos que los usuarios pueden eliminar.
+                  - generic [ref=f47e7178]:
+                    - generic [ref=f47e7179]:
+                      - img [ref=f47e7182]: delete
+                      - strong [ref=f47e7185]: Eliminar cuenta de la aplicación
+                    - paragraph [ref=f47e7186]:
+                      - text: Puedes enviar una solicitud para eliminar tu cuenta y los datos asociados de esta aplicación
+                      - link "https://api.leadai-pe.com/eliminar-cuenta" [ref=f47e7187] [cursor=pointer]:
+                        - /url: https://api.leadai-pe.com/eliminar-cuenta
+                        - text: https://api.leadai-pe.com/eliminar-cuenta
+                        - img [ref=f47e7189]: open_in_new
+                  - generic [ref=f47e7193]:
+                    - generic [ref=f47e7194]:
+                      - img [ref=f47e7197]: insert_chart
+                      - strong [ref=f47e7200]: Gestionar datos de la aplicación
+                    - paragraph [ref=f47e7201]:
+                      - text: Puedes enviar una solicitud para eliminar algunos datos recogidos por el desarrollador a través de esta aplicación sin eliminar tu cuenta por completo. Estos datos pueden incluir información como el historial de actividad, el historial de transacciones, imágenes y vídeos.
+                      - link "https://api.leadai-pe.com/eliminar-datos" [ref=f47e7202] [cursor=pointer]:
+                        - /url: https://api.leadai-pe.com/eliminar-datos
+                        - text: https://api.leadai-pe.com/eliminar-datos
+                        - img [ref=f47e7204]: open_in_new
+              - generic [ref=f47e7206]:
+                - heading "Prácticas de seguridad" [level=3] [ref=f47e7215]
+                - generic [ref=f47e7220]:
+                  - heading [level=4] [ref=f47e7221]:
+                    - img [ref=f47e7224]: lock
+                    - strong [ref=f47e7227]: Los datos están cifrados durante el tránsito
+                  - paragraph [ref=f47e7228]: Tus datos se transfieren a través de una conexión segura
+              - generic [ref=f47e7230]:
+                - heading "Política de Privacidad" [level=3] [ref=f47e7239]
+                - paragraph [ref=f47e7241]: https://api.leadai-pe.com/privacidad
+          - generic [ref=f47e332]: "Vista previa: paso 5 de 5"
+        - generic [ref=f47e7245]:
+          - generic [ref=f47e7246]: Si guardas los cambios, se guardarán en Resumen de publicación y podrás enviarlos a revisión.
+          - generic [ref=f47e7249]:
+            - button "Descartar" [ref=f47e7252]
+            - generic [ref=f47e7256]:
+              - button "Volver" [ref=f47e7258]
+              - button "Guardar como borrador" [ref=f47e7263]
+              - button "Guardar" [ref=f47e7268] [cursor=pointer]
+      - generic [ref=f47e30]:
+        - generic [ref=f47e354]:
+          - link "Novedades sobre productos" [ref=f47e355] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f47e356] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f47e357] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f47e358]:
+          - generic [ref=f47e359]: © 2026 Google
+          - link "Privacidad" [ref=f47e360] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f47e361] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f47e362] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/
+  - status [ref=f47e1784]

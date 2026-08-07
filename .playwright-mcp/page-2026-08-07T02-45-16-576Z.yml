@@ -1,0 +1,255 @@
+- generic [ref=f42e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f42e3]:
+    - banner [ref=f42e4]:
+      - generic [ref=f42e6]:
+        - link [ref=f42e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f42e8]
+        - generic [ref=f42e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f42e45]:
+            - img [ref=f42e49]: notifications_unread
+            - generic [ref=f42e50]: Notificaciones sin leer
+          - generic [ref=f42e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f42e59] [cursor=pointer]'
+            - button [ref=f42e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f42e16]
+    - navigation [ref=f42e72]:
+      - link "Todas las aplicaciones" [ref=f42e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f42e75]: keyboard_backspace
+      - list [ref=f42e77]:
+        - listitem "Panel de control" [ref=f42e80]:
+          - button "Panel de control" [ref=f42e81] [cursor=pointer]:
+            - img [ref=f42e84]: dashboard
+        - listitem "Estadísticas" [ref=f42e88]:
+          - button "Estadísticas" [ref=f42e89] [cursor=pointer]:
+            - img [ref=f42e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f42e96]:
+          - button "Resumen de publicación" [ref=f42e97] [cursor=pointer]:
+            - img [ref=f42e100]: overview
+        - listitem "Protegida con Play" [ref=f42e104]:
+          - button "Protegida con Play" [ref=f42e105] [cursor=pointer]:
+            - img [ref=f42e108]: shield
+        - listitem "Probar y publicar" [ref=f42e112]:
+          - button "Probar y publicar" [ref=f42e113] [cursor=pointer]:
+            - img [ref=f42e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f42e120]:
+          - button "Monitorizar y mejorar" [ref=f42e121] [cursor=pointer]:
+            - img [ref=f42e124]: vital_signs
+          - list [ref=f42e533]:
+            - generic [ref=f42e535]:
+              - listitem "Cobertura y dispositivos" [ref=f42e537]:
+                - button "Cobertura y dispositivos" [ref=f42e538] [cursor=pointer]:
+                  - img [ref=f42e541]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f42e543]:
+                - button "Valoraciones y reseñas" [ref=f42e544] [cursor=pointer]:
+                  - img [ref=f42e547]: expand_more
+              - listitem "Android vitals" [ref=f42e549]:
+                - button "Android vitals" [ref=f42e550] [cursor=pointer]:
+                  - img [ref=f42e553]: expand_more
+              - listitem "Política y programas" [ref=f42e555]:
+                - button "Política y programas" [ref=f42e556] [cursor=pointer]:
+                  - img [ref=f42e559]: expand_less
+                - list [ref=f42e560]:
+                  - generic [ref=f42e562]:
+                    - listitem "Estado según las políticas" [ref=f42e564]:
+                      - button "Estado según las políticas" [ref=f42e565] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f42e568]:
+                      - button "Contenido de la aplicación" [ref=f42e569] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f42e572]:
+                      - button "Aprobada por profesores" [ref=f42e573] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f42e128]:
+          - button "Aumentar usuarios" [ref=f42e129] [cursor=pointer]:
+            - img [ref=f42e132]: finance_mode
+        - listitem "Monetizar con Play" [ref=f42e136]:
+          - button "Monetizar con Play" [ref=f42e137] [cursor=pointer]:
+            - img [ref=f42e140]: sell
+    - generic [ref=f42e22]:
+      - generic [ref=f42e649]:
+        - generic [ref=f42e653]:
+          - generic:
+            - generic:
+              - link "Volver a Panel de control":
+                - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-dashboard
+                - generic [ref=f42e658] [cursor=pointer]
+                - img [ref=f42e660] [cursor=pointer]: keyboard_backspace
+                - generic [ref=f42e661] [cursor=pointer]: Panel de control
+          - generic [ref=f42e665]:
+            - heading "Clasificaciones del contenido" [level=1] [ref=f42e670]
+            - button "Descartar cambios" [ref=f42e675]
+        - generic [ref=f42e695]:
+          - generic [ref=f42e700]:
+            - tablist [ref=f42e701]:
+              - 'tab "Categoría: paso 1 de 3" [disabled] [ref=f42e702]':
+                - img [ref=f42e815]: check
+                - generic [ref=f42e706]: Categoría
+              - 'tab "Cuestionario: paso 2 de 3" [selected] [ref=f42e709]':
+                - generic [ref=f42e710]: "2"
+                - generic [ref=f42e713]: Cuestionario
+              - 'tab "Resumen: paso 3 de 3" [disabled] [ref=f42e716]':
+                - generic [ref=f42e717]: "3"
+                - generic [ref=f42e720]: Resumen
+            - tabpanel [ref=f42e723]:
+              - generic [ref=f42e816]:
+                - heading "Todos los demás tipos de aplicaciones" [level=2] [ref=f42e828]
+                - generic [ref=f42e831]:
+                  - generic [ref=f42e833]:
+                    - heading "Aplicación descargada" [level=3] [ref=f42e843]
+                    - generic "Categoría Aplicación descargada completada" [ref=f42e956]:
+                      - img [ref=f42e959]: check_circle
+                      - generic [ref=f42e960]: Completado
+                  - generic [ref=f42e849]:
+                    - generic [ref=f42e853]:
+                      - text: ¿La aplicación contiene contenido sujeto a clasificación (por ejemplo, sexo, violencia o lenguaje) que se descarga como parte del paquete de la aplicación (código, recursos)?
+                      - link "Obtén más información sobre esta pregunta., Se abre en otra pestaña" [ref=f42e855] [cursor=pointer]:
+                        - /url: https://support.google.com/googleplay/android-developer/answer/11070756?hl=es
+                        - text: Más información
+                    - radiogroup "Respuestas a la pregunta anterior de opción única." [ref=f42e859]:
+                      - generic [ref=f42e860] [cursor=pointer]:
+                        - radio "Sí" [ref=f42e862]
+                        - generic [ref=f42e865]: Sí
+                      - generic [ref=f42e868] [cursor=pointer]:
+                        - radio "No" [checked] [ref=f42e870]
+                        - generic [ref=f42e873]: "No"
+                - generic [ref=f42e878]:
+                  - generic [ref=f42e880]:
+                    - heading "Uso compartido de contenido del usuario" [level=3] [ref=f42e890]
+                    - generic "Categoría Uso compartido de contenido del usuario completada" [ref=f42e993]:
+                      - img [ref=f42e996]: check_circle
+                      - generic [ref=f42e997]: Completado
+                  - generic [ref=f42e966]:
+                    - generic [ref=f42e970]:
+                      - text: ¿La aplicación permite de forma nativa que los usuarios interactúen o intercambien contenido con otros usuarios a través de comunicaciones de voz, texto o uso compartido de imágenes o de audio?
+                      - link "Obtén más información sobre esta pregunta., Se abre en otra pestaña" [ref=f42e972] [cursor=pointer]:
+                        - /url: https://support.google.com/googleplay/android-developer/answer/11070862?hl=es
+                        - text: Más información
+                    - radiogroup "Respuestas a la pregunta anterior de opción única." [ref=f42e976]:
+                      - generic [ref=f42e977] [cursor=pointer]:
+                        - radio "Sí" [ref=f42e979]
+                        - generic [ref=f42e982]: Sí
+                      - generic [ref=f42e985] [cursor=pointer]:
+                        - radio "No" [checked] [ref=f42e987]
+                        - generic [ref=f42e990]: "No"
+                - generic [ref=f42e894]:
+                  - generic [ref=f42e896]:
+                    - heading "Contenido en línea" [level=3] [ref=f42e906]
+                    - generic "Categoría Contenido en línea completada" [ref=f42e1030]:
+                      - img [ref=f42e1033]: check_circle
+                      - generic [ref=f42e1034]: Completado
+                  - generic [ref=f42e1003]:
+                    - generic [ref=f42e1007]:
+                      - text: ¿La aplicación incluye o promociona contenido que no forma parte de la descarga inicial de la aplicación, pero al que se puede acceder desde la aplicación? Algunos ejemplos de este tipo de contenido son las películas de la aplicación Netflix, las listas de productos de la aplicación Amazon Shopping, las canciones de la aplicación Spotify, el contenido generado por IA o los artículos de noticias de la aplicación New York Times.
+                      - link "Obtén más información sobre esta pregunta., Se abre en otra pestaña" [ref=f42e1009] [cursor=pointer]:
+                        - /url: https://support.google.com/googleplay/android-developer/answer/11070055?hl=es
+                        - text: Más información
+                    - radiogroup "Respuestas a la pregunta anterior de opción única." [ref=f42e1013]:
+                      - generic [ref=f42e1014] [cursor=pointer]:
+                        - radio "Sí" [ref=f42e1016]
+                        - generic [ref=f42e1019]: Sí
+                      - generic [ref=f42e1022] [cursor=pointer]:
+                        - radio "No" [checked] [ref=f42e1024]
+                        - generic [ref=f42e1027]: "No"
+                - generic [ref=f42e910]:
+                  - generic [ref=f42e912]:
+                    - heading "Promoción o venta de productos o actividades con restricción de edad" [level=3] [ref=f42e922]
+                    - generic "Categoría Promoción o venta de productos o actividades con restricción de edad completada" [ref=f42e1065]:
+                      - img [ref=f42e1068]: check_circle
+                      - generic [ref=f42e1069]: Completado
+                  - generic [ref=f42e1040]:
+                    - generic [ref=f42e1041]: ¿La aplicación hace hincapié en la promoción o venta de artículos o actividades que normalmente tienen restricciones de edad, como por ejemplo cigarrillos, alcohol, armas de fuego o apuestas?
+                    - radiogroup "Respuestas a la pregunta anterior de opción única." [ref=f42e1048]:
+                      - generic [ref=f42e1049] [cursor=pointer]:
+                        - radio "Sí" [ref=f42e1051]
+                        - generic [ref=f42e1054]: Sí
+                      - generic [ref=f42e1057] [cursor=pointer]:
+                        - radio "No" [checked] [ref=f42e1059]
+                        - generic [ref=f42e1062]: "No"
+                - generic [ref=f42e926]:
+                  - heading "Varios" [level=3] [ref=f42e938]
+                  - generic [ref=f42e1073]:
+                    - generic [ref=f42e1075]:
+                      - generic [ref=f42e1079]:
+                        - text: ¿La aplicación comparte la ubicación física y precisa actual del usuario con otros usuarios?
+                        - link "Obtén más información sobre esta pregunta., Se abre en otra pestaña" [ref=f42e1081] [cursor=pointer]:
+                          - /url: https://support.google.com/googleplay/android-developer/answer/11069750?hl=es
+                          - text: Más información
+                      - radiogroup "Respuestas a la pregunta anterior de opción única." [ref=f42e1085]:
+                        - generic [ref=f42e1086] [cursor=pointer]:
+                          - radio "Sí" [checked] [ref=f42e1088]
+                          - generic [ref=f42e1091]: Sí
+                        - generic [ref=f42e1094] [cursor=pointer]:
+                          - radio "No" [ref=f42e1096]
+                          - generic [ref=f42e1099]: "No"
+                    - generic [ref=f42e1103]:
+                      - generic [ref=f42e1107]:
+                        - text: ¿La aplicación permite a los usuarios comprar contenido digital?
+                        - link "Obtén más información sobre esta pregunta., Se abre en otra pestaña" [ref=f42e1109] [cursor=pointer]:
+                          - /url: https://support.google.com/googleplay/android-developer/answer/543?hl=es
+                          - text: Más información
+                      - radiogroup "Respuestas a la pregunta anterior de opción única." [ref=f42e1113]:
+                        - generic [ref=f42e1114] [cursor=pointer]:
+                          - radio "Sí" [ref=f42e1116]
+                          - generic [ref=f42e1119]: Sí
+                        - generic [ref=f42e1122] [cursor=pointer]:
+                          - radio "No" [checked] [ref=f42e1124]
+                          - generic [ref=f42e1127]: "No"
+                    - generic [ref=f42e1131]:
+                      - generic [ref=f42e1132]: ¿La aplicación incluye recompensas en metálico, tarjetas regalo, características de jugar para ganar, recompensas en criptomoneda convertible o la emisión de activos digitales transferibles (por ejemplo, NFT)?
+                      - radiogroup "Respuestas a la pregunta anterior de opción única." [ref=f42e1139]:
+                        - generic [ref=f42e1140] [cursor=pointer]:
+                          - radio "Sí" [ref=f42e1142]
+                          - generic [ref=f42e1145]: Sí
+                        - generic [ref=f42e1148] [cursor=pointer]:
+                          - radio "No" [checked] [active] [ref=f42e1150]
+                          - generic [ref=f42e1153]: "No"
+                    - generic [ref=f42e1157]:
+                      - generic [ref=f42e1161]:
+                        - text: ¿La aplicación es un navegador web o un motor de búsqueda?
+                        - link "Obtén más información sobre esta pregunta., Se abre en otra pestaña" [ref=f42e1163] [cursor=pointer]:
+                          - /url: https://support.google.com/googleplay/android-developer/answer/546?hl=es
+                          - text: Más información
+                      - radiogroup "Respuestas a la pregunta anterior de opción única." [ref=f42e1167]:
+                        - generic [ref=f42e1168] [cursor=pointer]:
+                          - radio "Sí" [ref=f42e1170]
+                          - generic [ref=f42e1173]: Sí
+                        - generic [ref=f42e1176] [cursor=pointer]:
+                          - radio "No" [ref=f42e1178]
+                          - generic [ref=f42e1181]: "No"
+                    - generic [ref=f42e1185]:
+                      - generic [ref=f42e1189]:
+                        - text: ¿La aplicación es principalmente informativa o educativa?
+                        - link "Obtén más información sobre esta pregunta., Se abre en otra pestaña" [ref=f42e1191] [cursor=pointer]:
+                          - /url: https://support.google.com/googleplay/android-developer/answer/11071161?hl=es
+                          - text: Más información
+                      - radiogroup "Respuestas a la pregunta anterior de opción única." [ref=f42e1195]:
+                        - generic [ref=f42e1196] [cursor=pointer]:
+                          - radio "Sí" [ref=f42e1198]
+                          - generic [ref=f42e1201]: Sí
+                        - generic [ref=f42e1204] [cursor=pointer]:
+                          - radio "No" [ref=f42e1206]
+                          - generic [ref=f42e1209]: "No"
+          - generic [ref=f42e804]:
+            - button "Siguiente" [disabled] [ref=f42e941]
+            - generic [ref=f42e945]:
+              - button "Guardar" [ref=f42e947]
+              - button "Volver" [ref=f42e952]
+      - generic [ref=f42e30]:
+        - generic [ref=f42e685]:
+          - link "Novedades sobre productos" [ref=f42e686] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f42e687] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f42e688] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f42e689]:
+          - generic [ref=f42e690]: © 2026 Google
+          - link "Privacidad" [ref=f42e691] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f42e692] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f42e693] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

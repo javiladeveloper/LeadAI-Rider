@@ -1,0 +1,283 @@
+- generic [ref=f47e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f47e3]:
+    - banner [ref=f47e4]:
+      - generic [ref=f47e6]:
+        - link [ref=f47e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f47e8]
+        - generic [ref=f47e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f47e45]:
+            - img [ref=f47e49]: notifications_unread
+            - generic [ref=f47e50]: Notificaciones sin leer
+          - generic [ref=f47e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f47e59] [cursor=pointer]'
+            - button [ref=f47e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f47e16]
+    - navigation [ref=f47e72]:
+      - link "Todas las aplicaciones" [ref=f47e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f47e75]: keyboard_backspace
+      - list [ref=f47e77]:
+        - listitem "Panel de control" [ref=f47e80]:
+          - button "Panel de control" [ref=f47e81] [cursor=pointer]:
+            - img [ref=f47e84]: dashboard
+        - listitem "Estadísticas" [ref=f47e88]:
+          - button "Estadísticas" [ref=f47e89] [cursor=pointer]:
+            - img [ref=f47e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f47e96]:
+          - button "Resumen de publicación" [ref=f47e97] [cursor=pointer]:
+            - img [ref=f47e100]: overview
+        - listitem "Protegida con Play" [ref=f47e104]:
+          - button "Protegida con Play" [ref=f47e105] [cursor=pointer]:
+            - img [ref=f47e108]: shield
+        - listitem "Probar y publicar" [ref=f47e112]:
+          - button "Probar y publicar" [ref=f47e113] [cursor=pointer]:
+            - img [ref=f47e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f47e120]:
+          - button "Monitorizar y mejorar" [ref=f47e121] [cursor=pointer]:
+            - img [ref=f47e124]: vital_signs
+          - list [ref=f47e126]:
+            - generic [ref=f47e128]:
+              - listitem "Cobertura y dispositivos" [ref=f47e130]:
+                - button "Cobertura y dispositivos" [ref=f47e131] [cursor=pointer]:
+                  - img [ref=f47e134]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f47e136]:
+                - button "Valoraciones y reseñas" [ref=f47e137] [cursor=pointer]:
+                  - img [ref=f47e140]: expand_more
+              - listitem "Android vitals" [ref=f47e142]:
+                - button "Android vitals" [ref=f47e143] [cursor=pointer]:
+                  - img [ref=f47e146]: expand_more
+              - listitem "Política y programas" [ref=f47e148]:
+                - button "Política y programas" [ref=f47e149] [cursor=pointer]:
+                  - img [ref=f47e152]: expand_less
+                - list [ref=f47e153]:
+                  - generic [ref=f47e155]:
+                    - listitem "Estado según las políticas" [ref=f47e157]:
+                      - button "Estado según las políticas" [ref=f47e158] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f47e161]:
+                      - button "Contenido de la aplicación" [ref=f47e162] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f47e165]:
+                      - button "Aprobada por profesores" [ref=f47e166] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f47e170]:
+          - button "Aumentar usuarios" [ref=f47e171] [cursor=pointer]:
+            - img [ref=f47e174]: finance_mode
+        - listitem "Monetizar con Play" [ref=f47e178]:
+          - button "Monetizar con Play" [ref=f47e179] [cursor=pointer]:
+            - img [ref=f47e182]: sell
+    - generic [ref=f47e22]:
+      - generic [ref=f47e187]:
+        - generic [ref=f47e191]:
+          - link "Volver a Contenido de la aplicación" [ref=f47e194] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/overview
+            - img [ref=f47e198]: keyboard_backspace
+            - generic [ref=f47e199]: Contenido de la aplicación
+          - generic [ref=f47e202]:
+            - generic [ref=f47e203]:
+              - heading "Seguridad de los datos" [level=1] [ref=f47e208]
+              - generic [ref=f47e213]:
+                - button "Exportar a CSV" [ref=f47e214]
+                - button "Importar desde CSV" [ref=f47e218]
+            - generic [ref=f47e226]:
+              - text: Ayuda a los usuarios a entender cómo recoge y comparte sus datos tu aplicación.
+              - button "Mostrar más información sobre Seguridad de los datos" [ref=f47e227] [cursor=pointer]: Mostrar más
+        - generic [ref=f47e233]:
+          - tablist [ref=f47e234]:
+            - 'tab "Introducción: paso 1 de 5" [disabled] [ref=f47e235]':
+              - img [ref=f47e364]: check
+              - generic [ref=f47e239]: Introducción
+            - 'tab "Recogida de datos y seguridad: paso 2 de 5" [disabled] [ref=f47e242]':
+              - img [ref=f47e600]: check
+              - generic [ref=f47e246]: Recogida de datos y seguridad
+            - 'tab "Tipos de datos: paso 3 de 5" [active] [selected] [ref=f47e249] [cursor=pointer]':
+              - generic [ref=f47e250]: "3"
+              - generic [ref=f47e253]: Tipos de datos
+            - 'tab "Uso y gestión de datos: paso 4 de 5" [disabled] [ref=f47e256]':
+              - generic [ref=f47e257]: "4"
+              - generic [ref=f47e260]: Uso y gestión de datos
+            - 'tab "Vista previa: paso 5 de 5" [disabled] [ref=f47e263]':
+              - generic [ref=f47e264]: "5"
+              - generic [ref=f47e267]: Vista previa
+          - tabpanel [ref=f47e270]:
+            - generic [ref=f47e601]:
+              - generic [ref=f47e603]:
+                - heading "Tipos de datos" [level=2] [ref=f47e612]
+                - generic [ref=f47e613]:
+                  - paragraph [ref=f47e614]:
+                    - text: Selecciona todos los tipos de datos de usuario que recoge o comparte tu aplicación.
+                    - link "Más información acerca de Tipos de datos, Se abre en otra pestaña" [ref=f47e616] [cursor=pointer]:
+                      - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#collection
+                      - text: Más información
+                  - paragraph [ref=f47e617]: "Debes seleccionar:"
+                  - list [ref=f47e618]:
+                    - listitem [ref=f47e619]: Todos los tipos de datos de usuario que se recojan o compartan
+                    - listitem [ref=f47e620]: Todos los datos de usuario que se envíen fuera del dispositivo del usuario mediante bibliotecas o SDKs que se usen en tu aplicación, independientemente de si esa información se te transmite a ti (el desarrollador) o a un tercero
+                    - listitem [ref=f47e621]: Todos los datos de usuario que se transfieran desde tu servidor a un tercero, o que se transfieran a otra aplicación de terceros en el mismo dispositivo
+                    - listitem [ref=f47e622]: Todos los datos de usuario recogidos o transferidos a través de una vista web que puede abrirse desde tu aplicación, a menos que los usuarios estén navegando por la Web abierta
+                  - paragraph [ref=f47e623]:
+                    - text: Algunas formas de recoger y transferir datos están exentas.
+                    - link "Ver exenciones, Se abre en otra pestaña" [ref=f47e625] [cursor=pointer]:
+                      - /url: https://support.google.com/googleplay/android-developer/answer/10787469?hl=es#types
+                      - text: Ver exenciones
+                  - paragraph [ref=f47e626]: Cuando hayas seleccionado todos los tipos de datos de usuario recogidos o compartidos por tu aplicación, selecciona Siguiente.
+              - generic [ref=f47e628]:
+                - generic [ref=f47e632]:
+                  - heading "Ubicación" [level=3] [ref=f47e637]
+                  - 'button "Ocultar contenido: Ubicación" [expanded] [ref=f47e640]':
+                    - generic [ref=f47e643]: Ocultar
+                    - img [ref=f47e645]: expand_less
+                - group [ref=f47e651]:
+                  - generic [ref=f47e653]:
+                    - generic [ref=f47e655] [cursor=pointer]:
+                      - checkbox "Ubicación aproximada Más información" [ref=f47e657]
+                      - generic [ref=f47e660]:
+                        - generic [ref=f47e661]: Ubicación aproximada
+                        - button "Más información" [ref=f47e664]:
+                          - img [ref=f47e665]: help
+                    - generic [ref=f47e667] [cursor=pointer]:
+                      - checkbox "Ubicación precisa Más información" [ref=f47e669]
+                      - generic [ref=f47e672]:
+                        - generic [ref=f47e673]: Ubicación precisa
+                        - button "Más información" [ref=f47e676]:
+                          - img [ref=f47e677]: help
+              - generic [ref=f47e682]:
+                - generic [ref=f47e683]:
+                  - heading "Información personal" [level=3] [ref=f47e688]
+                  - 'button "Mostrar contenido: Información personal" [ref=f47e691]':
+                    - generic [ref=f47e694]: Mostrar
+                    - img [ref=f47e696]: expand_more
+                - generic [ref=f47e701]:
+                  - img [ref=f47e705]: info
+                  - generic [ref=f47e706]: 0/9 tipos de datos seleccionados
+              - generic [ref=f47e711]:
+                - generic [ref=f47e712]:
+                  - heading "Información financiera" [level=3] [ref=f47e717]
+                  - 'button "Mostrar contenido: Información financiera" [ref=f47e720]':
+                    - generic [ref=f47e723]: Mostrar
+                    - img [ref=f47e725]: expand_more
+                - generic [ref=f47e730]:
+                  - img [ref=f47e734]: info
+                  - generic [ref=f47e735]: 0/4 tipos de datos seleccionados
+              - generic [ref=f47e740]:
+                - generic [ref=f47e741]:
+                  - heading "Salud y fitness" [level=3] [ref=f47e746]
+                  - 'button "Mostrar contenido: Salud y fitness" [ref=f47e749]':
+                    - generic [ref=f47e752]: Mostrar
+                    - img [ref=f47e754]: expand_more
+                - generic [ref=f47e759]:
+                  - img [ref=f47e763]: info
+                  - generic [ref=f47e764]: 0/2 tipos de datos seleccionados
+              - generic [ref=f47e769]:
+                - generic [ref=f47e770]:
+                  - heading "Mensajes" [level=3] [ref=f47e775]
+                  - 'button "Mostrar contenido: Mensajes" [ref=f47e778]':
+                    - generic [ref=f47e781]: Mostrar
+                    - img [ref=f47e783]: expand_more
+                - generic [ref=f47e788]:
+                  - img [ref=f47e792]: info
+                  - generic [ref=f47e793]: 0/3 tipos de datos seleccionados
+              - generic [ref=f47e798]:
+                - generic [ref=f47e799]:
+                  - heading "Fotos y vídeos" [level=3] [ref=f47e804]
+                  - 'button "Mostrar contenido: Fotos y vídeos" [ref=f47e807]':
+                    - generic [ref=f47e810]: Mostrar
+                    - img [ref=f47e812]: expand_more
+                - generic [ref=f47e817]:
+                  - img [ref=f47e821]: info
+                  - generic [ref=f47e822]: 0/2 tipos de datos seleccionados
+              - generic [ref=f47e827]:
+                - generic [ref=f47e828]:
+                  - heading "Archivos de audio" [level=3] [ref=f47e833]
+                  - 'button "Mostrar contenido: Archivos de audio" [ref=f47e836]':
+                    - generic [ref=f47e839]: Mostrar
+                    - img [ref=f47e841]: expand_more
+                - generic [ref=f47e846]:
+                  - img [ref=f47e850]: info
+                  - generic [ref=f47e851]: 0/3 tipos de datos seleccionados
+              - generic [ref=f47e856]:
+                - generic [ref=f47e857]:
+                  - heading "Archivos y documentos" [level=3] [ref=f47e862]
+                  - 'button "Mostrar contenido: Archivos y documentos" [ref=f47e865]':
+                    - generic [ref=f47e868]: Mostrar
+                    - img [ref=f47e870]: expand_more
+                - generic [ref=f47e875]:
+                  - img [ref=f47e879]: info
+                  - generic [ref=f47e880]: 0/1 tipos de datos seleccionados
+              - generic [ref=f47e885]:
+                - generic [ref=f47e886]:
+                  - heading "Calendar" [level=3] [ref=f47e891]
+                  - 'button "Mostrar contenido: Calendar" [ref=f47e894]':
+                    - generic [ref=f47e897]: Mostrar
+                    - img [ref=f47e899]: expand_more
+                - generic [ref=f47e904]:
+                  - img [ref=f47e908]: info
+                  - generic [ref=f47e909]: 0/1 tipos de datos seleccionados
+              - generic [ref=f47e914]:
+                - generic [ref=f47e915]:
+                  - heading "Contactos" [level=3] [ref=f47e920]
+                  - 'button "Mostrar contenido: Contactos" [ref=f47e923]':
+                    - generic [ref=f47e926]: Mostrar
+                    - img [ref=f47e928]: expand_more
+                - generic [ref=f47e933]:
+                  - img [ref=f47e937]: info
+                  - generic [ref=f47e938]: 0/1 tipos de datos seleccionados
+              - generic [ref=f47e943]:
+                - generic [ref=f47e944]:
+                  - heading "Actividad en aplicaciones" [level=3] [ref=f47e949]
+                  - 'button "Mostrar contenido: Actividad en aplicaciones" [ref=f47e952]':
+                    - generic [ref=f47e955]: Mostrar
+                    - img [ref=f47e957]: expand_more
+                - generic [ref=f47e962]:
+                  - img [ref=f47e966]: info
+                  - generic [ref=f47e967]: 0/5 tipos de datos seleccionados
+              - generic [ref=f47e972]:
+                - generic [ref=f47e973]:
+                  - heading "Navegación web" [level=3] [ref=f47e978]
+                  - 'button "Mostrar contenido: Navegación web" [ref=f47e981]':
+                    - generic [ref=f47e984]: Mostrar
+                    - img [ref=f47e986]: expand_more
+                - generic [ref=f47e991]:
+                  - img [ref=f47e995]: info
+                  - generic [ref=f47e996]: 0/1 tipos de datos seleccionados
+              - generic [ref=f47e1001]:
+                - generic [ref=f47e1002]:
+                  - heading "Información y rendimiento de la aplicación" [level=3] [ref=f47e1007]
+                  - 'button "Mostrar contenido: Información y rendimiento de la aplicación" [ref=f47e1010]':
+                    - generic [ref=f47e1013]: Mostrar
+                    - img [ref=f47e1015]: expand_more
+                - generic [ref=f47e1020]:
+                  - img [ref=f47e1024]: info
+                  - generic [ref=f47e1025]: 0/3 tipos de datos seleccionados
+              - generic [ref=f47e1030]:
+                - generic [ref=f47e1031]:
+                  - heading "IDs de dispositivo o de otro tipo" [level=3] [ref=f47e1036]
+                  - 'button "Mostrar contenido: IDs de dispositivo o de otro tipo" [ref=f47e1039]':
+                    - generic [ref=f47e1042]: Mostrar
+                    - img [ref=f47e1044]: expand_more
+                - generic [ref=f47e1049]:
+                  - img [ref=f47e1053]: info
+                  - generic [ref=f47e1054]: 0/1 tipos de datos seleccionados
+          - generic [ref=f47e332]: "Tipos de datos: paso 3 de 5"
+        - generic [ref=f47e339]:
+          - button "Siguiente" [disabled] [ref=f47e341]
+          - button "Más opciones" [ref=f47e347] [cursor=pointer]:
+            - img [ref=f47e351]: more_vert
+      - generic [ref=f47e30]:
+        - generic [ref=f47e354]:
+          - link "Novedades sobre productos" [ref=f47e355] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f47e356] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f47e357] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f47e358]:
+          - generic [ref=f47e359]: © 2026 Google
+          - link "Privacidad" [ref=f47e360] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f47e361] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f47e362] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

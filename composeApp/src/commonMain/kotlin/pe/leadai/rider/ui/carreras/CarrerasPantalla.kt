@@ -244,7 +244,9 @@ fun CarrerasPantalla(
                             historial = estado.historial,
                             monedero = estado.monedero,
                             accionEnCurso = estado.accionEnCurso,
+                            ofertadas = estado.ofertadas,
                             onAceptar = viewModel::aceptar,
+                            onOfertar = viewModel::ofertar,
                             onEntregar = viewModel::entregar,
                             onRecogido = viewModel::marcarRecogido,
                             onCancelarCarrera = { confirmandoCancelar = true },
@@ -266,7 +268,9 @@ fun CarrerasPantalla(
                                 historial = estado.historial,
                                 monedero = estado.monedero,
                                 accionEnCurso = estado.accionEnCurso,
+                                ofertadas = estado.ofertadas,
                                 onAceptar = viewModel::aceptar,
+                                onOfertar = viewModel::ofertar,
                                 onEntregar = viewModel::entregar,
                                 onRecogido = viewModel::marcarRecogido,
                                 onCancelarCarrera = { confirmandoCancelar = true },
@@ -374,7 +378,10 @@ private fun ContenidoRider(
     historial: HistorialRiderResponseDto?,
     monedero: MonederoDto?,
     accionEnCurso: String?,
+    /** `pedidoId`s ya propuestos: la card muestra "esperando respuesta". */
+    ofertadas: Set<String>,
     onAceptar: (CarreraDto) -> Unit,
+    onOfertar: (CarreraDto, Long) -> Unit,
     onEntregar: () -> Unit,
     onRecogido: () -> Unit,
     onCancelarCarrera: () -> Unit,
@@ -457,6 +464,8 @@ private fun ContenidoRider(
                     aceptando = accionEnCurso == carrera.pedidoId,
                     habilitado = accionEnCurso == null,
                     onAceptar = { onAceptar(carrera) },
+                    yaOfertaste = carrera.pedidoId in ofertadas,
+                    onOfertar = { monto -> onOfertar(carrera, monto) },
                 )
             }
         }

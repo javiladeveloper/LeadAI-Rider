@@ -53,7 +53,10 @@ import pe.leadai.rider.ui.comunes.ManejarAtras
 import pe.leadai.rider.ui.comunes.MapaEmbebido
 import pe.leadai.rider.ui.comunes.PantallaCargando
 import pe.leadai.rider.ui.cliente.componentes.CardMontoCompra
-import pe.leadai.rider.ui.cliente.componentes.CardRecorrido
+import pe.leadai.rider.ui.cliente.componentes.BuscadorRuta
+import pe.leadai.rider.ui.cliente.componentes.OfertasRecibidas
+import pe.leadai.rider.ui.cliente.componentes.PopupCalificar
+import pe.leadai.rider.ui.cliente.componentes.PopupPrecio
 import pe.leadai.rider.ui.cliente.componentes.CardTarifa
 import pe.leadai.rider.ui.comunes.BannerError
 import pe.leadai.rider.ui.comunes.BarraInferiorCliente
@@ -98,6 +101,9 @@ fun ClientePantalla(
         while (isActive) {
             delay(INTERVALO_POLLING_MS)
             viewModel.refrescar()
+            // Las ofertas llegan mientras el cliente mira: sin esto tendría
+            // que salir y volver a entrar para verlas.
+            viewModel.refrescarOfertas()
         }
     }
     LaunchedEffect(Unit) {
@@ -134,6 +140,12 @@ fun ClientePantalla(
                 carrera != null -> SeguimientoCarrera(
                     carrera = carrera,
                     onCancelar = viewModel::cancelar,
+                    ofertas = estado.ofertas,
+                    eligiendoOferta = estado.eligiendoOferta,
+                    onElegirOferta = viewModel::elegirOferta,
+                    // +S/2 sobre lo ofrecido: en Tacna es el salto que de
+                    // verdad cambia la decisión del rider.
+                    onSubirMonto = { viewModel.subirMonto(carrera.montoOfrecido + 200) },
                 )
                 estado.cargando -> PantallaCargando()
                 // 2) Sin carrera: la pestaña que haya elegido.
@@ -149,7 +161,9 @@ fun ClientePantalla(
                         onNotas = viewModel::cambiarNotas,
                         onContacto = viewModel::cambiarContacto,
                         onSugerir = viewModel::pedirSugerencia,
-                        onPedir = viewModel::pedir,
+                        onPedir = viewModel::revisarPrecio,
+                        onFoco = viewModel::enfocarCampo,
+                        onElegirSugerencia = viewModel::elegirSugerencia,
                     )
                     SeccionCliente.VIAJES -> ViajesCliente(estado.historial)
                     SeccionCliente.PERFIL -> PerfilCliente(
@@ -162,7 +176,46 @@ fun ClientePantalla(
                 }
             }
         }
+
+        // Recién terminada: se pregunta antes de que el cliente cierre la app.
+        // Va fuera del `when` porque para este momento ya no hay carrera
+        // activa y la pantalla volvió al formulario.
+        val porCalificar = estado.carreraPorCalificar
+        if (porCalificar != null) {
+            PopupCalificar(
+                nombreRider = porCalificar.riderNombre,
+                enviando = estado.calificando,
+                onCalificar = { estrellas -> viewModel.calificar(porCalificar.id, estrellas) },
+                onOmitir = viewModel::omitirCalificacion,
+            )
+        }
+
+        // El precio se decide en un diálogo aparte: es LA decisión del pedido
+        // y compite con todo lo demás si vive en el formulario.
+        if (estado.ajustandoPrecio) {
+            PopupPrecio(
+                montoCentavos = montoElegidoCentavos(estado),
+                sugeridoCentavos = estado.montoSugerido,
+                kmEstimado = estado.kmEstimado,
+                enviando = estado.pidiendo,
+                onCambiar = viewModel::cambiarMontoCentavos,
+                onConfirmar = viewModel::pedir,
+                onCerrar = viewModel::cerrarAjustePrecio,
+            )
+        }
     }
+}
+
+/**
+ * Lo que el cliente ofrece hoy: lo que escribió, si no la sugerencia.
+ *
+ * Nunca cero: un popup que arranca en S/0 obliga a subir de a un sol desde
+ * abajo. Sin ninguna referencia cae en S/5, el piso típico en Tacna.
+ */
+private fun montoElegidoCentavos(estado: ClienteUiState): Long {
+    val escrito = estado.monto.toLongOrNull()
+    if (escrito != null && escrito > 0) return escrito * 100
+    return estado.montoSugerido ?: 500L
 }
 
 // ── Formulario: pedir la moto ────────────────────────────────────────────
@@ -180,6 +233,8 @@ private fun FormularioPedir(
     onContacto: (String) -> Unit,
     onSugerir: () -> Unit,
     onPedir: () -> Unit,
+    onFoco: (Boolean) -> Unit,
+    onElegirSugerencia: (pe.leadai.rider.datos.SugerenciaDireccionDto) -> Unit,
 ) {
 
     Column(
@@ -210,11 +265,18 @@ private fun FormularioPedir(
             onSeleccionar = onTipo,
         )
 
-        CardRecorrido(
+        // Con sugerencias reales: en Tacna hay tres "Bolognesi" y escribir a
+        // ciegas mandaba al rider a la otra punta.
+        BuscadorRuta(
             origen = estado.origen,
             destino = estado.destino,
+            editandoOrigen = estado.editandoOrigen,
+            sugerencias = estado.sugerencias,
+            buscando = estado.buscandoDirecciones,
             onOrigenCambia = onOrigen,
-            onDestinoCambia = { onDestino(it); onSugerir() },
+            onDestinoCambia = onDestino,
+            onFoco = onFoco,
+            onElegirSugerencia = onElegirSugerencia,
             onUsarMiUbicacion = onUsarMiUbicacion,
         )
 
@@ -307,6 +369,10 @@ private fun BotonTipo(
 private fun SeguimientoCarrera(
     carrera: CarreraClienteDto,
     onCancelar: () -> Unit,
+    ofertas: List<pe.leadai.rider.datos.OfertaDto> = emptyList(),
+    eligiendoOferta: String? = null,
+    onElegirOferta: (pe.leadai.rider.datos.OfertaDto) -> Unit = {},
+    onSubirMonto: () -> Unit = {},
 ) {
     val enCamino = carrera.estado == "aceptada" || carrera.estado == "recogida"
 
@@ -326,7 +392,22 @@ private fun SeguimientoCarrera(
             )
             Spacer(Modifier.height(10.dp))
         } else {
-            EsperandoRider(carrera, modifier = Modifier.weight(1f))
+            // Mientras nadie la tomó, el cliente ELIGE entre las ofertas que
+            // llegaron — no espera pasivo a que alguien la agarre.
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+            ) {
+                OfertasRecibidas(
+                    ofertas = ofertas,
+                    montoOfrecido = carrera.montoOfrecido,
+                    eligiendo = eligiendoOferta,
+                    onElegir = onElegirOferta,
+                    onSubirMonto = onSubirMonto,
+                )
+            }
         }
 
         // Datos del viaje. El flete y la compra, en LÍNEAS SEPARADAS.

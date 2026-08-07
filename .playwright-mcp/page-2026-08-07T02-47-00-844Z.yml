@@ -1,0 +1,126 @@
+- generic [ref=f45e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f45e3]:
+    - banner [ref=f45e4]:
+      - generic [ref=f45e6]:
+        - link [ref=f45e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f45e8]
+        - generic [ref=f45e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f45e45]:
+            - img [ref=f45e49]: notifications_unread
+            - generic [ref=f45e50]: Notificaciones sin leer
+          - generic [ref=f45e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f45e59] [cursor=pointer]'
+            - button [ref=f45e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f45e16]
+    - navigation [ref=f45e72]:
+      - link "Todas las aplicaciones" [ref=f45e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f45e75]: keyboard_backspace
+      - list [ref=f45e77]:
+        - listitem "Panel de control" [ref=f45e80]:
+          - button "Panel de control" [ref=f45e81] [cursor=pointer]:
+            - img [ref=f45e84]: dashboard
+        - listitem "Estadísticas" [ref=f45e88]:
+          - button "Estadísticas" [ref=f45e89] [cursor=pointer]:
+            - img [ref=f45e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f45e96]:
+          - button "Resumen de publicación" [ref=f45e97] [cursor=pointer]:
+            - img [ref=f45e100]: overview
+        - listitem "Protegida con Play" [ref=f45e104]:
+          - button "Protegida con Play" [ref=f45e105] [cursor=pointer]:
+            - img [ref=f45e108]: shield
+        - listitem "Probar y publicar" [ref=f45e112]:
+          - button "Probar y publicar" [ref=f45e113] [cursor=pointer]:
+            - img [ref=f45e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f45e120]:
+          - button "Monitorizar y mejorar" [ref=f45e121] [cursor=pointer]:
+            - img [ref=f45e124]: vital_signs
+          - list [ref=f45e126]:
+            - generic [ref=f45e128]:
+              - listitem "Cobertura y dispositivos" [ref=f45e130]:
+                - button "Cobertura y dispositivos" [ref=f45e131] [cursor=pointer]:
+                  - img [ref=f45e134]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f45e136]:
+                - button "Valoraciones y reseñas" [ref=f45e137] [cursor=pointer]:
+                  - img [ref=f45e140]: expand_more
+              - listitem "Android vitals" [ref=f45e142]:
+                - button "Android vitals" [ref=f45e143] [cursor=pointer]:
+                  - img [ref=f45e146]: expand_more
+              - listitem "Política y programas" [ref=f45e148]:
+                - button "Política y programas" [ref=f45e149] [cursor=pointer]:
+                  - img [ref=f45e152]: expand_less
+                - list [ref=f45e153]:
+                  - generic [ref=f45e155]:
+                    - listitem "Estado según las políticas" [ref=f45e157]:
+                      - button "Estado según las políticas" [ref=f45e158] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f45e161]:
+                      - button "Contenido de la aplicación" [ref=f45e162] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f45e165]:
+                      - button "Aprobada por profesores" [ref=f45e166] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f45e170]:
+          - button "Aumentar usuarios" [ref=f45e171] [cursor=pointer]:
+            - img [ref=f45e174]: finance_mode
+        - listitem "Monetizar con Play" [ref=f45e178]:
+          - button "Monetizar con Play" [ref=f45e179] [cursor=pointer]:
+            - img [ref=f45e182]: sell
+    - generic [ref=f45e22]:
+      - generic [ref=f45e187]:
+        - generic [ref=f45e191]:
+          - link "Volver a Contenido de la aplicación" [ref=f45e194] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/overview
+            - img [ref=f45e198]: keyboard_backspace
+            - generic [ref=f45e199]: Contenido de la aplicación
+          - heading "Política de Privacidad" [level=1] [ref=f45e208]
+        - generic [ref=f45e209]:
+          - generic [ref=f45e212]:
+            - paragraph [ref=f45e213]:
+              - generic [ref=f45e214]: Incluye una política de privacidad en tu ficha de Play Store para proporcionar a los usuarios más información sobre cómo utilizas sus datos sensibles y los de su dispositivo.
+              - link "Más información sobre cómo añadir una política de privacidad, Se abre en otra pestaña" [ref=f45e216] [cursor=pointer]:
+                - /url: https://support.google.com/googleplay/android-developer/answer/9859455?hl=es#privacy_policy
+                - text: Más información
+            - paragraph [ref=f45e217]:
+              - generic [ref=f45e219]:
+                - text: Para evitar infracciones comunes, consulta la
+                - link "política Datos de Usuario" [ref=f45e220] [cursor=pointer]:
+                  - /url: https://play.google.com/about/privacy-and-security.html
+                - text: .
+          - generic [ref=f45e225]:
+            - textbox "URL de la política de privacidad" [ref=f45e227]: https://api.leadai-pe.com/privacidad
+            - paragraph [ref=f45e229]: Introduce una URL, como https://example.com/privacidad
+          - generic [ref=f45e233]:
+            - generic [ref=f45e234]:
+              - img [ref=f45e273]: check_circle
+              - generic [ref=f45e259]: Cambio guardado. Para enviarlo a revisión, ve a Resumen de publicación.
+            - generic [ref=f45e237]:
+              - button "Descartar" [disabled] [ref=f45e275]
+              - button "Guardar" [disabled] [ref=f45e280]
+      - generic [ref=f45e30]:
+        - generic [ref=f45e250]:
+          - link "Novedades sobre productos" [ref=f45e251] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f45e252] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f45e253] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f45e254]:
+          - generic [ref=f45e255]: © 2026 Google
+          - link "Privacidad" [ref=f45e256] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f45e257] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f45e258] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/
+  - dialog [ref=f45e288]:
+    - generic [ref=f45e289]:
+      - heading "¿Ir a Resumen de publicación?" [level=1] [ref=f45e290]
+      - button "Cerrar" [ref=f45e291] [cursor=pointer]:
+        - img [ref=f45e294]: close
+    - generic [ref=f45e295]: Tu cambio se ha guardado. Si quieres enviarlo a Google para revisión, ve a Resumen de publicación.
+    - generic [ref=f45e302]:
+      - button "Ahora no" [ref=f45e303]
+      - button "Acceder a la información general" [active] [ref=f45e307]

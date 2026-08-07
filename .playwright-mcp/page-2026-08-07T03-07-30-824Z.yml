@@ -1,0 +1,64 @@
+- generic [active] [ref=f55e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f55e3]:
+    - banner [ref=f55e4]:
+      - generic [ref=f55e6]:
+        - link [ref=f55e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f55e8]
+        - generic [ref=f55e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f55e15]:
+            - img [ref=f55e19]: notifications_unread
+            - generic [ref=f55e20]: Notificaciones sin leer
+          - generic [ref=f55e22]:
+            - 'button "Light Drive: moto y envíos" [ref=f55e30] [cursor=pointer]'
+            - button [ref=f55e45] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f55e47]
+    - navigation [ref=f55e53]:
+      - link "Todas las aplicaciones" [ref=f55e54] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f55e56]: keyboard_backspace
+      - list [ref=f55e58]:
+        - listitem "Panel de control" [ref=f55e61]:
+          - button "Panel de control" [ref=f55e62] [cursor=pointer]:
+            - img [ref=f55e65]: dashboard
+        - listitem "Estadísticas" [ref=f55e69]:
+          - button "Estadísticas" [ref=f55e70] [cursor=pointer]:
+            - img [ref=f55e73]: bar_chart
+        - listitem "Resumen de publicación" [ref=f55e77]:
+          - button "Resumen de publicación" [ref=f55e78] [cursor=pointer]:
+            - img [ref=f55e81]: overview
+        - listitem "Protegida con Play" [ref=f55e85]:
+          - button "Protegida con Play" [ref=f55e86] [cursor=pointer]:
+            - img [ref=f55e89]: shield
+        - listitem "Probar y publicar" [ref=f55e93]:
+          - button "Probar y publicar" [ref=f55e94] [cursor=pointer]:
+            - img [ref=f55e97]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f55e101]:
+          - button "Monitorizar y mejorar" [ref=f55e102] [cursor=pointer]:
+            - img [ref=f55e105]: vital_signs
+        - listitem "Aumentar usuarios" [ref=f55e109]:
+          - button "Aumentar usuarios" [ref=f55e110] [cursor=pointer]:
+            - img [ref=f55e113]: finance_mode
+        - listitem "Monetizar con Play" [ref=f55e117]:
+          - button "Monetizar con Play" [ref=f55e118] [cursor=pointer]:
+            - img [ref=f55e121]: sell
+    - generic [ref=f55e142]:
+      - generic [ref=f55e143]:
+        - link "Novedades sobre productos" [ref=f55e144] [cursor=pointer]:
+          - /url: https://play.google.com/console/about/whats-new/
+        - link "Panel de Estado" [ref=f55e145] [cursor=pointer]:
+          - /url: https://status.play.google.com/
+        - link "Ayuda" [ref=f55e146] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+      - generic [ref=f55e147]:
+        - generic [ref=f55e148]: © 2026 Google
+        - link "Privacidad" [ref=f55e149] [cursor=pointer]:
+          - /url: https://www.google.com/policies/privacy/
+        - link "Acuerdo de distribución para desarrolladores" [ref=f55e150] [cursor=pointer]:
+          - /url: https://play.google.com/about/developer-distribution-agreement.html
+        - link "Términos del Servicio" [ref=f55e151] [cursor=pointer]:
+          - /url: https://play.google.com/about/console/terms-of-service/

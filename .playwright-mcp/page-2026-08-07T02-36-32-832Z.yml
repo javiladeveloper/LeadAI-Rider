@@ -1,0 +1,170 @@
+- generic [ref=f32e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f32e3]:
+    - banner [ref=f32e4]:
+      - generic [ref=f32e6]:
+        - link [ref=f32e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f32e8]
+        - generic [ref=f32e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f32e345]:
+            - img [ref=f32e19]: notifications_unread
+            - generic [ref=f32e20]: Notificaciones sin leer
+          - generic [ref=f32e22]:
+            - 'button "Light Drive: moto y envíos" [ref=f32e30] [cursor=pointer]'
+            - button [ref=f32e45] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f32e47]
+    - navigation [ref=f32e53]:
+      - link "Todas las aplicaciones" [ref=f32e54] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f32e56]: keyboard_backspace
+      - list [ref=f32e58]:
+        - listitem "Panel de control" [ref=f32e61]:
+          - button "Panel de control" [ref=f32e62] [cursor=pointer]:
+            - img [ref=f32e65]: dashboard
+        - listitem "Estadísticas" [ref=f32e69]:
+          - button "Estadísticas" [ref=f32e70] [cursor=pointer]:
+            - img [ref=f32e73]: bar_chart
+        - listitem "Resumen de publicación" [ref=f32e77]:
+          - button "Resumen de publicación" [ref=f32e78] [cursor=pointer]:
+            - img [ref=f32e81]: overview
+        - listitem "Protegida con Play" [ref=f32e85]:
+          - button "Protegida con Play" [ref=f32e86] [cursor=pointer]:
+            - img [ref=f32e89]: shield
+        - listitem "Probar y publicar" [ref=f32e93]:
+          - button "Probar y publicar" [ref=f32e94] [cursor=pointer]:
+            - img [ref=f32e97]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f32e101]:
+          - button "Monitorizar y mejorar" [ref=f32e102] [cursor=pointer]:
+            - img [ref=f32e105]: vital_signs
+          - list [ref=f32e107]:
+            - generic [ref=f32e109]:
+              - listitem "Cobertura y dispositivos" [ref=f32e111]:
+                - button "Cobertura y dispositivos" [ref=f32e112] [cursor=pointer]:
+                  - img [ref=f32e115]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f32e117]:
+                - button "Valoraciones y reseñas" [ref=f32e118] [cursor=pointer]:
+                  - img [ref=f32e121]: expand_more
+              - listitem "Android vitals" [ref=f32e123]:
+                - button "Android vitals" [ref=f32e124] [cursor=pointer]:
+                  - img [ref=f32e127]: expand_more
+              - listitem "Política y programas" [ref=f32e129]:
+                - button "Política y programas" [ref=f32e130] [cursor=pointer]:
+                  - img [ref=f32e133]: expand_less
+                - list [ref=f32e134]:
+                  - generic [ref=f32e136]:
+                    - listitem "Estado según las políticas" [ref=f32e138]:
+                      - button "Estado según las políticas" [ref=f32e139] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f32e142]:
+                      - button "Contenido de la aplicación" [ref=f32e143] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f32e146]:
+                      - button "Aprobada por profesores" [ref=f32e147] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f32e151]:
+          - button "Aumentar usuarios" [ref=f32e152] [cursor=pointer]:
+            - img [ref=f32e155]: finance_mode
+        - listitem "Monetizar con Play" [ref=f32e159]:
+          - button "Monetizar con Play" [ref=f32e160] [cursor=pointer]:
+            - img [ref=f32e163]: sell
+    - generic [ref=f32e166]:
+      - generic [ref=f32e173]:
+        - generic [ref=f32e177]:
+          - link "Volver a Contenido de la aplicación" [ref=f32e180] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-content/overview
+            - img [ref=f32e184]: keyboard_backspace
+            - generic [ref=f32e185]: Contenido de la aplicación
+          - generic [ref=f32e189]:
+            - heading "Contenido y audiencia objetivo" [level=1] [ref=f32e194]
+            - button "Descartar cambios" [ref=f32e199]
+        - generic [ref=f32e207]:
+          - tablist [ref=f32e208]:
+            - 'tab "Edad objetivo: paso 1 de 5" [selected] [ref=f32e209]':
+              - generic [ref=f32e210]: "1"
+              - generic [ref=f32e213]: Edad objetivo
+            - 'tab "Detalles de la aplicación: paso 2 de 5" [disabled] [ref=f32e216]':
+              - generic [ref=f32e217]: "2"
+              - generic [ref=f32e220]: Detalles de la aplicación
+            - 'tab "Anuncios: paso 3 de 5" [disabled] [ref=f32e223]':
+              - generic [ref=f32e224]: "3"
+              - generic [ref=f32e227]: Anuncios
+            - 'tab "Presencia en Google Play Store: paso 4 de 5" [disabled] [ref=f32e230]':
+              - generic [ref=f32e231]: "4"
+              - generic [ref=f32e234]: Presencia en Google Play Store
+            - 'tab "Resumen: paso 5 de 5" [disabled] [ref=f32e237]':
+              - generic [ref=f32e238]: "5"
+              - generic [ref=f32e241]: Resumen
+          - tabpanel [ref=f32e244]:
+            - generic [ref=f32e247]:
+              - heading "Edad objetivo" [level=2] [ref=f32e256]
+              - group "Grupo de edad objetivo" [ref=f32e262]:
+                - generic [ref=f32e267]:
+                  - generic [ref=f32e268]: ¿Cuáles son los grupos de edad objetivos de tu aplicación?
+                  - generic [ref=f32e269]:
+                    - paragraph [ref=f32e270]: Según tu respuesta, destacaremos las medidas que debas tomar y las políticas que debas cumplir.
+                    - paragraph [ref=f32e271]: Si seleccionas determinadas edades, como usuarios mayores de 18 años, puede que se apliquen restricciones adicionales a tu disponibilidad en Google Play.
+                    - paragraph [ref=f32e272]:
+                      - generic [ref=f32e274]:
+                        - text: Consulta el
+                        - link "Centro de Políticas para Desarrolladores" [ref=f32e275] [cursor=pointer]:
+                          - /url: https://play.google.com/about/developer-content-policy/
+                        - text: antes de publicar tu aplicación. Es posible que las aplicaciones que no cumplan estas políticas se retiren de Google Play.
+                      - link "Más información sobre los grupos de edad objetivo de tu aplicación, Se abre en otra pestaña" [ref=f32e277] [cursor=pointer]:
+                        - /url: https://support.google.com/googleplay/android-developer/answer/9285070#age-groups
+                        - text: Más información
+                  - generic [ref=f32e282]:
+                    - img [ref=f32e285]: info
+                    - generic [ref=f32e286]: No puedes seleccionar grupos de edad de menos de 13 años porque la clasificación ESRB (Entertainment Software Rating Board) de tu aplicación es Para mayores de 13 años.
+                  - generic [ref=f32e290]:
+                    - generic:
+                      - checkbox "Hasta 5 años" [disabled]
+                    - generic [ref=f32e291]: Hasta 5 años
+                  - generic [ref=f32e293]:
+                    - generic:
+                      - checkbox "6-8" [disabled]
+                    - generic [ref=f32e294]: 6-8
+                  - generic [ref=f32e296]:
+                    - generic:
+                      - checkbox "9-12" [disabled]
+                    - generic [ref=f32e297]: 9-12
+                  - generic [ref=f32e299] [cursor=pointer]:
+                    - checkbox "13-15" [ref=f32e301]
+                    - generic [ref=f32e302]: 13-15
+                  - generic [ref=f32e304] [cursor=pointer]:
+                    - checkbox "16-17" [ref=f32e306]
+                    - generic [ref=f32e307]: 16-17
+                  - generic [ref=f32e308]:
+                    - generic [ref=f32e309] [cursor=pointer]:
+                      - checkbox "A partir de 18 años" [checked] [active] [ref=f32e311]
+                      - generic [ref=f32e312]: A partir de 18 años
+                    - group [ref=f32e350]:
+                      - generic [ref=f32e353] [cursor=pointer]:
+                        - 'checkbox "Restringir el acceso a mi aplicación a los usuarios que Google ha determinado que son menores de edad (opcional) Confirmo que quiero que Google Play impida que los usuarios que se determine que son menores de edad puedan: Buscar o descargar mi aplicación en Google Play Hacer compras en la aplicación, lo que incluye registrar suscripciones nuevas y renovar las ya existentes Confirmo que Google Play no puede bloquear a todos los usuarios menores de edad que no hayan declarado serlo." [ref=f32e355]'
+                        - generic [ref=f32e356]:
+                          - text: Restringir el acceso a mi aplicación a los usuarios que Google ha determinado que son menores de edad (opcional)
+                          - generic [ref=f32e357]:
+                            - paragraph [ref=f32e358]: "Confirmo que quiero que Google Play impida que los usuarios que se determine que son menores de edad puedan:"
+                            - list [ref=f32e360]:
+                              - listitem [ref=f32e361]: Buscar o descargar mi aplicación en Google Play
+                              - listitem [ref=f32e362]: Hacer compras en la aplicación, lo que incluye registrar suscripciones nuevas y renovar las ya existentes
+                            - paragraph [ref=f32e363]: Confirmo que Google Play no puede bloquear a todos los usuarios menores de edad que no hayan declarado serlo.
+        - generic [ref=f32e320]:
+          - button "Siguiente" [ref=f32e321]
+          - button "Volver" [disabled] [ref=f32e325]
+      - generic [ref=f32e335]:
+        - generic [ref=f32e336]:
+          - link "Novedades sobre productos" [ref=f32e337] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f32e338] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f32e339] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f32e340]:
+          - generic [ref=f32e341]: © 2026 Google
+          - link "Privacidad" [ref=f32e342] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f32e343] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f32e344] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

@@ -184,6 +184,13 @@ data class CarreraDto(
     val kmAlNegocio: Double? = null,
     /** Dos tramos: `false` = va al origen a recoger; `true` = ya recogió, va al destino. */
     val recogido: Boolean = false,
+    /**
+     * Lo que le queda al rider TRAS la comisión.
+     *
+     * Lo calcula el backend, que es donde vive la config: el rider no debería
+     * restar de memoria para decidir si le conviene. `null` si no vino.
+     */
+    val gananciaCentavos: Long? = null,
 )
 
 /** Resumen de HOY del rider (`GET /motorizados/historial`): carreras, km reales y total entregado. */
@@ -423,4 +430,69 @@ data class SubirDocumentoResponseDto(
     val ok: Boolean = false,
     val documento: DocumentoVerificacionDto? = null,
     val estadoVerificacion: String = "sin_verificar",
+)
+
+/** Una dirección sugerida mientras el cliente escribe. */
+@Serializable
+data class SugerenciaDireccionDto(
+    val texto: String = "",
+    val lat: Double = 0.0,
+    val lng: Double = 0.0,
+)
+
+/** `GET /carreras/direcciones?q=` → hasta 5 coincidencias de SU ciudad. */
+@Serializable
+data class SugerenciasDireccionDto(
+    val sugerencias: List<SugerenciaDireccionDto> = emptyList(),
+)
+
+/**
+ * `GET /carreras/direccion-en?lat&lng` → qué dirección hay en ese punto.
+ *
+ * El "georreverse": al mover el pin en el mapa o tocar "mi ubicación", esto
+ * convierte las coordenadas en algo que el rider pueda leer.
+ */
+@Serializable
+data class DireccionEnPuntoDto(
+    val direccion: String? = null,
+)
+
+/**
+ * Quién es el rider que ofertó: lo que el cliente mira antes de elegir.
+ *
+ * `estrellas` llega `null` cuando todavía nadie lo calificó — la app muestra
+ * "Nuevo", no 0, porque cero se lee como "pésimo" y no es lo mismo que "aún
+ * no sabemos".
+ */
+@Serializable
+data class RiderDeOfertaDto(
+    val usuarioId: String = "",
+    val nombre: String? = null,
+    val fotoUrl: String? = null,
+    val placa: String = "",
+    val marcaModelo: String = "",
+    val color: String = "",
+    val tipoVehiculo: String = "moto",
+    val estrellas: Double? = null,
+    val totalCalificaciones: Int = 0,
+    val viajesCompletados: Int = 0,
+)
+
+/** Lo que un rider ofrece por la carrera. */
+@Serializable
+data class OfertaDto(
+    val id: String = "",
+    val montoCentavos: Long = 0,
+    /** Cuánto dice que tarda en llegar al punto de recojo. */
+    val minutosLlegada: Int? = null,
+    val creadoEn: String = "",
+    val rider: RiderDeOfertaDto = RiderDeOfertaDto(),
+)
+
+/** `GET /carreras/:id/ofertas` → las propuestas vivas, de la más barata a la más cara. */
+@Serializable
+data class OfertasResponseDto(
+    val montoOfrecido: Long = 0,
+    val estado: String = "disponible",
+    val ofertas: List<OfertaDto> = emptyList(),
 )

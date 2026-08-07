@@ -1,0 +1,33 @@
+- generic [active] [ref=f22e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f22e3]:
+    - banner [ref=f22e4]:
+      - generic [ref=f22e6]:
+        - link [ref=f22e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f22e8]
+        - button [ref=f22e14] [cursor=pointer]:
+          - img "Cambiar de cuenta de desarrollador" [ref=f22e16]
+    - generic [ref=f22e20]:
+      - generic:
+        - navigation:
+          - list
+    - generic [ref=f22e30]:
+      - generic [ref=f22e31]:
+        - link "Novedades sobre productos" [ref=f22e32] [cursor=pointer]:
+          - /url: https://play.google.com/console/about/whats-new/
+        - link "Panel de Estado" [ref=f22e33] [cursor=pointer]:
+          - /url: https://status.play.google.com/
+        - link "Ayuda" [ref=f22e34] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/help-and-support
+      - generic [ref=f22e35]:
+        - generic [ref=f22e36]: © 2026 Google
+        - link "Privacidad" [ref=f22e37] [cursor=pointer]:
+          - /url: https://www.google.com/policies/privacy/
+        - link "Acuerdo de distribución para desarrolladores" [ref=f22e38] [cursor=pointer]:
+          - /url: https://play.google.com/about/developer-distribution-agreement.html
+        - link "Términos del Servicio" [ref=f22e39] [cursor=pointer]:
+          - /url: https://play.google.com/about/console/terms-of-service/

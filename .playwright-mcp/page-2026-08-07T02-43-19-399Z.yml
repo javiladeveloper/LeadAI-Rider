@@ -1,0 +1,144 @@
+- generic [ref=f42e1]:
+  - generic:
+    - generic:
+      - progressbar
+      - generic: Cargando Google Play Console
+  - generic [ref=f42e3]:
+    - banner [ref=f42e4]:
+      - generic [ref=f42e6]:
+        - link [ref=f42e7] [cursor=pointer]:
+          - /url: /console/u/0/developers/7542318249525056400/app-list
+          - button "Logotipo de Google Play Console" [ref=f42e8]
+        - generic [ref=f42e9]:
+          - button "Notificaciones sin leer Abrir centro de notificaciones" [ref=f42e45]:
+            - img [ref=f42e49]: notifications_unread
+            - generic [ref=f42e50]: Notificaciones sin leer
+          - generic [ref=f42e10]:
+            - 'button "Light Drive: moto y envíos" [ref=f42e59] [cursor=pointer]'
+            - button [ref=f42e14] [cursor=pointer]:
+              - img "Cambiar de cuenta de desarrollador" [ref=f42e16]
+    - navigation [ref=f42e72]:
+      - link "Todas las aplicaciones" [ref=f42e73] [cursor=pointer]:
+        - /url: /console/u/0/developers/7542318249525056400/app-list
+        - img [ref=f42e75]: keyboard_backspace
+      - list [ref=f42e77]:
+        - listitem "Panel de control" [ref=f42e80]:
+          - button "Panel de control" [ref=f42e81] [cursor=pointer]:
+            - img [ref=f42e84]: dashboard
+        - listitem "Estadísticas" [ref=f42e88]:
+          - button "Estadísticas" [ref=f42e89] [cursor=pointer]:
+            - img [ref=f42e92]: bar_chart
+        - listitem "Resumen de publicación" [ref=f42e96]:
+          - button "Resumen de publicación" [ref=f42e97] [cursor=pointer]:
+            - img [ref=f42e100]: overview
+        - listitem "Protegida con Play" [ref=f42e104]:
+          - button "Protegida con Play" [ref=f42e105] [cursor=pointer]:
+            - img [ref=f42e108]: shield
+        - listitem "Probar y publicar" [ref=f42e112]:
+          - button "Probar y publicar" [ref=f42e113] [cursor=pointer]:
+            - img [ref=f42e116]: rocket_launch
+        - listitem "Monitorizar y mejorar" [ref=f42e120]:
+          - button "Monitorizar y mejorar" [ref=f42e121] [cursor=pointer]:
+            - img [ref=f42e124]: vital_signs
+          - list [ref=f42e533]:
+            - generic [ref=f42e535]:
+              - listitem "Cobertura y dispositivos" [ref=f42e537]:
+                - button "Cobertura y dispositivos" [ref=f42e538] [cursor=pointer]:
+                  - img [ref=f42e541]: expand_more
+              - listitem "Valoraciones y reseñas" [ref=f42e543]:
+                - button "Valoraciones y reseñas" [ref=f42e544] [cursor=pointer]:
+                  - img [ref=f42e547]: expand_more
+              - listitem "Android vitals" [ref=f42e549]:
+                - button "Android vitals" [ref=f42e550] [cursor=pointer]:
+                  - img [ref=f42e553]: expand_more
+              - listitem "Política y programas" [ref=f42e555]:
+                - button "Política y programas" [ref=f42e556] [cursor=pointer]:
+                  - img [ref=f42e559]: expand_less
+                - list [ref=f42e560]:
+                  - generic [ref=f42e562]:
+                    - listitem "Estado según las políticas" [ref=f42e564]:
+                      - button "Estado según las políticas" [ref=f42e565] [cursor=pointer]
+                    - listitem "Contenido de la aplicación" [ref=f42e568]:
+                      - button "Contenido de la aplicación" [ref=f42e569] [cursor=pointer]
+                    - listitem "Aprobada por profesores" [ref=f42e572]:
+                      - button "Aprobada por profesores" [ref=f42e573] [cursor=pointer]
+        - listitem "Aumentar usuarios" [ref=f42e128]:
+          - button "Aumentar usuarios" [ref=f42e129] [cursor=pointer]:
+            - img [ref=f42e132]: finance_mode
+        - listitem "Monetizar con Play" [ref=f42e136]:
+          - button "Monetizar con Play" [ref=f42e137] [cursor=pointer]:
+            - img [ref=f42e140]: sell
+    - generic [ref=f42e22]:
+      - generic [ref=f42e649]:
+        - generic [ref=f42e653]:
+          - link "Volver a Panel de control" [ref=f42e656] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/app/4976049465385388452/app-dashboard
+            - img [ref=f42e660]: keyboard_backspace
+            - generic [ref=f42e661]: Panel de control
+          - generic [ref=f42e665]:
+            - heading "Clasificaciones del contenido" [level=1] [ref=f42e670]
+            - button "Descartar cambios" [ref=f42e675]
+        - generic [ref=f42e695]:
+          - generic [ref=f42e700]:
+            - tablist [ref=f42e701]:
+              - 'tab "Categoría: paso 1 de 3" [selected] [ref=f42e702]':
+                - generic [ref=f42e703]: "1"
+                - generic [ref=f42e706]: Categoría
+              - 'tab "Cuestionario: paso 2 de 3" [disabled] [ref=f42e709]':
+                - generic [ref=f42e710]: "2"
+                - generic [ref=f42e713]: Cuestionario
+              - 'tab "Resumen: paso 3 de 3" [disabled] [ref=f42e716]':
+                - generic [ref=f42e717]: "3"
+                - generic [ref=f42e720]: Resumen
+            - tabpanel [ref=f42e723]:
+              - generic [ref=f42e726]:
+                - heading "Categoría" [level=2] [ref=f42e735]
+                - generic [ref=f42e739]:
+                  - group "Dirección de correo electrónico" [ref=f42e741]:
+                    - generic [ref=f42e747]:
+                      - textbox [ref=f42e749]: jonathan.joan.avila@gmail.com
+                      - paragraph [ref=f42e751]: Usaremos esta dirección para ponernos en contacto contigo sobre tus clasificaciones del contenido. Es posible que la compartamos con las autoridades de clasificación y con la IARC.
+                  - group "Categoría" [ref=f42e753]:
+                    - radiogroup "Categoría" [ref=f42e759]:
+                      - generic [ref=f42e761] [cursor=pointer]:
+                        - radio "Juego" [ref=f42e763]
+                        - generic [ref=f42e766]:
+                          - text: Juego
+                          - generic [ref=f42e767]: "Esta aplicación es un juego o una aplicación de apuestas. Algunos ejemplos son: Candy Crush Saga, Temple Run, Mario Kart, Los Sims, Angry Birds, juegos de casino, novelas visuales interactivas, juegos de administración o deportes de fantasía diarios."
+                      - generic [ref=f42e769] [cursor=pointer]:
+                        - radio "Social o comunicación" [ref=f42e771]
+                        - generic [ref=f42e774]:
+                          - text: Social o comunicación
+                          - generic [ref=f42e775]: El propósito principal de esta aplicación es comunicarse o conocer a otras personas. Algunos ejemplos son Facebook, Twitter, Skype y SMS.
+                      - generic [ref=f42e777] [cursor=pointer]:
+                        - radio "Todos los demás tipos de aplicaciones" [checked] [active] [ref=f42e779]
+                        - generic [ref=f42e782]:
+                          - text: Todos los demás tipos de aplicaciones
+                          - generic [ref=f42e783]: Cualquier aplicación que no sea un juego, una aplicación de redes sociales ni una aplicación de comunicación. Entre los ejemplos se incluyen productos para el entretenimiento, tiendas de consumo, aplicaciones de noticias, aplicaciones de estilo de vida, servicios de streaming, utilidades, herramientas, conjuntos de emojis, aplicaciones de bienestar, revistas y personalizaciones.
+                  - group "Términos y condiciones" [ref=f42e785]:
+                    - generic [ref=f42e791] [cursor=pointer]:
+                      - checkbox "Acepto los Términos de Uso tal como los describe la Coalición Internacional de Calificación por Edad (IARC). Las clasificaciones del contenido que aparecen en Google Play las proporciona la Coalición Internacional de Calificación por Edad (IARC) y están diseñadas para que los desarrolladores puedan ofrecer a los usuarios clasificaciones del contenido pertinentes según su ubicación." [ref=f42e793]
+                      - generic [ref=f42e794]:
+                        - generic [ref=f42e795]:
+                          - text: Acepto los
+                          - link "Términos de Uso" [ref=f42e796]:
+                            - /url: https://web.iarcservices.com/terms
+                          - text: tal como los describe la Coalición Internacional de Calificación por Edad (IARC).
+                        - generic [ref=f42e797]: Las clasificaciones del contenido que aparecen en Google Play las proporciona la Coalición Internacional de Calificación por Edad (IARC) y están diseñadas para que los desarrolladores puedan ofrecer a los usuarios clasificaciones del contenido pertinentes según su ubicación.
+          - button "Siguiente" [ref=f42e807]
+      - generic [ref=f42e30]:
+        - generic [ref=f42e685]:
+          - link "Novedades sobre productos" [ref=f42e686] [cursor=pointer]:
+            - /url: https://play.google.com/console/about/whats-new/
+          - link "Panel de Estado" [ref=f42e687] [cursor=pointer]:
+            - /url: https://status.play.google.com/
+          - link "Ayuda" [ref=f42e688] [cursor=pointer]:
+            - /url: /console/u/0/developers/7542318249525056400/help-and-support?app=4976049465385388452
+        - generic [ref=f42e689]:
+          - generic [ref=f42e690]: © 2026 Google
+          - link "Privacidad" [ref=f42e691] [cursor=pointer]:
+            - /url: https://www.google.com/policies/privacy/
+          - link "Acuerdo de distribución para desarrolladores" [ref=f42e692] [cursor=pointer]:
+            - /url: https://play.google.com/about/developer-distribution-agreement.html
+          - link "Términos del Servicio" [ref=f42e693] [cursor=pointer]:
+            - /url: https://play.google.com/about/console/terms-of-service/

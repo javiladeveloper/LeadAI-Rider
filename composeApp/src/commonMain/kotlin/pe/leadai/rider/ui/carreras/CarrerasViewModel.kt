@@ -36,6 +36,13 @@ data class CarrerasUiState(
     val monedero: MonederoDto? = null,
     /** `true` cuando intentó aceptar sin saldo — la pantalla ofrece recargar. */
     val sinSaldo: Boolean = false,
+    /**
+     * `pedidoId`s donde el rider YA hizo su propuesta y espera respuesta.
+     *
+     * Vive en memoria a propósito: si mata la app, el feed vuelve limpio y
+     * puede reofertar sin quedar convencido de que ya lo hizo.
+     */
+    val ofertadas: Set<String> = emptySet(),
 )
 
 private const val MENSAJE_ERROR_CARGAR = "No pudimos cargar tu perfil. Intenta de nuevo."
@@ -157,6 +164,36 @@ class CarrerasViewModel(
     private suspend fun reportarPosicion() {
         val ubicacion = obtenerUbicacion() ?: return
         motorizadosApi.reportarPosicion(ubicacion.lat, ubicacion.lng)
+    }
+
+    /**
+     * Ofrece llevar la carrera por [montoCentavos] — el cliente decide.
+     *
+     * La carrera NO pasa a "en curso" acá: sigue en el feed hasta que el
+     * cliente elija (o hasta que elija a otro y el polling la saque). Ofertar
+     * de nuevo pisa la propuesta anterior, así que el rider puede subir el
+     * precio sin ensuciarle la lista al cliente.
+     */
+    fun ofertar(carrera: CarreraDto, montoCentavos: Long) {
+        if (_estado.value.accionEnCurso != null) return
+        _estado.update { it.copy(accionEnCurso = carrera.pedidoId) }
+        viewModelScope.launch(dispatcher) {
+            when (val resultado = motorizadosApi.ofertarCarrera(carrera.pedidoId, montoCentavos)) {
+                is Resultado.Ok -> {
+                    _estado.update {
+                        it.copy(
+                            accionEnCurso = null,
+                            ofertadas = it.ofertadas + carrera.pedidoId,
+                        )
+                    }
+                    avisos.mostrar("✅ Propuesta enviada. Te avisamos si te eligen.")
+                }
+                is Resultado.Error -> {
+                    _estado.update { it.copy(accionEnCurso = null) }
+                    avisos.mostrar(resultado.mensaje)
+                }
+            }
+        }
     }
 
     /** Acepta una carrera (el PRIMERO gana): en éxito pasa a "en curso"; con 409, la carrera voló. */
