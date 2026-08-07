@@ -49,6 +49,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import pe.leadai.rider.datos.CarreraClienteDto
 import pe.leadai.rider.ui.carreras.telefonoDeContacto
 import pe.leadai.rider.ui.comunes.AvisosGlobales
+import pe.leadai.rider.ui.comunes.ManejarAtras
 import pe.leadai.rider.ui.comunes.MapaEmbebido
 import pe.leadai.rider.ui.comunes.PantallaCargando
 import pe.leadai.rider.ui.cliente.componentes.CardMontoCompra
@@ -105,6 +106,12 @@ fun ClientePantalla(
 
     var seccion by remember { mutableStateOf(SeccionCliente.PEDIR) }
     val carrera = estado.miCarrera
+
+    // ATRÁS: desde Viajes o Perfil se vuelve a Pedir, no se sale de la app.
+    // En Pedir se deja pasar el evento — ahí salir SÍ es lo esperado.
+    ManejarAtras(habilitado = seccion != SeccionCliente.PEDIR) {
+        seccion = SeccionCliente.PEDIR
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),

@@ -56,6 +56,7 @@ import pe.leadai.rider.datos.PerfilMotorizadoDto
 import pe.leadai.rider.datos.SesionRepositorio
 import pe.leadai.rider.ui.comunes.AvisosGlobales
 import pe.leadai.rider.ui.comunes.EstadoError
+import pe.leadai.rider.ui.comunes.ManejarAtras
 import pe.leadai.rider.ui.comunes.PantallaCargando
 import pe.leadai.rider.ui.permisos.PermisosPantalla
 import pe.leadai.rider.ui.carreras.componentes.CardCarrera
@@ -135,6 +136,28 @@ fun CarrerasPantalla(
     var viendoPermisos by remember { mutableStateOf(false) }
     var seccion by remember { mutableStateOf(SeccionRider.INICIO) }
     val abridorPago = LocalUriHandler.current
+
+    // ATRÁS del sistema (gesto o botón táctil).
+    //
+    // Varias "pantallas" de acá son estado local, no rutas: la pestaña
+    // activa, los permisos, el diálogo de recarga. Android no las conoce, así
+    // que atrás cerraba la app en vez de retroceder un paso.
+    //
+    // Se resuelve de lo más profundo a lo más superficial, y cuando ya no
+    // queda nada que cerrar se deja pasar el evento: en INICIO, atrás SÍ debe
+    // salir de la app — es lo que el usuario espera.
+    val hayAlgoQueCerrar = viendoPermisos || eligiendoPaquete ||
+        confirmandoCierre || confirmandoCancelar || seccion != SeccionRider.INICIO
+    ManejarAtras(habilitado = hayAlgoQueCerrar) {
+        when {
+            confirmandoCancelar -> confirmandoCancelar = false
+            confirmandoCierre -> confirmandoCierre = false
+            eligiendoPaquete -> eligiendoPaquete = false
+            viendoPermisos -> viendoPermisos = false
+            // Desde cualquier pestaña se vuelve a Inicio, no se sale.
+            else -> seccion = SeccionRider.INICIO
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.cargar()
