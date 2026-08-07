@@ -156,6 +156,24 @@ En orden, del más probable al menos:
 **Compilar no es probar.** El crash al aceptar una carrera sin permiso de
 ubicación (2026-08-06) compilaba perfecto y tumbaba la app en el celular.
 
+## Antes de desplegar el BACKEND, arrancalo
+
+El typecheck no detecta una ruta duplicada: Fastify explota al REGISTRARLAS, en
+runtime. Registrar `GET /perfil` cuando `perfil.ts` ya lo tenía dejó el backend
+entero en 502 — hasta `/health` (2026-08-06).
+
+```bash
+cd "d:/Personal Proyects/leadia"
+npx tsc -p tsconfig.json --outDir dist
+(PORT=3997 node --env-file=.env dist/index.js > /tmp/arranque.log 2>&1 &) ; sleep 15
+curl -s -o /dev/null -w "%{http_code}\n" http://localhost:3997/health   # tiene que dar 200
+```
+
+Y antes de agregar una ruta, mirá si el path ya existe:
+```bash
+grep -rn "'/tu-ruta'" src/routes/*.ts
+```
+
 ## Trampas que ya costaron una tarde
 
 - **`startForeground` sin permiso de ubicación mata la app.** Con
