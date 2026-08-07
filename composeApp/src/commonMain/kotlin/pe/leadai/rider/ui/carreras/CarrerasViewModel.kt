@@ -166,10 +166,14 @@ class CarrerasViewModel(
         viewModelScope.launch(dispatcher) {
             when (val resultado = motorizadosApi.aceptarCarrera(carrera.pedidoId)) {
                 is Resultado.Ok -> {
+                    // La del BACKEND si vino: trae el nombre y el teléfono del
+                    // cliente, que el feed no incluye. Con la del feed la hoja
+                    // salía sin botones de contacto hasta el próximo polling.
+                    val activa = resultado.valor.carrera ?: carrera
                     _estado.update {
                         it.copy(
                             accionEnCurso = null,
-                            miCarrera = carrera,
+                            miCarrera = activa,
                             carreras = it.carreras.filter { c -> c.pedidoId != carrera.pedidoId },
                         )
                     }

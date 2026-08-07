@@ -74,6 +74,14 @@ data class RegistroRequestDto(
 @Serializable
 data class AvanzarEstadoResponseDto(
     val ok: Boolean = false,
+    /**
+     * Solo al ACEPTAR: la carrera con los datos del cliente ya resueltos.
+     *
+     * Sin esto la app se quedaba con el objeto del feed, que no trae nombre
+     * ni contacto: al aceptar se veía "Tu cliente" sin botones de WhatsApp
+     * hasta la siguiente vuelta del polling, 15 segundos después.
+     */
+    val carrera: CarreraDto? = null,
 )
 
 /** `POST /dispositivos-push` (Task 7, backend): registra el token FCM del dispositivo. */
