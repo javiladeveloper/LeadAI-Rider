@@ -7,14 +7,44 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import pe.leadai.rider.ui.tema.ColoresJala
 
+/**
+ * El mapa, con un indicador MIENTRAS carga.
+ *
+ * Cargar la página es lento de verdad: el WebView baja Leaflet, los tiles de
+ * OpenStreetMap y le pide la ruta a OSRM. Antes ese tiempo era un rectángulo
+ * vacío debajo de una hoja ya completa — parecía que la app se había colgado.
+ *
+ * El indicador tapa el hueco hasta que la página termina de cargar.
+ */
 @Composable
 actual fun MapaEmbebido(url: String, modifier: Modifier) {
+    var cargando by remember(url) { mutableStateOf(true) }
+    val colores = ColoresJala.actuales
+
+    Box(modifier = modifier) {
     AndroidView(
-        modifier = modifier,
+        modifier = Modifier.fillMaxSize(),
         factory = { contexto ->
             WebView(contexto).apply {
                 // JS imprescindible: la página es Leaflet puro. Sin
@@ -34,6 +64,10 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
                     }
                 }
                 webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView, url: String) {
+                        cargando = false
+                    }
+
                     // Si la carga cae en mal momento (deploy reiniciando el
                     // API, red móvil parpadeando), reintenta solo en 5s en
                     // vez de quedarse clavado en "Webpage not available".
@@ -42,6 +76,8 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
                         request: WebResourceRequest,
                         error: WebResourceError,
                     ) {
+                        // Sigue "cargando" a propósito: hay un reintento en
+                        // camino, y mostrar el mapa vacío sería peor.
                         if (request.isForMainFrame) reintentarLuego(view)
                     }
 
@@ -56,8 +92,35 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
                 loadUrl(url)
             }
         },
-        update = { webView -> if (webView.url != url) webView.loadUrl(url) },
+        update = { webView ->
+            if (webView.url != url) {
+                cargando = true
+                webView.loadUrl(url)
+            }
+        },
     )
+
+        if (cargando) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(colores.marcaCarbon),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(36.dp),
+                    color = colores.marcaAmarillo,
+                )
+                androidx.compose.foundation.layout.Spacer(Modifier.height(14.dp))
+                Text(
+                    "Cargando el mapa…",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colores.tintaSecundaria,
+                )
+            }
+        }
+    }
 }
 
 private fun reintentarLuego(webView: WebView) {

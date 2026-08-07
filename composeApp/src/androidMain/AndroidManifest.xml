@@ -29,10 +29,21 @@
         android:icon="@mipmap/ic_launcher"
         android:label="Light Drive"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
+        <!--
+          VERTICAL fijo: el rider lleva el teléfono en el manubrio y al doblar
+          la app giraba sola. Además, rotar destruye y recrea la Activity —
+          justo mientras maneja y con el mapa a medio cargar.
+
+          `configChanges` cubre lo que igual puede cambiar (teclado, tamaño de
+          ventana, tema): sin esto Android recrearía la pantalla y el mapa
+          volvería a cargar desde cero.
+        -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden|uiMode"
             android:theme="@android:style/Theme.Material.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

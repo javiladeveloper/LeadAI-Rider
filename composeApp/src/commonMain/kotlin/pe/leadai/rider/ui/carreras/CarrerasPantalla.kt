@@ -177,7 +177,20 @@ fun CarrerasPantalla(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        snackbarHost = { SnackbarHost(snackbarHostState) { Snackbar(it) } },
+        // Los avisos van ARRIBA, no abajo.
+        //
+        // El Snackbar de Material aparece al pie, que es justo donde vive la
+        // hoja de la carrera: tapaba el botón de avanzar y los datos del
+        // cliente — lo único que el rider necesita ver mientras maneja.
+        // Arriba solo hay mapa.
+        snackbarHost = {
+            Box(modifier = Modifier.fillMaxSize()) {
+                SnackbarHost(
+                    snackbarHostState,
+                    modifier = Modifier.align(Alignment.TopCenter).padding(top = 12.dp),
+                ) { Snackbar(it) }
+            }
+        },
         bottomBar = {
             // Con una carrera en curso la barra DESAPARECE: el rider está
             // manejando y la pantalla tiene que ser el mapa y el botón de
