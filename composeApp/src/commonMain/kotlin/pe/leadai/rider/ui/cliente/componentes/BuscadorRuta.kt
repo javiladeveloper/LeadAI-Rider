@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import pe.leadai.rider.datos.SugerenciaDireccionDto
 import pe.leadai.rider.ui.comunes.CardJala
@@ -167,11 +168,29 @@ private fun FilaSugerencia(
     ) {
         Text("📍", style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.size(12.dp))
-        Text(
-            s.texto,
-            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-            color = MaterialTheme.colorScheme.onSurface,
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                s.texto,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+            // El renglón que hace elegible la lista: sin él, cinco lugares
+            // distintos se ven exactamente iguales.
+            val referencia = listOf(s.categoria, s.detalle)
+                .filter { it.isNotBlank() }
+                .joinToString(" · ")
+            if (referencia.isNotBlank()) {
+                Text(
+                    referencia,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = colores.tintaSecundaria,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+        }
     }
 }
 

@@ -436,6 +436,14 @@ data class SubirDocumentoResponseDto(
 @Serializable
 data class SugerenciaDireccionDto(
     val texto: String = "",
+    /**
+     * La calle, el barrio y la ciudad: lo que separa esta opción de las
+     * demás con el mismo nombre. Sin esto la lista mostraba cinco "Jose
+     * Olaya" iguales y no había forma de elegir.
+     */
+    val detalle: String = "",
+    /** "Supermercado", "Paradero"… vacío en una calle común. */
+    val categoria: String = "",
     val lat: Double = 0.0,
     val lng: Double = 0.0,
 )
