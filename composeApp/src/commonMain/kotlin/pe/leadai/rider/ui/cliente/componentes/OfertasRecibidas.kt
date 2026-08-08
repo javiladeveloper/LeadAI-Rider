@@ -191,49 +191,18 @@ private fun CardOferta(
 }
 
 /**
- * Mientras nadie ofertó.
+ * Mientras nadie ofertó: NADA.
  *
- * Ofrece SUBIR el precio en vez de solo hacer esperar: si en Tacna nadie toma
- * la carrera, casi siempre es porque el monto quedó corto. Una pantalla que
- * solo dice "buscando" deja al cliente sin saber qué hacer.
+ * Antes había una card blanca con "Buscando motorizado…" y el aviso del
+ * monto, y tapaba el radar entero — que es justo lo que hay que mirar
+ * mientras se espera. El título ya está arriba de la pantalla y el aviso del
+ * precio se movió junto al flete, donde el cliente ya está leyendo cuánto
+ * ofreció.
  */
 @Composable
 private fun SinOfertasTodavia(montoOfrecido: Long, onSubirMonto: () -> Unit) {
-    val colores = ColoresJala.actuales
-
-    CardJala(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            "🔍 Buscando motorizado…",
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(8.dp))
-        Text(
-            "Ofreciste " + centavosASoles(montoOfrecido) +
-                ". Si nadie responde, puede que sea poco para la distancia.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = colores.tintaSecundaria,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(16.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .background(colores.esperaFondo, RoundedCornerShape(16.dp))
-                .clickable { onSubirMonto() },
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                "SUBIR MI OFERTA",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-        }
-    }
+    // Sin card: el radar se ve completo. Lo que había acá vive ahora en la
+    // card del viaje y en el botón de al lado de "Cancelar".
 }
 
 /**

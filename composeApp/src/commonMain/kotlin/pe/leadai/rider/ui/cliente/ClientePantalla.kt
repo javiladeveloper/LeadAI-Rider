@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -500,13 +501,18 @@ private fun SeguimientoCarrera(
                     lng = carrera.origenLng,
                     modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                 )
-                // Las ofertas ABAJO y sin ocupar toda la altura: con
-                // `fillMaxSize` la card blanca de "buscando…" tapaba el radar
-                // entero y se veía un rectángulo en blanco.
+                // Las ofertas ABAJO, flotando sobre el radar. Solo del alto
+                // que necesitan: con `fillMaxSize` la card blanca tapaba el
+                // mapa entero.
+                //
+                // `heightIn(max=…)` para que diez ofertas no coman toda la
+                // pantalla — a partir de ahí scrollean entre ellas y el radar
+                // sigue viéndose arriba.
                 Column(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
+                        .heightIn(max = 320.dp)
                         .verticalScroll(rememberScrollState())
                         .padding(horizontal = 16.dp, vertical = 16.dp),
                 ) {
@@ -522,6 +528,8 @@ private fun SeguimientoCarrera(
         }
 
         // Datos del viaje. El flete y la compra, en LÍNEAS SEPARADAS.
+        // (el aviso del monto y "subir oferta" viven acá abajo, junto a
+        // Cancelar: agrupados donde el cliente decide, no encima del radar)
         Card(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             shape = RoundedCornerShape(16.dp),
@@ -549,6 +557,16 @@ private fun SeguimientoCarrera(
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
+                // El aviso del precio va ACÁ, pegado al flete: es donde el
+                // cliente ya está mirando cuánto ofreció. Antes vivía en una
+                // card aparte que tapaba el radar.
+                if (!enCamino) {
+                    Text(
+                        "Si nadie responde, puede que sea poco para la distancia.",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = ColoresJala.actuales.tintaSecundaria,
+                    )
+                }
                 // LA COMPRA: plata que el rider ADELANTÓ y hay que devolverle,
                 // en ámbar y en su propia línea. Jamás sumada al flete — un
                 // "total" de S/68 escondería que el servicio cuesta S/8.
@@ -579,7 +597,31 @@ private fun SeguimientoCarrera(
             DatosDelRider(carrera)
         } else {
             // Solo mientras nadie la tomó: después ya salió a buscarlo.
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(8.dp))
+
+            // SUBIR MI OFERTA arriba de Cancelar: las dos salidas que tiene
+            // el cliente si nadie responde, juntas y en orden — primero la
+            // que resuelve, después la que abandona.
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .height(48.dp)
+                    .background(
+                        ColoresJala.actuales.esperaFondo,
+                        RoundedCornerShape(16.dp),
+                    )
+                    .clickable { onSubirMonto() },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    "SUBIR MI OFERTA",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+            Spacer(Modifier.height(8.dp))
+
             OutlinedButton(
                 onClick = onCancelar,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(48.dp),
