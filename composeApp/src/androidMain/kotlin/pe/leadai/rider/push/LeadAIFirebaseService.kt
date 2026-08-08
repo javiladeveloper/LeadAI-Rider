@@ -30,6 +30,9 @@ const val CANAL_NOTIFICACIONES_PEDIDOS = "pedidos"
  */
 const val CANAL_LLEGADA = "llegada"
 
+/** Marca que la app se abrió tocando una notificación, no desde el ícono. */
+const val EXTRA_DESDE_NOTIFICACION = "desde_notificacion"
+
 /**
  * Servicio FCM: recibe tokens nuevos y mensajes push. Registrado en
  * `AndroidManifest.xml` con el intent-filter `MESSAGING_EVENT`.
@@ -87,6 +90,13 @@ class LeadAIFirebaseService : FirebaseMessagingService(), KoinComponent {
     private fun mostrarNotificacion(titulo: String, cuerpo: String, hito: String?) {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            // Marca de que se entró TOCANDO una notificación.
+            //
+            // El rider vino a atender algo concreto —una carrera nueva, el
+            // cliente que llegó— y meterle un diálogo de actualización encima
+            // le tapa justo eso. El aviso se guarda para cuando abra la app
+            // por su cuenta.
+            putExtra(EXTRA_DESDE_NOTIFICACION, true)
         }
         val pendingIntent = PendingIntent.getActivity(
             this,

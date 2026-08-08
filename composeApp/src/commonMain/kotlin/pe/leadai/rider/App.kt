@@ -13,6 +13,7 @@ import org.koin.compose.koinInject
 import pe.leadai.rider.datos.ChequeoVersion
 import pe.leadai.rider.datos.TemaRepositorio
 import pe.leadai.rider.datos.VersionApi
+import pe.leadai.rider.ui.comunes.AberturaApp
 import pe.leadai.rider.ui.comunes.DialogoActualizacion
 import pe.leadai.rider.ui.navegacion.NavegacionRaiz
 import pe.leadai.rider.ui.tema.JalaTheme
@@ -52,6 +53,10 @@ private fun AvisoDeActualizacion() {
     var descartado by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
+        // Si entró tocando una notificación NO se chequea: vino a atender algo
+        // concreto y el diálogo le tapa justo eso. Se avisa la próxima vez que
+        // abra la app por su cuenta.
+        if (AberturaApp.desdeNotificacion) return@LaunchedEffect
         // Silencioso: sin red no hay aviso, y está bien — molestar con un
         // diálogo por un problema de conexión es peor que no avisar.
         chequeo = versionApi.chequear()

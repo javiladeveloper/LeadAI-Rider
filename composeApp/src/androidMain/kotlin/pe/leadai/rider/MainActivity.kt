@@ -2,6 +2,8 @@ package pe.leadai.rider
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import pe.leadai.rider.push.EXTRA_DESDE_NOTIFICACION
+import pe.leadai.rider.ui.comunes.AberturaApp
 import androidx.activity.compose.setContent
 import pe.leadai.rider.datos.ContextoActividad
 
@@ -24,6 +26,12 @@ class MainActivity : ComponentActivity() {
         // Context de la Activity para dibujar el selector de cuentas — ver
         // ContextoActividad.kt.
         ContextoActividad.activity = this
+        // De dónde vino esta apertura: si el rider tocó una notificación,
+        // viene a atender algo concreto y el diálogo de actualización le tapa
+        // justo eso.
+        AberturaApp.desdeNotificacion =
+            intent?.getBooleanExtra(EXTRA_DESDE_NOTIFICACION, false) == true
+
         setContent {
             App()
         }

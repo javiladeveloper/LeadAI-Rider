@@ -215,10 +215,19 @@ fun CarrerasPantalla(
             delay(ESPERA_REINTENTO_SERVICIO_MS)
         }
     }
-    // Si el rider sale de la pantalla (cerrar sesión, cambiar de modo) el
-    // service no debe quedar huérfano reportando para siempre.
+    // Al salir de la pantalla se corta el GPS SOLO si no quedó nada activo.
+    //
+    // Antes se detenía siempre, y cambiar a modo cliente destruye la pila de
+    // navegación entera: el rider seguía "en turno" en el backend pero su moto
+    // dejaba de reportar, así que desaparecía del radar sin enterarse.
+    //
+    // En turno o con carrera en curso el service sigue: es exactamente el caso
+    // para el que existe —seguir reportando cuando la pantalla no está—.
     DisposableEffect(Unit) {
-        onDispose { detenerServicioCarrera() }
+        onDispose {
+            val sigueTrabajando = estado.miCarrera != null || estado.perfil?.disponible == true
+            if (!sigueTrabajando) detenerServicioCarrera()
+        }
     }
 
     val snackbarHostState = remember { SnackbarHostState() }
