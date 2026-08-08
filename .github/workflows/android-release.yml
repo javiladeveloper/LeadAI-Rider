@@ -138,7 +138,17 @@ jobs:
             echo "::error::Falta ADMIN_API_KEY — sin él las apps instaladas no se enteran de la actualización."
             exit 1
           fi
-          VC=$(( ${{ github.run_number }} + 10 ))   # mismo cálculo que build.gradle.kts
+          # El OFFSET se LEE de build.gradle.kts en vez de repetirlo acá: con
+          # el número escrito a mano en dos lados, cambiar uno y olvidar el
+          # otro anuncia una versión que no existe y el aviso nunca aparece.
+          # sed y no `grep -P`: en algunos locales el modo Perl no está
+          # disponible y devuelve vacío en silencio.
+          OFFSET=$(sed -n 's/^val VERSION_CODE_OFFSET = \([0-9]*\).*/\1/p' composeApp/build.gradle.kts)
+          if [ -z "$OFFSET" ]; then
+            echo "::error::No pude leer VERSION_CODE_OFFSET de build.gradle.kts"
+            exit 1
+          fi
+          VC=$(( ${{ github.run_number }} + OFFSET ))
           # El nombre sale del TAG (interna-v0.1.6 → 0.1.6), igual que en
           # build.gradle.kts: así lo anunciado y lo compilado no divergen.
           VN="${GITHUB_REF_NAME##*-v}"

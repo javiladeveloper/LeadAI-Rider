@@ -79,12 +79,25 @@ aparte para que una plataforma no arrastre a la otra.
    > 2026-08-06 el AAB 19 estaba en Play pero el backend seguía anunciando 18, y
    > el celular no pedía actualizar por más que se cerrara y abriera la app.
 
-## Publicar a mano (cuando Actions no dispara)
+## Por qué los releases se venían haciendo a mano (resuelto 2026-08-08)
 
-Pasó el 2026-08-06: los tags v0.5.0 a v0.6.1 se empujaron y **ninguno** lanzó
-una corrida. El workflow figuraba `active` y los tags apuntaban al commit
-correcto. Sospecha principal: minutos de Actions agotados
-([Settings → Billing](https://github.com/settings/billing)).
+El CI **sí disparaba y sí compilaba**: moría al SUBIR, con
+`Google Api Error: Invalid request - Version code 19 has already been used`.
+
+La causa era el `VERSION_CODE_OFFSET`, que estaba en 10 con el `run_number` en
+9: el CI proponía 19, un código que Play ya tenía. Cada build manual lo empeoró
+—Play llegó al 65— dejando al CI cada vez más abajo.
+
+Ahora el OFFSET está en **200**, muy por encima, y el workflow lo LEE de
+`build.gradle.kts` en vez de repetirlo. Con el número a mano en dos lados,
+cambiar uno y olvidar el otro anuncia una versión que no existe y el aviso de
+actualizar nunca aparece.
+
+> **Si vuelve a fallar por versionCode duplicado:** mirá el mayor de Play
+> Console (incluidas las descartadas) y subí el OFFSET por encima. Es UN
+> número, en `composeApp/build.gradle.kts`.
+
+## Publicar a mano (solo si el CI está caído de verdad)
 
 `gh workflow run` no es alternativa desde esta cuenta: devuelve
 `HTTP 403: Must have admin rights`.

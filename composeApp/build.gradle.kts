@@ -17,9 +17,19 @@ if (tieneGoogleServicesJson) {
 
 // versionCode: en CI sale de GITHUB_RUN_NUMBER + OFFSET, así nunca hay que
 // acordarse de subirlo a mano ni choca con Play (que rechaza duplicados).
-// El OFFSET supera el último subido a mano (5), para que el primer build
-// automático empiece por encima. BASE es el valor de los builds locales.
-val VERSION_CODE_OFFSET = 10
+//
+// El OFFSET tiene que superar SIEMPRE al mayor versionCode que ya vio Play.
+// Estaba en 10 con el run_number en 9, o sea que el CI proponía 19 — un
+// código ya usado, y Play lo rechazaba con "Version code 19 has already been
+// used". Ese es el motivo real de que los últimos releases se hayan hecho a
+// mano: el CI compilaba bien y moría al subir.
+//
+// Ahora en 200, muy por encima del 65 que llegó a Play con los builds
+// manuales. El margen es a propósito: si algún día vuelve a subirse algo a
+// mano, el CI sigue ganando sin tener que tocar esto de nuevo.
+val VERSION_CODE_OFFSET = 200
+// Los builds LOCALES (sin GITHUB_RUN_NUMBER) usan esto. Queda bajo a
+// propósito: un AAB local no debería poder pisar lo que publica el CI.
 val VERSION_CODE_BASE = 5
 
 /**
