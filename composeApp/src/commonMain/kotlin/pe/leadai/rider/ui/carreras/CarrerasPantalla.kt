@@ -37,8 +37,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import pe.leadai.rider.datos.Rutas
+import pe.leadai.rider.ui.comunes.MapaQueSeMide
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
@@ -98,7 +99,6 @@ import pe.leadai.rider.ui.tema.centavosASoles
 private const val INTERVALO_POLLING_MS = 3_000L
 
 /** Base del mapa embebido — el mismo host de `ApiCliente` (default de prod). */
-private const val URL_BASE_TRACKING = "https://api.leadai-pe.com"
 
 /**
  * Cada cuánto se reintenta arrancar el servicio de GPS mientras falta el
@@ -350,8 +350,7 @@ fun CarrerasPantalla(
                                 onRecargar = { eligiendoPaquete = true },
                                 onElegirPaquete = { paqueteId ->
                                     val token = sesion?.token.orEmpty()
-                                    urlDePago =
-                                        "$URL_BASE_TRACKING/pago/rider?token=$token&paquete=$paqueteId"
+                                    urlDePago = Rutas.pagoRider(token, paqueteId)
                                 },
                             )
                             SeccionRider.PERFIL -> PerfilPantalla(
@@ -392,7 +391,7 @@ fun CarrerasPantalla(
                 // Culqi que tokeniza la tarjeta). El token va en la URL porque
                 // el WebView no comparte la sesión de la app.
                 val token = sesion?.token.orEmpty()
-                urlDePago = "$URL_BASE_TRACKING/pago/rider?token=$token&paquete=$paqueteId"
+                urlDePago = Rutas.pagoRider(token, paqueteId)
             },
             onCancelar = { eligiendoPaquete = false },
         )
@@ -484,22 +483,13 @@ private fun ContenidoRider(
         // El WebView reporta un viewport que NO coincide con su tamaño, así que
         // `100vh` allá adentro daba un mapa cuadrado y chico. Se mide acá y
         // viaja en la URL — mismo arreglo que ya tenían los otros mapas.
-        var altoMapa by remember { mutableStateOf(0) }
-        val densidad = LocalDensity.current
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .onSizeChanged { altoMapa = with(densidad) { it.height.toDp() }.value.toInt() },
-        ) {
-            // Hasta saber cuánto mide no se carga: con alto 0 la página se
-            // dibuja mal y habría que recargarla igual.
-            if (altoMapa > 0) {
-                MapaEmbebido(
-                    url = "$URL_BASE_TRACKING/track/${miCarrera.pedidoId}" +
-                        "?embebido=1&alto=$altoMapa",
-                    modifier = Modifier.fillMaxSize(),
-                )
-            }
+        Box(modifier = Modifier.fillMaxSize()) {
+            // A sangre completa: sin redondeo, que el mapa toque los bordes.
+            MapaQueSeMide(
+                url = { alto -> Rutas.Mapas.tracking(miCarrera.pedidoId, alto) },
+                modifier = Modifier.fillMaxSize(),
+                redondeado = false,
+            )
 
             // Cuánto gana, flotando arriba a la derecha.
             ChipMontoSobreMapa(

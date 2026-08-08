@@ -10,15 +10,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import pe.leadai.rider.datos.Rutas
+import pe.leadai.rider.ui.comunes.MapaQueSeMide
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import pe.leadai.rider.ui.comunes.MapaEmbebido
-
-/** El radar vive en el backend, como el resto de los mapas. */
-private const val URL_RADAR = "https://api.leadai-pe.com/mapa/radar"
 
 /**
  * El radar mientras se busca motorizado: un pulso que crece y va revelando
@@ -51,25 +49,9 @@ fun RadarMotos(
     //
     // El WebView no puede deducirlo solo: reporta un viewport que no coincide
     // con su tamaño (medido: body=0, ventana=160 en un contenedor de 549).
-    var altoDp by remember { mutableStateOf(0) }
-    val densidad = LocalDensity.current
-
-    // Fondo carbón detrás del WebView: si el mapa no carga se ve oscuro y no
-    // blanco, que es la señal de que ALGO está ahí. Un hueco del color del
-    // fondo de la app es indistinguible de "no se dibujó nada".
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .background(ColoresJala.actuales.marcaCarbon)
-            .onSizeChanged { altoDp = with(densidad) { it.height.toDp() }.value.toInt() },
-    ) {
-        // Sin el alto todavía no se carga: la página se dibujaría contra cero y
-        // habría que recargarla igual apenas se conozca el tamaño.
-        if (altoDp > 0) {
-            MapaEmbebido(
-                url = "$URL_RADAR?lat=$lat&lng=$lng&alto=$altoDp",
-                modifier = Modifier.fillMaxSize(),
-            )
-        }
-    }
+    // El alto lo mide el componente, que ademas pone el fondo y el redondeo.
+    MapaQueSeMide(
+        url = { alto -> Rutas.Mapas.radar(lat, lng, alto) },
+        modifier = modifier,
+    )
 }

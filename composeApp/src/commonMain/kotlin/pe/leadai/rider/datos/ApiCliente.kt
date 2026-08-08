@@ -36,7 +36,7 @@ const val MENSAJE_ERROR_GENERICO = "Ocurrió un error. Intenta de nuevo."
  * Darwin en iOS) vía dependencia de `androidMain`/`iosMain`.
  */
 class ApiCliente(
-    baseUrl: String = "https://api.leadai-pe.com",
+    baseUrl: String = Rutas.BASE,
     private val sesion: SesionRepositorio,
     engine: HttpClientEngine? = null,
 ) {

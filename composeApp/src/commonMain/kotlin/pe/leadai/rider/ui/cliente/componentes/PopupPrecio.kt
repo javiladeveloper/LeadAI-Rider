@@ -40,8 +40,6 @@ import pe.leadai.rider.ui.tema.centavosASoles
  * pasa de largo el precio que quería; con saltos de 10 céntimos necesita diez
  * toques para mover un sol.
  */
-/** La página del mini mapa vive en el backend, como la del tracking. */
-private const val URL_MAPA_PUNTO = "https://api.leadai-pe.com/mapa/punto"
 
 private const val PASO_CENTAVOS = 50L
 

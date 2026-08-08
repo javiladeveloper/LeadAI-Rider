@@ -6,13 +6,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import pe.leadai.rider.datos.Rutas
+import pe.leadai.rider.ui.comunes.MapaQueSeMide
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import pe.leadai.rider.ui.comunes.MapaEmbebido
-
-/** La página del recorrido vive en el backend, como la del tracking. */
-private const val URL_MAPA_RUTA = "https://api.leadai-pe.com/mapa/ruta"
 
 /** Alto del mapa, en dp. Se le pasa a la página para que no tenga que medir. */
 private const val ALTO_MAPA = 180
@@ -39,28 +38,12 @@ fun MapaDeLaRuta(
 ) {
     if (origenLat == null || origenLng == null || destinoLat == null || destinoLng == null) return
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            // Alto suficiente para leer el recorrido sin comerse el formulario:
-            // más grande empuja el botón de pedir fuera de la pantalla.
-            // Alto FIJO, y además se le manda a la página por la URL: el
-            // WebView reporta un viewport que no coincide con su tamaño real
-            // (medido: body=0, ventana=160 dentro de un contenedor de 549),
-            // así que ni 100%, ni 100dvh, ni el inset absoluto sirven. Con el
-            // alto explícito la página no tiene que adivinar.
-            .height(ALTO_MAPA.dp)
-            .clip(RoundedCornerShape(16.dp)),
-    ) {
-        MapaEmbebido(
-            url = "$URL_MAPA_RUTA?oLat=$origenLat&oLng=$origenLng" +
-                "&dLat=$destinoLat&dLng=$destinoLng&alto=$ALTO_MAPA",
-            // fillMaxSIZE, no fillMaxWidth: adentro el WebView usa
-            // `fillMaxSize()`, y dentro de un modifier que solo fija el ancho
-            // eso resuelve a CERO de alto. El WebView existía y cargaba la
-            // página —el cache lo confirma— pero medía 0 px, así que se veía
-            // un hueco vacío. Ese era el "mapa en blanco".
-            modifier = Modifier.fillMaxSize(),
-        )
-    }
+    // 180dp: suficiente para leer el recorrido sin comerse el formulario
+    // —mas grande empuja el boton de pedir fuera de la pantalla—.
+    MapaQueSeMide(
+        url = { alto ->
+            Rutas.Mapas.ruta(origenLat, origenLng, destinoLat, destinoLng, alto)
+        },
+        modifier = modifier.fillMaxWidth().height(ALTO_MAPA.dp),
+    )
 }

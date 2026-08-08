@@ -42,8 +42,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import pe.leadai.rider.datos.Rutas
+import pe.leadai.rider.ui.comunes.MapaQueSeMide
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalUriHandler
@@ -88,7 +89,6 @@ import pe.leadai.rider.ui.tema.epochMsDesdeIso
 private const val INTERVALO_POLLING_MS = 10_000L
 
 /** Base del mapa embebido — el mismo host de `ApiCliente` (default de prod). */
-private const val URL_BASE_TRACKING = "https://api.leadai-pe.com"
 
 /**
  * Modo CLIENTE: pedir una moto y seguir el viaje.
@@ -521,26 +521,10 @@ private fun SeguimientoCarrera(
 
         if (enCamino) {
             // El MISMO mapa en vivo que usa el rider, a sangre completa.
-            // El alto real viaja en la URL: el WebView reporta un viewport
-            // que no coincide con su tamaño y el mapa salía cuadrado.
-            var altoVivo by remember { mutableStateOf(0) }
-            val densidadVivo = LocalDensity.current
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .onSizeChanged {
-                        altoVivo = with(densidadVivo) { it.height.toDp() }.value.toInt()
-                    },
-            ) {
-                if (altoVivo > 0) {
-                    MapaEmbebido(
-                        url = "$URL_BASE_TRACKING/track/${carrera.id}" +
-                            "?embebido=1&alto=$altoVivo",
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                }
-            }
+            MapaQueSeMide(
+                url = { alto -> Rutas.Mapas.tracking(carrera.id, alto) },
+                modifier = Modifier.fillMaxWidth().weight(1f),
+            )
             Spacer(Modifier.height(10.dp))
         } else {
             // El RADAR de fondo y las ofertas ENCIMA.
