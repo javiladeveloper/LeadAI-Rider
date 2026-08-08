@@ -40,7 +40,28 @@ val VERSION_CODE_BASE = 5
  *
  * En local (sin tag) queda el valor de respaldo.
  */
-val VERSION_NAME_LOCAL = "0.2.3"
+// El respaldo sale del ÚLTIMO TAG de git, no de un número escrito a mano.
+//
+// Escrito a mano se desincroniza igual que antes: el tag ya iba por 0.3.2 y
+// esto seguía diciendo 0.2.3, así que un APK de prueba mostraba una versión
+// que no era la que se estaba probando —justo cuando uno mira el pie de
+// pantalla para saber qué tiene instalado—.
+//
+// En el CI no se usa: ahí manda GITHUB_REF_NAME. Esto es solo para builds
+// locales, donde git siempre está a mano.
+val VERSION_NAME_LOCAL: String = try {
+    val p = ProcessBuilder("git", "describe", "--tags", "--abbrev=0")
+        .directory(rootDir)
+        .redirectErrorStream(true)
+        .start()
+    val salida = p.inputStream.bufferedReader().readText().trim()
+    p.waitFor()
+    salida.substringAfterLast("-v", "").ifBlank { "0.0.0" }
+} catch (e: Exception) {
+    // Sin git (o sin tags) el build no debe romperse por esto.
+    "0.0.0"
+}
+
 val versionNameDelTag: String =
     System.getenv("GITHUB_REF_NAME")
         ?.substringAfterLast("-v", "")
