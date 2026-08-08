@@ -1,5 +1,10 @@
 package pe.leadai.rider.ui.carreras.componentes
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.clickable
+import androidx.compose.material3.Switch
+import androidx.compose.runtime.getValue
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +45,9 @@ fun EncabezadoRider(
     monedero: MonederoDto?,
     onRecargar: () -> Unit,
     modifier: Modifier = Modifier,
+    /** Entrar o salir de turno. Sin esto no llegan avisos de carrera nueva. */
+    onCambiarTurno: (Boolean) -> Unit = {},
+    cambiandoTurno: Boolean = false,
 ) {
     val colores = ColoresJala.actuales
 
@@ -52,7 +60,19 @@ fun EncabezadoRider(
             color = MaterialTheme.colorScheme.onSurface,
         )
 
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(8.dp))
+
+        // EL INTERRUPTOR DE TURNO. Va arriba de todo y siempre visible porque
+        // determina si al rider le llegan avisos: el backend solo notifica a
+        // quien está disponible, y antes no había forma de encenderlo desde
+        // la app — ningún rider recibía nada.
+        InterruptorDeTurno(
+            enTurno = perfil.disponible,
+            cambiando = cambiandoTurno,
+            onCambiar = onCambiarTurno,
+        )
+
+        Spacer(Modifier.height(8.dp))
 
         // Ciudad · estado, separados por un punto — como en el diseño.
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -174,5 +194,66 @@ private fun CardSaldoAmarilla(
                 )
             }
         }
+    }
+}
+
+/**
+ * "En turno" / "Fuera de turno", con un punto de color.
+ *
+ * Verde cuando está trabajando y gris cuando no: el rider tiene que saber de
+ * un vistazo si le van a llegar carreras. Sin esta señal, uno que se olvidó
+ * de entrar en turno cree que no hay trabajo.
+ */
+@Composable
+private fun InterruptorDeTurno(
+    enTurno: Boolean,
+    cambiando: Boolean,
+    onCambiar: (Boolean) -> Unit,
+) {
+    val colores = ColoresJala.actuales
+    val fondo by animateColorAsState(
+        targetValue = if (enTurno) colores.exito.copy(alpha = 0.14f) else MaterialTheme.colorScheme.surfaceVariant,
+        animationSpec = tween(200),
+        label = "fondoTurno",
+    )
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(fondo, RoundedCornerShape(16.dp))
+            .clickable(enabled = !cambiando) { onCambiar(!enTurno) }
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(8.dp)
+                .background(
+                    if (enTurno) colores.exito else colores.tintaSecundaria,
+                    CircleShape,
+                ),
+        )
+        Spacer(Modifier.size(8.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                if (enTurno) "En turno" else "Fuera de turno",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+            Text(
+                if (enTurno) {
+                    "Te avisamos de las carreras nuevas"
+                } else {
+                    "Tocá para empezar a recibir carreras"
+                },
+                style = MaterialTheme.typography.labelSmall,
+                color = colores.tintaSecundaria,
+            )
+        }
+        Switch(
+            checked = enTurno,
+            onCheckedChange = { if (!cambiando) onCambiar(it) },
+            enabled = !cambiando,
+        )
     }
 }

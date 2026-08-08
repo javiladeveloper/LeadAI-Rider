@@ -40,6 +40,9 @@ import pe.leadai.rider.ui.tema.ColoresJala
 @Composable
 actual fun MapaEmbebido(url: String, modifier: Modifier) {
     var cargando by remember(url) { mutableStateOf(true) }
+    // Qué URL se mandó a cargar. NO se usa `webView.url` porque el WebView la
+    // normaliza y la comparación nunca coincide.
+    var urlCargada by remember { mutableStateOf<String?>(null) }
     val colores = ColoresJala.actuales
 
     Box(modifier = modifier) {
@@ -93,7 +96,13 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
             }
         },
         update = { webView ->
-            if (webView.url != url) {
+            // Se compara contra la ÚLTIMA URL PEDIDA, no contra `webView.url`:
+            // el WebView la normaliza (escapa caracteres, reordena
+            // parámetros), así que `webView.url != url` daba true para
+            // siempre. El mapa recargaba en bucle y se quedaba en blanco —
+            // que es justo lo que pasaba al elegir el destino.
+            if (urlCargada != url) {
+                urlCargada = url
                 cargando = true
                 webView.loadUrl(url)
             }

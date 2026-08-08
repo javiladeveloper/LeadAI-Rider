@@ -279,6 +279,14 @@ data class PerfilMotorizadoDto(
     val tipoVehiculo: String = "moto",
     /** DNI del rider (fila 16) — puede ser null en perfiles de antes del campo. */
     val dni: String? = null,
+    /**
+     * Si el rider está EN TURNO.
+     *
+     * El backend solo le manda el push de carrera nueva a quien lo tiene en
+     * `true`. Arranca en `false`, y como la app nunca lo cambiaba, ningún
+     * rider recibía avisos.
+     */
+    val disponible: Boolean = false,
     val estado: String,
     val creadoEn: String,
 )

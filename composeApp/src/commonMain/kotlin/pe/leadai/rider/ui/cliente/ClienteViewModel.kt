@@ -534,8 +534,15 @@ class ClienteViewModel(
                         calculandoPrecio = false,
                         montoSugerido = r.valor.montoSugerido,
                         kmEstimado = r.valor.kmEstimado,
-                        // Solo pre-llena si el usuario no escribió su monto.
-                        monto = if (it.monto.isBlank()) (r.valor.montoSugerido / 100).toString() else it.monto,
+                        // Solo pre-llena si el cliente todavía no eligió el
+                        // suyo. En CENTAVOS: `570 / 100` daba 5 y el popup
+                        // mostraba S/5.00 cuando lo sugerido era S/5.70.
+                        montoCentavos = it.montoCentavos ?: r.valor.montoSugerido,
+                        monto = if (it.monto.isBlank()) {
+                            (r.valor.montoSugerido / 100).toString()
+                        } else {
+                            it.monto
+                        },
                     )
                 }
                 // Sin cálculo el cliente igual tiene que poder pedir: se corta

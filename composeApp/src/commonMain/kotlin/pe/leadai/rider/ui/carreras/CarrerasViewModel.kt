@@ -35,6 +35,8 @@ data class CarrerasUiState(
     val historial: HistorialRiderResponseDto? = null,
     /** Monedero prepago: saldo y cuántas carreras le alcanzan (2026-07-24). */
     val monedero: MonederoDto? = null,
+    /** Cambiando el turno (deshabilita el interruptor mientras viaja). */
+    val cambiandoTurno: Boolean = false,
     /** Avisando al cliente que el rider llegó (deshabilita el botón). */
     val avisandoLlegada: Boolean = false,
     /**
@@ -276,6 +278,50 @@ class CarrerasViewModel(
      * "Ya recogí el pedido": cierra el tramo al LOCAL y arranca el del
      * cliente (2026-07-24). El mapa cambia de destino solo.
      */
+    /**
+     * Entrar o salir de turno.
+     *
+     * El backend solo le manda el push de "nueva carrera" a quien está
+     * disponible. La app nunca llamaba a este endpoint, así que el campo
+     * quedaba en `false` y NINGÚN rider recibía avisos — veía las carreras
+     * solo si abría la app y miraba.
+     *
+     * El estado se actualiza al toque y se revierte si falla: un interruptor
+     * que tarda en responder se toca dos veces.
+     */
+    fun cambiarTurno(disponible: Boolean) {
+        if (_estado.value.cambiandoTurno) return
+        val perfil = _estado.value.perfil ?: return
+        _estado.update {
+            it.copy(cambiandoTurno = true, perfil = perfil.copy(disponible = disponible))
+        }
+        viewModelScope.launch(dispatcher) {
+            when (motorizadosApi.cambiarDisponibilidad(disponible)) {
+                is Resultado.Ok -> {
+                    _estado.update { it.copy(cambiandoTurno = false) }
+                    avisos.mostrar(
+                        if (disponible) {
+                            "🟢 Estás en turno — te avisamos de las carreras nuevas"
+                        } else {
+                            "⏸️ Fuera de turno. No te llegarán avisos."
+                        },
+                    )
+                }
+                is Resultado.Error -> {
+                    // Se revierte: mostrar "en turno" cuando el backend no se
+                    // enteró haría que el rider espere avisos que no llegan.
+                    _estado.update {
+                        it.copy(
+                            cambiandoTurno = false,
+                            perfil = perfil.copy(disponible = !disponible),
+                        )
+                    }
+                    avisos.mostrar("No se pudo cambiar tu turno. Intentá de nuevo.")
+                }
+            }
+        }
+    }
+
     /**
      * "Llegué": le avisa al cliente que salga.
      *

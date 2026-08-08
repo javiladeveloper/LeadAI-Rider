@@ -425,9 +425,14 @@ private fun BotonTipo(
             .height(56.dp)
             .toqueVivo(interaccion)
             .background(fondo, RoundedCornerShape(16.dp))
+            // Contorno GRUESO en ámbar cuando está elegido, y fino y gris
+            // cuando no. La negrita sola no alcanza: alguien con la vista
+            // cansada no distingue dos pesos de letra, pero sí un borde de
+            // 3dp de otro color. El contorno acompaña al fondo en vez de
+            // desaparecer, así el elegido se lee por DOS señales.
             .border(
-                width = if (elegido) 0.dp else 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant,
+                width = if (elegido) 3.dp else 1.dp,
+                color = if (elegido) colores.marcaCarbon else MaterialTheme.colorScheme.outlineVariant,
                 shape = RoundedCornerShape(16.dp),
             )
             .clickable(interactionSource = interaccion, indication = null) { onClick() },

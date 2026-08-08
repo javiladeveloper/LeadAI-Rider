@@ -79,6 +79,24 @@ class MotorizadosApi(private val api: ApiCliente) {
             requiereSesion = true,
         )
 
+    /**
+     * `POST /motorizados/disponibilidad {disponible}` — si el rider está EN
+     * TURNO.
+     *
+     * El backend solo le manda el push de "nueva carrera" a quien está
+     * disponible: avisarle a alguien que ya terminó su jornada es ruido, y el
+     * push es justo lo que no puede ignorar.
+     *
+     * La app NUNCA llamaba a esto, así que el campo quedaba en `false` (su
+     * valor por defecto) y NINGÚN rider recibía avisos de carreras nuevas.
+     */
+    suspend fun cambiarDisponibilidad(disponible: Boolean): Resultado<AvanzarEstadoResponseDto> =
+        api.post<JsonObject, AvanzarEstadoResponseDto>(
+            path = "/motorizados/disponibilidad",
+            body = buildJsonObject { put("disponible", disponible) },
+            requiereSesion = true,
+        )
+
     /** `GET /motorizados/carreras` (POOL v0): disponibles de la zona + la carrera en curso del rider. */
     suspend fun carreras(): Resultado<CarrerasResponseDto> =
         api.get("/motorizados/carreras")

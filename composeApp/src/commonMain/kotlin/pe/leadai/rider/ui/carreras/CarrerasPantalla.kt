@@ -260,6 +260,8 @@ fun CarrerasPantalla(
                             onLlegue = viewModel::avisarQueLlegue,
                             avisandoLlegada = estado.avisandoLlegada,
                             yaAvisoLlegada = estado.avisoDeLlegada,
+                            onCambiarTurno = viewModel::cambiarTurno,
+                            cambiandoTurno = estado.cambiandoTurno,
                             onCancelarCarrera = { confirmandoCancelar = true },
                             onRecargar = { eligiendoPaquete = true },
                             onCambiarDistrito = alCambiarDistrito,
@@ -287,6 +289,8 @@ fun CarrerasPantalla(
                                 onLlegue = viewModel::avisarQueLlegue,
                                 avisandoLlegada = estado.avisandoLlegada,
                                 yaAvisoLlegada = estado.avisoDeLlegada,
+                                onCambiarTurno = viewModel::cambiarTurno,
+                                cambiandoTurno = estado.cambiandoTurno,
                                 onCancelarCarrera = { confirmandoCancelar = true },
                                 onRecargar = { eligiendoPaquete = true },
                                 onCambiarDistrito = alCambiarDistrito,
@@ -411,6 +415,8 @@ private fun ContenidoRider(
     onLlegue: () -> Unit,
     avisandoLlegada: Boolean,
     yaAvisoLlegada: Boolean,
+    onCambiarTurno: (Boolean) -> Unit,
+    cambiandoTurno: Boolean,
     onRecogido: () -> Unit,
     onCancelarCarrera: () -> Unit,
     onRecargar: () -> Unit,
@@ -472,6 +478,8 @@ private fun ContenidoRider(
                 perfil = perfil,
                 monedero = monedero,
                 onRecargar = onRecargar,
+                onCambiarTurno = onCambiarTurno,
+                cambiandoTurno = cambiandoTurno,
             )
         }
 
