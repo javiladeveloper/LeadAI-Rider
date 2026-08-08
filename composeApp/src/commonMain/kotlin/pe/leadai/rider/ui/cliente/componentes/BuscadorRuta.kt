@@ -26,6 +26,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import pe.leadai.rider.datos.SugerenciaDireccionDto
+import pe.leadai.rider.ui.cliente.TIPO_DELIVERY
+import pe.leadai.rider.ui.cliente.TIPO_ENCOMIENDA
+import pe.leadai.rider.ui.cliente.TIPO_PASAJERO
 import pe.leadai.rider.ui.comunes.CardJala
 import pe.leadai.rider.ui.tema.AparecerFila
 import pe.leadai.rider.ui.tema.ColoresJala
@@ -54,27 +57,52 @@ fun BuscadorRuta(
     onElegirSugerencia: (SugerenciaDireccionDto) -> Unit,
     onUsarMiUbicacion: () -> Unit,
     modifier: Modifier = Modifier,
+    /** Qué está pidiendo: cambia las etiquetas y si el GPS sirve de origen. */
+    tipo: String = TIPO_PASAJERO,
 ) {
     val colores = ColoresJala.actuales
+
+    // Cada servicio pregunta lo SUYO.
+    //
+    // Los tres decían "¿Desde dónde?" y "¿A dónde vamos?", y en un delivery
+    // eso no significa nada: el cliente no va a ningún lado — el rider recoge
+    // el pedido en el local y se lo trae a su casa. Con las mismas palabras
+    // para todo, los tres servicios se sentían el mismo formulario.
+    val etiquetaOrigen = when (tipo) {
+        TIPO_DELIVERY -> "¿De qué local lo recogemos?"
+        TIPO_ENCOMIENDA -> "¿Dónde recogemos el paquete?"
+        else -> "¿Desde dónde?"
+    }
+    val etiquetaDestino = when (tipo) {
+        TIPO_DELIVERY -> "¿Dónde te lo llevamos?"
+        TIPO_ENCOMIENDA -> "¿Dónde lo entregamos?"
+        else -> "¿A dónde vamos?"
+    }
+    // El GPS como origen SOLO en pasajero: en delivery y envío el origen es el
+    // local o la casa de quien manda el paquete, no donde está parado el
+    // cliente. Ofrecer "mi ubicación" ahí manda al rider al lugar equivocado.
+    val gpsSirveDeOrigen = tipo == TIPO_PASAJERO
 
     Column(modifier = modifier.fillMaxWidth()) {
         CardJala(modifier = Modifier.fillMaxWidth()) {
             FilaDireccion(
                 colorPunto = colores.exito,
                 valor = origen,
-                placeholder = "¿Desde dónde?",
+                placeholder = etiquetaOrigen,
                 activo = editandoOrigen,
                 onCambio = onOrigenCambia,
                 onFoco = { onFoco(true) },
                 // El GPS solo en el ORIGEN: el destino casi nunca es donde
                 // uno está parado.
                 accion = {
-                    Text(
-                        "◎",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = colores.exito,
-                        modifier = Modifier.clickable { onUsarMiUbicacion() }.padding(8.dp),
-                    )
+                    if (gpsSirveDeOrigen) {
+                        Text(
+                            "◎",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = colores.exito,
+                            modifier = Modifier.clickable { onUsarMiUbicacion() }.padding(8.dp),
+                        )
+                    }
                 },
             )
 
@@ -85,7 +113,7 @@ fun BuscadorRuta(
             FilaDireccion(
                 colorPunto = colores.calor,
                 valor = destino,
-                placeholder = "¿A dónde vamos?",
+                placeholder = etiquetaDestino,
                 activo = !editandoOrigen,
                 onCambio = onDestinoCambia,
                 onFoco = { onFoco(false) },

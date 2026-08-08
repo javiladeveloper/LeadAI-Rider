@@ -38,6 +38,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -84,7 +86,16 @@ import pe.leadai.rider.ui.tema.centavosASoles
  * ahorro de batería—. Quince segundos mirando una lista vacía se sienten
  * como que la app no anda.
  */
-private const val INTERVALO_POLLING_MS = 8_000L
+// Cada cuánto el rider vuelve a preguntar por carreras nuevas.
+//
+// Eran 8 segundos y se notaba feo: el push entra al instante, así que el
+// rider leía "nueva carrera" en la barra y al abrir la app la lista todavía
+// estaba vacía varios segundos. Parecía que la app iba atrasada respecto de
+// su propio aviso.
+//
+// 3 segundos es lo que tarda en sentirse inmediato sin castigar la batería;
+// además el push ahora fuerza un refresco, así que esto es solo la red.
+private const val INTERVALO_POLLING_MS = 3_000L
 
 /** Base del mapa embebido — el mismo host de `ApiCliente` (default de prod). */
 private const val URL_BASE_TRACKING = "https://api.leadai-pe.com"
@@ -179,6 +190,13 @@ fun CarrerasPantalla(
         viewModel.cargar()
         while (isActive) {
             delay(INTERVALO_POLLING_MS)
+            viewModel.refrescarCarreras()
+        }
+    }
+
+    // El push no espera al polling: en cuanto entra el aviso, se refresca.
+    LaunchedEffect(Unit) {
+        pe.leadai.rider.ui.comunes.AvisoPush.avisos.collect {
             viewModel.refrescarCarreras()
         }
     }
@@ -461,11 +479,27 @@ private fun ContenidoRider(
         val telefonoCliente = telefonoDeContacto(miCarrera.clienteContacto)
         val abridor = LocalUriHandler.current
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            MapaEmbebido(
-                url = "$URL_BASE_TRACKING/track/${miCarrera.pedidoId}?embebido=1",
-                modifier = Modifier.fillMaxSize(),
-            )
+        // El alto REAL del mapa, para mandárselo a la página.
+        //
+        // El WebView reporta un viewport que NO coincide con su tamaño, así que
+        // `100vh` allá adentro daba un mapa cuadrado y chico. Se mide acá y
+        // viaja en la URL — mismo arreglo que ya tenían los otros mapas.
+        var altoMapa by remember { mutableStateOf(0) }
+        val densidad = LocalDensity.current
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .onSizeChanged { altoMapa = with(densidad) { it.height.toDp() }.value.toInt() },
+        ) {
+            // Hasta saber cuánto mide no se carga: con alto 0 la página se
+            // dibuja mal y habría que recargarla igual.
+            if (altoMapa > 0) {
+                MapaEmbebido(
+                    url = "$URL_BASE_TRACKING/track/${miCarrera.pedidoId}" +
+                        "?embebido=1&alto=$altoMapa",
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
 
             // Cuánto gana, flotando arriba a la derecha.
             ChipMontoSobreMapa(

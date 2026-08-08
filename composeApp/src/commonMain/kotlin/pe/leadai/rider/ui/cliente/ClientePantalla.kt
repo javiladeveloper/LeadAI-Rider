@@ -42,6 +42,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalUriHandler
@@ -119,6 +121,15 @@ fun ClientePantalla(
             viewModel.refrescarOfertas()
             // Cuántas motos hay alrededor, para el estado de la búsqueda.
             viewModel.refrescarMotosCerca()
+        }
+    }
+    // "Tu moto llegó" tiene que verse APENAS entra el push: el cliente está
+    // mirando la pantalla esperando justo eso, y esperar al polling lo dejaba
+    // viendo "va en camino" con el rider ya en la puerta.
+    LaunchedEffect(Unit) {
+        pe.leadai.rider.ui.comunes.AvisoPush.avisos.collect {
+            viewModel.refrescar()
+            viewModel.refrescarOfertas()
         }
     }
     LaunchedEffect(Unit) {
@@ -315,6 +326,7 @@ private fun FormularioPedir(
             onFoco = onFoco,
             onElegirSugerencia = onElegirSugerencia,
             onUsarMiUbicacion = onUsarMiUbicacion,
+            tipo = estado.tipo,
         )
 
         // El recorrido, apenas hay los dos pines: el cliente confirma que el
@@ -509,10 +521,26 @@ private fun SeguimientoCarrera(
 
         if (enCamino) {
             // El MISMO mapa en vivo que usa el rider, a sangre completa.
-            MapaEmbebido(
-                url = "$URL_BASE_TRACKING/track/${carrera.id}?embebido=1",
-                modifier = Modifier.fillMaxWidth().weight(1f),
-            )
+            // El alto real viaja en la URL: el WebView reporta un viewport
+            // que no coincide con su tamaño y el mapa salía cuadrado.
+            var altoVivo by remember { mutableStateOf(0) }
+            val densidadVivo = LocalDensity.current
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .onSizeChanged {
+                        altoVivo = with(densidadVivo) { it.height.toDp() }.value.toInt()
+                    },
+            ) {
+                if (altoVivo > 0) {
+                    MapaEmbebido(
+                        url = "$URL_BASE_TRACKING/track/${carrera.id}" +
+                            "?embebido=1&alto=$altoVivo",
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+            }
             Spacer(Modifier.height(10.dp))
         } else {
             // El RADAR de fondo y las ofertas ENCIMA.

@@ -64,6 +64,38 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
     }
     val colores = ColoresJala.actuales
 
+    // El WebView que está en pantalla, para poder pausarlo y reanudarlo.
+    val webViewActual = remember { mutableStateOf<WebView?>(null) }
+
+    // Volver de otra app tiene que revivir el mapa.
+    //
+    // Android pausa el WebView al irse a segundo plano y con él TODOS los
+    // timers de JavaScript. Sin esto, al volver el radar quedaba clavado en el
+    // último círculo y el `setInterval` que consulta las motos no corría más:
+    // el mapa se veía, pero muerto.
+    //
+    // `onResume()` sola no alcanza — `pauseTimers()` es global al proceso, así
+    // que también hay que llamar a `resumeTimers()`.
+    val dueño = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    androidx.compose.runtime.DisposableEffect(dueño) {
+        val observador = androidx.lifecycle.LifecycleEventObserver { _, evento ->
+            val w = webViewActual.value ?: return@LifecycleEventObserver
+            when (evento) {
+                androidx.lifecycle.Lifecycle.Event.ON_PAUSE -> {
+                    w.onPause()
+                    w.pauseTimers()
+                }
+                androidx.lifecycle.Lifecycle.Event.ON_RESUME -> {
+                    w.onResume()
+                    w.resumeTimers()
+                }
+                else -> Unit
+            }
+        }
+        dueño.lifecycle.addObserver(observador)
+        onDispose { dueño.lifecycle.removeObserver(observador) }
+    }
+
     Box(modifier = modifier) {
     AndroidView(
         modifier = Modifier.fillMaxSize(),
@@ -140,7 +172,15 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
                 android.util.Log.i("MapaWeb", "factory: cargando " + url)
                 urlCargada.value = url
                 loadUrl(url)
+                // Queda a mano para pausarlo/reanudarlo con el ciclo de vida.
+                webViewActual.value = this
             }
+        },
+        onRelease = { webView ->
+            // Sin esto la referencia sobrevive a la pantalla y el observador
+            // seguiría hablándole a un WebView ya destruido.
+            webViewActual.value = null
+            webView.destroy()
         },
         update = { webView ->
             // Se compara contra la ÚLTIMA URL PEDIDA, no contra `webView.url`:

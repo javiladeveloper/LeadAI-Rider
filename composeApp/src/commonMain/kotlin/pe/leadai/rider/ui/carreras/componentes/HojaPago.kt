@@ -15,6 +15,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -87,10 +94,25 @@ fun HojaPago(
                 }
             }
 
-            MapaEmbebido(
-                url = url,
-                modifier = Modifier.fillMaxWidth().weight(1f),
-            )
+            // El alto real, igual que los otros mapas: sin esto la página se
+            // dibuja contra un viewport que el WebView reporta mal.
+            var altoPago by remember { mutableStateOf(0) }
+            val densidadPago = LocalDensity.current
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .onSizeChanged {
+                        altoPago = with(densidadPago) { it.height.toDp() }.value.toInt()
+                    },
+            ) {
+                if (altoPago > 0) {
+                    MapaEmbebido(
+                        url = url + (if ('?' in url) "&" else "?") + "alto=" + altoPago,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+            }
 
             Spacer(Modifier.height(8.dp))
             Text(

@@ -291,8 +291,15 @@ class ClienteViewModel(
         }
     }
 
-    /** "Estoy acá": toma el GPS del teléfono como origen. Silencioso si no hay. */
+    /**
+     * "Estoy acá": toma el GPS del teléfono como origen. Silencioso si no hay.
+     *
+     * SOLO en pasajero. En delivery el origen es el local donde está el pollo,
+     * y en un envío es la casa de quien manda el paquete — poner ahí la
+     * ubicación del cliente manda al rider al lugar equivocado.
+     */
     fun usarMiUbicacion() {
+        if (_estado.value.tipo != TIPO_PASAJERO) return
         viewModelScope.launch(dispatcher) {
             val u = obtenerUbicacion() ?: return@launch
             _estado.update {

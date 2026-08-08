@@ -85,6 +85,9 @@ class LeadAIFirebaseService : FirebaseMessagingService(), KoinComponent {
         val cuerpo = message.notification?.body ?: message.data["cuerpo"] ?: "Hay una carrera nueva en tu zona"
 
         mostrarNotificacion(titulo, cuerpo, message.data["hito"])
+        // Que la pantalla abierta refresque YA, sin esperar al polling: si no,
+        // el aviso aparece en la barra antes que la carrera en la lista.
+        pe.leadai.rider.ui.comunes.AvisoPush.avisar(message.data["hito"])
     }
 
     private fun mostrarNotificacion(titulo: String, cuerpo: String, hito: String?) {
