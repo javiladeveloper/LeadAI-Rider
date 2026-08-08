@@ -14,6 +14,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,8 +50,27 @@ fun EstadoBusqueda(
     modifier: Modifier = Modifier,
 ) {
     val colores = ColoresJala.actuales
+
+    // El reloj corre SOLO, segundo a segundo.
+    //
+    // Antes se dibujaba `segundosRestantes` tal como venía del backend, así que
+    // solo cambiaba cuando contestaba el polling: avanzaba a los saltos y, si
+    // la respuesta se demoraba o el WebView estaba en pausa, se quedaba clavado
+    // —un cronómetro detenido, que es justo lo que NO puede pasar cuando lo que
+    // comunica es que la espera tiene un final—.
+    //
+    // El backend sigue mandando la verdad: cada vez que llega un valor nuevo el
+    // contador se resincroniza. Entre respuesta y respuesta, baja solo.
+    var segundos by remember(segundosRestantes) { mutableStateOf(segundosRestantes) }
+    LaunchedEffect(segundosRestantes) {
+        while (segundos > 0) {
+            delay(1_000)
+            segundos -= 1
+        }
+    }
+
     val fraccion by animateFloatAsState(
-        targetValue = (segundosRestantes / SEGUNDOS_BUSQUEDA.toFloat()).coerceIn(0f, 1f),
+        targetValue = (segundos / SEGUNDOS_BUSQUEDA.toFloat()).coerceIn(0f, 1f),
         animationSpec = tween(1_000),
         label = "busqueda",
     )
@@ -68,13 +92,13 @@ fun EstadoBusqueda(
                 )
             }
             Text(
-                relojDe(segundosRestantes),
+                relojDe(segundos),
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
                 ),
                 // Ámbar en el último minuto: es cuando conviene subir la
                 // oferta en vez de seguir esperando.
-                color = if (segundosRestantes <= 60) colores.espera else colores.tintaSecundaria,
+                color = if (segundos <= 60) colores.espera else colores.tintaSecundaria,
             )
         }
 
@@ -90,7 +114,7 @@ fun EstadoBusqueda(
                 modifier = Modifier
                     .fillMaxWidth(fraccion)
                     .height(3.dp)
-                    .background(if (segundosRestantes <= 60) colores.espera else colores.exito),
+                    .background(if (segundos <= 60) colores.espera else colores.exito),
             )
         }
     }
