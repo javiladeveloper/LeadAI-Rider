@@ -500,11 +500,15 @@ private fun SeguimientoCarrera(
                     lng = carrera.origenLng,
                     modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                 )
+                // Las ofertas ABAJO y sin ocupar toda la altura: con
+                // `fillMaxSize` la card blanca de "buscando…" tapaba el radar
+                // entero y se veía un rectángulo en blanco.
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
                 ) {
                     OfertasRecibidas(
                         ofertas = ofertas,

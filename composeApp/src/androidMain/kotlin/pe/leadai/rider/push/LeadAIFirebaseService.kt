@@ -70,6 +70,14 @@ class LeadAIFirebaseService : FirebaseMessagingService(), KoinComponent {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
+        // Aviso de que una carrera YA NO ESTÁ (la cancelaron o la tomó otro):
+        // no muestra nada, borra el que ya está en la barra. Un rider que toca
+        // "nueva carrera" y no encuentra nada deja de mirar los avisos.
+        if (message.data["tipo"] == "carrera_cerrada") {
+            NotificationManagerCompat.from(this).cancelAll()
+            return
+        }
+
         val titulo = message.notification?.title ?: message.data["titulo"] ?: "LeadAI Rider"
         val cuerpo = message.notification?.body ?: message.data["cuerpo"] ?: "Hay una carrera nueva en tu zona"
 
