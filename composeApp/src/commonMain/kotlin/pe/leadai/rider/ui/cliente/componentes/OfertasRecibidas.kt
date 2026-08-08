@@ -1,5 +1,7 @@
 package pe.leadai.rider.ui.cliente.componentes
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,18 +18,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pe.leadai.rider.datos.OfertaDto
 import pe.leadai.rider.ui.comunes.CardJala
 import pe.leadai.rider.ui.tema.AparecerFila
 import pe.leadai.rider.ui.tema.ColoresJala
+import pe.leadai.rider.ui.tema.centavosASoles
 import pe.leadai.rider.ui.tema.recordarInteraccion
 import pe.leadai.rider.ui.tema.toqueVivo
-import pe.leadai.rider.ui.tema.centavosASoles
+
+/** Cuánto vale una oferta. Igual que `SEGUNDOS_VIGENCIA_OFERTA` del backend. */
+private const val SEGUNDOS_VIGENCIA = 90f
 
 /**
  * Las propuestas que le llegaron al cliente: elige a quién, no solo cuánto.
@@ -35,6 +41,10 @@ import pe.leadai.rider.ui.tema.centavosASoles
  * Ordenadas por precio porque es lo primero que se compara, pero con la
  * calificación, los viajes y la moto al lado — para poder elegir a otro
  * cuando el más barato no convence.
+ *
+ * Cada una entra deslizando desde abajo y muestra cuánto le queda de vigencia:
+ * una oferta de hace diez minutos ya no sirve, y elegir a alguien que se fue
+ * es peor que no tener ofertas.
  */
 @Composable
 fun OfertasRecibidas(
@@ -45,15 +55,12 @@ fun OfertasRecibidas(
     onSubirMonto: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    if (ofertas.isEmpty()) return
+
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        if (ofertas.isEmpty()) {
-            SinOfertasTodavia(montoOfrecido, onSubirMonto)
-            return@Column
-        }
-
         val cuantos = ofertas.size
         Text(
             if (cuantos == 1) {
@@ -61,31 +68,36 @@ fun OfertasRecibidas(
             } else {
                 "$cuantos motorizados quieren llevarte"
             },
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurface,
         )
 
         ofertas.forEach { oferta ->
-            // Las ofertas llegan de a una mientras el cliente mira: sin
-            // animación aparecen de un salto y no se nota que son nuevas.
+            // Cada oferta entra deslizando: llegan de a una mientras el
+            // cliente mira, y sin animación aparecen de golpe sin que se note
+            // que hay algo nuevo.
             AparecerFila {
-            CardOferta(
-                oferta = oferta,
-                montoOfrecido = montoOfrecido,
-                eligiendo = eligiendo == oferta.id,
-                habilitado = eligiendo == null,
-                onElegir = { onElegir(oferta) },
-            )
+                CardOferta(
+                    oferta = oferta,
+                    montoOfrecido = montoOfrecido,
+                    eligiendo = eligiendo == oferta.id,
+                    habilitado = eligiendo == null,
+                    onElegir = { onElegir(oferta) },
+                )
             }
         }
     }
 }
 
 /**
- * Una oferta: quién es, cuánto pide y cuánto tarda en llegar.
+ * Una oferta, COMPACTA: todo en una fila y el botón al costado.
  *
- * El monto es lo más grande de la card. Si pide MÁS de lo ofrecido va en
- * ámbar — el cliente tiene que ver que paga de más antes de tocar, no después.
+ * Antes cada card ocupaba dos bloques (datos arriba, botón ancho abajo) y con
+ * tres ofertas ya no entraba nada más — justo cuando más ofertas hay, que es
+ * cuando el cliente más necesita compararlas.
+ *
+ * El monto va en ámbar si pide MÁS de lo ofrecido: tiene que verse que paga
+ * de más antes de tocar, no después.
  */
 @Composable
 private fun CardOferta(
@@ -98,6 +110,7 @@ private fun CardOferta(
     val colores = ColoresJala.actuales
     val pideMas = oferta.montoCentavos > montoOfrecido
     val r = oferta.rider
+    val interaccion = recordarInteraccion()
 
     CardJala(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -108,41 +121,46 @@ private fun CardOferta(
             // humano ya comparó contra su documento.
             Box(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(36.dp)
                     .background(MaterialTheme.colorScheme.surfaceVariant, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
-                Text("👤", style = MaterialTheme.typography.titleMedium)
+                Text("👤", style = MaterialTheme.typography.bodyMedium)
             }
-            Spacer(Modifier.size(12.dp))
+            Spacer(Modifier.size(8.dp))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     r.nombre?.takeIf { it.isNotBlank() } ?: "Motorizado",
-                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                    ),
                     color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
                 )
-                Text(
+                // Reputación y moto en UNA línea: dos renglones de gris
+                // duplicaban el alto de la card sin agregar nada que se lea
+                // de un vistazo.
+                val moto = listOf(r.marcaModelo, r.color)
+                    .filter { it.isNotBlank() }
+                    .joinToString(" ")
+                val detalle = listOf(
                     reputacionLegible(r.estrellas, r.viajesCompletados),
+                    moto,
+                ).filter { it.isNotBlank() }.joinToString(" · ")
+                Text(
+                    detalle,
                     style = MaterialTheme.typography.labelSmall,
                     color = colores.tintaSecundaria,
+                    maxLines = 1,
                 )
-                val moto = listOf(r.marcaModelo, r.color, r.placa)
-                    .filter { it.isNotBlank() }
-                    .joinToString(" · ")
-                if (moto.isNotBlank()) {
-                    Text(
-                        moto,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = colores.tintaSecundaria,
-                    )
-                }
             }
 
+            Spacer(Modifier.size(8.dp))
             Column(horizontalAlignment = Alignment.End) {
                 Text(
                     centavosASoles(oferta.montoCentavos),
-                    style = MaterialTheme.typography.titleLarge.copy(
+                    style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.ExtraBold,
                     ),
                     color = if (pideMas) colores.espera else colores.exito,
@@ -150,59 +168,82 @@ private fun CardOferta(
                 val min = oferta.minutosLlegada
                 if (min != null) {
                     Text(
-                        "llega en ~$min min",
+                        "~$min min",
                         style = MaterialTheme.typography.labelSmall,
                         color = colores.tintaSecundaria,
                     )
                 }
             }
-        }
 
-        Spacer(Modifier.height(12.dp))
-
-        val interaccion = recordarInteraccion()
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-                .toqueVivo(interaccion)
-                .background(
-                    color = if (habilitado) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.surfaceVariant
-                    },
-                    shape = RoundedCornerShape(16.dp),
+            Spacer(Modifier.size(8.dp))
+            Box(
+                modifier = Modifier
+                    .size(width = 96.dp, height = 40.dp)
+                    .toqueVivo(interaccion)
+                    .background(
+                        color = if (habilitado) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.surfaceVariant
+                        },
+                        shape = RoundedCornerShape(16.dp),
+                    )
+                    .clickable(
+                        interactionSource = interaccion,
+                        indication = null,
+                        enabled = habilitado,
+                    ) { onElegir() },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    if (eligiendo) "…" else "ELEGIR",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onPrimary,
                 )
-                .clickable(
-                    interactionSource = interaccion,
-                    indication = null,
-                    enabled = habilitado,
-                ) { onElegir() },
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(
-                if (eligiendo) "UN MOMENTO…" else "ELEGIR A ESTE",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onPrimary,
-            )
+            }
         }
+
+        Spacer(Modifier.height(8.dp))
+        BarraDeVigencia(oferta.segundosRestantes)
     }
 }
 
 /**
- * Mientras nadie ofertó: NADA.
+ * Lo que le queda a la oferta, como una barra que se vacía.
  *
- * Antes había una card blanca con "Buscando motorizado…" y el aviso del
- * monto, y tapaba el radar entero — que es justo lo que hay que mirar
- * mientras se espera. El título ya está arriba de la pantalla y el aviso del
- * precio se movió junto al flete, donde el cliente ya está leyendo cuánto
- * ofreció.
+ * Le dice al cliente que esto no espera: sin la barra, una lista de
+ * propuestas parece un catálogo tranquilo, y las de arriba pueden estar
+ * muertas hace rato.
+ *
+ * Cambia a ámbar en los últimos 20 segundos — es cuando decidir tarde
+ * significa perderla.
  */
 @Composable
-private fun SinOfertasTodavia(montoOfrecido: Long, onSubirMonto: () -> Unit) {
-    // Sin card: el radar se ve completo. Lo que había acá vive ahora en la
-    // card del viaje y en el botón de al lado de "Cancelar".
+private fun BarraDeVigencia(segundosRestantes: Int) {
+    val colores = ColoresJala.actuales
+    val fraccion by animateFloatAsState(
+        targetValue = (segundosRestantes / SEGUNDOS_VIGENCIA).coerceIn(0f, 1f),
+        // Lineal y del largo del polling: la barra baja parejo en vez de
+        // saltar en cada refresco.
+        animationSpec = tween(durationMillis = 3_000),
+        label = "vigencia",
+    )
+    val porTerminar = segundosRestantes <= 20
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(3.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant),
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(fraccion)
+                .height(3.dp)
+                .background(if (porTerminar) colores.espera else colores.exito),
+        )
+    }
 }
 
 /**
@@ -213,7 +254,7 @@ private fun SinOfertasTodavia(montoOfrecido: Long, onSubirMonto: () -> Unit) {
  */
 internal fun reputacionLegible(estrellas: Double?, viajes: Int): String {
     val viajesTexto = when (viajes) {
-        0 -> "sin viajes aún"
+        0 -> "sin viajes"
         1 -> "1 viaje"
         else -> "$viajes viajes"
     }

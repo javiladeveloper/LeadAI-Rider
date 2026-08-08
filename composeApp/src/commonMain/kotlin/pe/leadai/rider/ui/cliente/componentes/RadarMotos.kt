@@ -1,5 +1,7 @@
 package pe.leadai.rider.ui.cliente.componentes
 
+import androidx.compose.foundation.background
+import pe.leadai.rider.ui.tema.ColoresJala
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,7 +35,14 @@ fun RadarMotos(
 ) {
     if (lat == null || lng == null) return
 
-    Box(modifier = modifier.clip(RoundedCornerShape(16.dp))) {
+    // Fondo carbón detrás del WebView: si el mapa no carga se ve oscuro y no
+    // blanco, que es la señal de que ALGO está ahí. Un hueco del color del
+    // fondo de la app es indistinguible de "no se dibujó nada".
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(ColoresJala.actuales.marcaCarbon),
+    ) {
         MapaEmbebido(
             url = "$URL_RADAR?lat=$lat&lng=$lng",
             modifier = Modifier.fillMaxSize(),

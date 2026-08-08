@@ -34,13 +34,6 @@ fun MapaDeLaRuta(
     destinoLng: Double?,
     modifier: Modifier = Modifier,
 ) {
-    // Diagnóstico temporal: sin esto, un mapa que no aparece puede ser el
-    // componente que no se llama, las coordenadas en null, o el WebView que
-    // no carga — y desde afuera los tres se ven igual.
-    println(
-        "MapaRuta: o=" + origenLat + "," + origenLng +
-            " d=" + destinoLat + "," + destinoLng,
-    )
     if (origenLat == null || origenLng == null || destinoLat == null || destinoLng == null) return
 
     Box(

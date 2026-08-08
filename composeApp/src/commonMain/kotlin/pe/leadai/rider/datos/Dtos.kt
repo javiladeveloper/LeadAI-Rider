@@ -513,6 +513,12 @@ data class OfertaDto(
     /** Cuánto dice que tarda en llegar al punto de recojo. */
     val minutosLlegada: Int? = null,
     val creadoEn: String = "",
+    /**
+     * Segundos hasta que la oferta caduca. Lo calcula el BACKEND: el reloj
+     * del teléfono puede estar corrido, y una barra que no coincide con el
+     * vencimiento real haría elegir una oferta que el servidor ya descartó.
+     */
+    val segundosRestantes: Int = 0,
     val rider: RiderDeOfertaDto = RiderDeOfertaDto(),
 )
 

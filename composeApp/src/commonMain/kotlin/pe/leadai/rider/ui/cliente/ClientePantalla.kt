@@ -501,16 +501,16 @@ private fun SeguimientoCarrera(
                     lng = carrera.origenLng,
                     modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                 )
-                // Las ofertas ABAJO, flotando sobre el radar. Solo del alto
-                // que necesitan: con `fillMaxSize` la card blanca tapaba el
-                // mapa entero.
+                // Las ofertas ARRIBA, sobre el radar: llegan de a una y se
+                // van apilando hacia abajo, así el cliente ve la nueva sin
+                // tener que bajar la vista.
                 //
-                // `heightIn(max=…)` para que diez ofertas no coman toda la
+                // `heightIn(max=…)` para que cinco ofertas no coman toda la
                 // pantalla — a partir de ahí scrollean entre ellas y el radar
-                // sigue viéndose arriba.
+                // sigue viéndose debajo.
                 Column(
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
+                        .align(Alignment.TopCenter)
                         .fillMaxWidth()
                         .heightIn(max = 320.dp)
                         .verticalScroll(rememberScrollState())
