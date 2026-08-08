@@ -18,6 +18,19 @@ import kotlin.random.Random
 const val CANAL_NOTIFICACIONES_PEDIDOS = "pedidos"
 
 /**
+ * Canal aparte para "tu motorizado llegó".
+ *
+ * Es EL aviso que el cliente espera con el teléfono en la mano, y tiene que
+ * distinguirse de todo lo demás: vibración larga y sonido propio. Si suena
+ * igual que un mensaje cualquiera, el rider termina esperando en la puerta
+ * llamando por teléfono — justo lo que la app debería evitar.
+ *
+ * Un canal separado además deja que la persona silencie los avisos comunes
+ * sin perderse este.
+ */
+const val CANAL_LLEGADA = "llegada"
+
+/**
  * Servicio FCM: recibe tokens nuevos y mensajes push. Registrado en
  * `AndroidManifest.xml` con el intent-filter `MESSAGING_EVENT`.
  *
@@ -60,10 +73,10 @@ class LeadAIFirebaseService : FirebaseMessagingService(), KoinComponent {
         val titulo = message.notification?.title ?: message.data["titulo"] ?: "LeadAI Rider"
         val cuerpo = message.notification?.body ?: message.data["cuerpo"] ?: "Hay una carrera nueva en tu zona"
 
-        mostrarNotificacion(titulo, cuerpo)
+        mostrarNotificacion(titulo, cuerpo, message.data["hito"])
     }
 
-    private fun mostrarNotificacion(titulo: String, cuerpo: String) {
+    private fun mostrarNotificacion(titulo: String, cuerpo: String, hito: String?) {
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
@@ -74,7 +87,13 @@ class LeadAIFirebaseService : FirebaseMessagingService(), KoinComponent {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
-        val notificacion = NotificationCompat.Builder(this, CANAL_NOTIFICACIONES_PEDIDOS)
+        // El aviso de llegada va por su propio canal, con vibración y sonido.
+        val canal = if (hito == "llego") {
+            CANAL_LLEGADA
+        } else {
+            CANAL_NOTIFICACIONES_PEDIDOS
+        }
+        val notificacion = NotificationCompat.Builder(this, canal)
             .setSmallIcon(android.R.drawable.sym_def_app_icon)
             .setContentTitle(titulo)
             .setContentText(cuerpo)

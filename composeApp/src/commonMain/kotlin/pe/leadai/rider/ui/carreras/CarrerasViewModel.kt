@@ -34,6 +34,15 @@ data class CarrerasUiState(
     val historial: HistorialRiderResponseDto? = null,
     /** Monedero prepago: saldo y cuántas carreras le alcanzan (2026-07-24). */
     val monedero: MonederoDto? = null,
+    /** Avisando al cliente que el rider llegó (deshabilita el botón). */
+    val avisandoLlegada: Boolean = false,
+    /**
+     * Ya avisó que llegó en esta carrera.
+     *
+     * En memoria: si mata la app puede volver a avisar, que es preferible a
+     * dejarlo sin poder llamar la atención del cliente.
+     */
+    val avisoDeLlegada: Boolean = false,
     /** `true` cuando intentó aceptar sin saldo — la pantalla ofrece recargar. */
     val sinSaldo: Boolean = false,
     /**
@@ -253,6 +262,30 @@ class CarrerasViewModel(
      * "Ya recogí el pedido": cierra el tramo al LOCAL y arranca el del
      * cliente (2026-07-24). El mapa cambia de destino solo.
      */
+    /**
+     * "Llegué": le avisa al cliente que salga.
+     *
+     * Se guarda la hora localmente para poder mostrar el cronómetro de los 5
+     * minutos de cortesía sin depender de otra vuelta del polling.
+     */
+    fun avisarQueLlegue() {
+        val carrera = _estado.value.miCarrera ?: return
+        if (_estado.value.avisandoLlegada) return
+        _estado.update { it.copy(avisandoLlegada = true) }
+        viewModelScope.launch(dispatcher) {
+            when (motorizadosApi.llegueACarrera(carrera.pedidoId)) {
+                is Resultado.Ok -> {
+                    _estado.update { it.copy(avisandoLlegada = false, avisoDeLlegada = true) }
+                    avisos.mostrar("📳 Le avisamos al cliente que llegaste")
+                }
+                is Resultado.Error -> {
+                    _estado.update { it.copy(avisandoLlegada = false) }
+                    avisos.mostrar("No se pudo avisar. Intentá de nuevo.")
+                }
+            }
+        }
+    }
+
     fun marcarRecogido() {
         val carrera = _estado.value.miCarrera ?: return
         if (_estado.value.accionEnCurso != null) return

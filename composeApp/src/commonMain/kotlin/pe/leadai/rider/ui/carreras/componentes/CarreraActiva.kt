@@ -39,6 +39,10 @@ fun HojaCarreraActiva(
     carrera: CarreraDto,
     accionEnCurso: Boolean,
     onRecogido: () -> Unit,
+    /** Avisa al cliente que el rider llegó al punto de recojo. */
+    onLlegue: () -> Unit = {},
+    avisandoLlegada: Boolean = false,
+    yaAvisoLlegada: Boolean = false,
     onEntregar: () -> Unit,
     onWhatsApp: (String) -> Unit,
     onLlamar: (String) -> Unit,
@@ -138,6 +142,39 @@ fun HojaCarreraActiva(
         // no solo antes de aceptar.
         if (requiereCompra(carrera)) {
             AvisoPlataParaCompra(montoCentavos = carrera.montoCompraEstimado ?: 0)
+        }
+
+        // "Llegué" solo tiene sentido ANTES de recoger: después el cliente ya
+        // lo vio. Va arriba y con contorno para no competir con la acción
+        // principal, que es la que cierra el tramo.
+        if (!carrera.recogido) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant,
+                        shape = RoundedCornerShape(16.dp),
+                    )
+                    .clickable(enabled = !avisandoLlegada && !yaAvisoLlegada) { onLlegue() },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    when {
+                        avisandoLlegada -> "AVISANDO…"
+                        yaAvisoLlegada -> "✓ LE AVISAMOS QUE LLEGASTE"
+                        else -> "📳 AVISAR QUE LLEGUÉ"
+                    },
+                    style = MaterialTheme.typography.labelLarge,
+                    color = if (yaAvisoLlegada) {
+                        colores.tintaSecundaria
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
+                )
+            }
+            Spacer(Modifier.height(10.dp))
         }
 
         // La acción: texto a la izquierda, chevrons a la derecha en amarillo.

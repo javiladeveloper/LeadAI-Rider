@@ -148,6 +148,21 @@ class MotorizadosApi(private val api: ApiCliente) {
         )
 
     /**
+     * `POST /motorizados/carreras/:id/llegue` — avisa al cliente que el rider
+     * ya está en el punto de recojo.
+     *
+     * Dispara EL push que el cliente espera (con sonido y vibración propios) y
+     * arranca los 5 minutos de cortesía. No cambia el estado de la carrera: el
+     * rider puede tocarlo apenas llega sin comprometerse a que ya recogió.
+     */
+    suspend fun llegueACarrera(pedidoId: String): Resultado<AvanzarEstadoResponseDto> =
+        api.post<JsonObject, AvanzarEstadoResponseDto>(
+            path = "/motorizados/carreras/$pedidoId/llegue",
+            body = buildJsonObject { },
+            requiereSesion = true,
+        )
+
+    /**
      * `POST /motorizados/carreras/:id/recogido` — cierra el tramo 1 (el rider
      * ya recogió en el local) y abre el 2 (rumbo al cliente). El mapa cambia
      * de destino y el cliente pasa de "yendo al local" a "en camino".

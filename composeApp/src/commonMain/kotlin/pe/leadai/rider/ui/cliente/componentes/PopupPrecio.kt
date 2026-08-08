@@ -25,11 +25,34 @@ import androidx.compose.ui.window.Dialog
 import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.centavosASoles
 
-/** Cuánto sube o baja cada toque. En Tacna el sol es el escalón real. */
-private const val PASO_CENTAVOS = 100L
+/**
+ * Cuánto sube o baja cada toque: medio sol.
+ *
+ * Es el paso de inDrive, medido en la app. Con saltos de un sol el cliente
+ * pasa de largo el precio que quería; con saltos de 10 céntimos necesita diez
+ * toques para mover un sol.
+ */
+private const val PASO_CENTAVOS = 50L
 
-/** Nadie hace una carrera por menos: por debajo no llegan ofertas. */
-private const val MINIMO_CENTAVOS = 200L
+/**
+ * Lo MENOS que se puede ofrecer: el 80% de lo sugerido, nunca bajo S/4.
+ *
+ * Medido en inDrive: una carrera sugerida en S/8.90 solo dejaba bajar hasta
+ * S/7.00. Sin tope, el cliente podría ofrecer S/2 por seis kilómetros — no es
+ * que esté prohibido, es que nadie la tomaría, y una lista de carreras
+ * muertas hace que el rider deje de mirar la app.
+ *
+ * Lo calcula también el backend; acá se repite para que los botones se
+ * apaguen en el momento, sin esperar una respuesta.
+ */
+private const val MINIMO_ABSOLUTO_CENTAVOS = 400L
+private const val FRACCION_MINIMA = 0.8
+
+internal fun montoMinimoOfertable(sugeridoCentavos: Long?): Long {
+    if (sugeridoCentavos == null || sugeridoCentavos <= 0) return MINIMO_ABSOLUTO_CENTAVOS
+    val porFraccion = ((sugeridoCentavos * FRACCION_MINIMA) / PASO_CENTAVOS).toLong() * PASO_CENTAVOS
+    return maxOf(MINIMO_ABSOLUTO_CENTAVOS, porFraccion)
+}
 
 /**
  * Cuánto ofrece el cliente, antes de que la carrera salga al aire.
@@ -38,7 +61,7 @@ private const val MINIMO_CENTAVOS = 200L
  * acepta una tarifa. Lo que la app calculó llega como punto de partida y se
  * muestra como referencia — si el cliente lo cambia, tiene que ver contra qué.
  *
- * Sin teclado: +/- de a un sol. Escribir un monto abre el teclado, tapa media
+ * Sin teclado: +/- de a medio sol. Escribir un monto abre el teclado, tapa media
  * pantalla y obliga a cerrarlo para seguir; con dos toques ya está resuelto en
  * el 90% de los casos.
  */
@@ -85,8 +108,9 @@ fun PopupPrecio(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
             ) {
-                BotonPaso("−", habilitado = !enviando && montoCentavos > MINIMO_CENTAVOS) {
-                    onCambiar(maxOf(MINIMO_CENTAVOS, montoCentavos - PASO_CENTAVOS))
+                val minimo = montoMinimoOfertable(sugeridoCentavos)
+                BotonPaso("−", habilitado = !enviando && montoCentavos > minimo) {
+                    onCambiar(maxOf(minimo, montoCentavos - PASO_CENTAVOS))
                 }
                 Text(
                     centavosASoles(montoCentavos),
@@ -104,7 +128,11 @@ fun PopupPrecio(
 
             Spacer(Modifier.height(8.dp))
             Text(
-                avisoSegunElMonto(montoCentavos, sugeridoCentavos),
+                if (montoCentavos <= montoMinimoOfertable(sugeridoCentavos)) {
+                    "Es lo mínimo para esta distancia"
+                } else {
+                    avisoSegunElMonto(montoCentavos, sugeridoCentavos)
+                },
                 style = MaterialTheme.typography.labelSmall,
                 color = if (esBajo(montoCentavos, sugeridoCentavos)) {
                     colores.espera

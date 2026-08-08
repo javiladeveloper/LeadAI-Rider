@@ -3,10 +3,13 @@ package pe.leadai.rider
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.media.AudioAttributes
+import android.media.RingtoneManager
 import android.os.Build
 import org.koin.core.context.startKoin
 import pe.leadai.rider.datos.ContextoApp
 import pe.leadai.rider.di.moduloApp
+import pe.leadai.rider.push.CANAL_LLEGADA
 import pe.leadai.rider.push.CANAL_NOTIFICACIONES_PEDIDOS
 
 /**
@@ -50,5 +53,35 @@ class LeadAIRiderApp : Application() {
         )
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(canal)
+        manager.createNotificationChannel(canalDeLlegada())
+    }
+
+    /**
+     * "Tu motorizado llegó": el aviso que el cliente espera mirando el
+     * teléfono.
+     *
+     * Va en un canal propio para que VIBRE y SUENE aunque los demás estén
+     * silenciados. El patrón de vibración es largo y en tres pulsos a
+     * propósito: uno corto se confunde con un WhatsApp y el rider termina
+     * esperando en la puerta.
+     */
+    private fun canalDeLlegada(): NotificationChannel {
+        val canal = NotificationChannel(
+            CANAL_LLEGADA,
+            "Tu motorizado llegó",
+            NotificationManager.IMPORTANCE_HIGH,
+        )
+        canal.description = "Avisa cuando el motorizado está esperándote"
+        canal.enableVibration(true)
+        canal.vibrationPattern = longArrayOf(0, 400, 200, 400, 200, 400)
+        canal.enableLights(true)
+        // Sonido de alarma, no de notificación: tiene que oírse en la calle.
+        val sonido = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+        val atributos = AudioAttributes.Builder()
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+            .build()
+        canal.setSound(sonido, atributos)
+        return canal
     }
 }
