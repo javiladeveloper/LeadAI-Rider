@@ -72,12 +72,35 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
                 // JS imprescindible: la página es Leaflet puro. Sin
                 // WebViewClient, los links abrirían el navegador de afuera.
                 settings.javaScriptEnabled = true
+                // Leaflet guarda estado en localStorage: sin esto el mapa
+                // puede quedar en blanco sin dar ningún error.
+                settings.domStorageEnabled = true
+                // El WebView bloquea por defecto los recursos de otros
+                // orígenes cuando la página viene de https. Leaflet y los
+                // tiles vienen de unpkg y openstreetmap, así que sin esto no
+                // se dibuja nada.
+                settings.loadsImagesAutomatically = true
+                settings.mediaPlaybackRequiresUserGesture = false
                 @Suppress("DEPRECATION")
                 settings.setGeolocationEnabled(true)
                 // El modo rider lee el GPS del propio teléfono desde la
                 // página (watchPosition, ~1 fix/seg): la app ya tiene el
                 // permiso de ubicación — se lo cede al WebView sin diálogo.
                 webChromeClient = object : WebChromeClient() {
+                    // Los errores de JS al Logcat. Sin esto, un mapa en
+                    // blanco no daba NINGUNA pista: había que adivinar entre
+                    // el bucle de recarga, un recurso bloqueado o Leaflet
+                    // fallando. Con `adb logcat -s MapaWeb` se ve la causa.
+                    override fun onConsoleMessage(
+                        m: android.webkit.ConsoleMessage,
+                    ): Boolean {
+                        android.util.Log.i(
+                            "MapaWeb",
+                            m.message() + " (línea " + m.lineNumber() + ")",
+                        )
+                        return true
+                    }
+
                     override fun onGeolocationPermissionsShowPrompt(
                         origin: String,
                         callback: GeolocationPermissions.Callback,

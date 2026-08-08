@@ -76,7 +76,15 @@ import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.centavosASoles
 
 /** Mismo ritmo de polling que la Cocina: el feed del rider se refresca solo. */
-private const val INTERVALO_POLLING_MS = 15_000L
+/**
+ * Cada cuánto se refresca el feed del rider.
+ *
+ * 8 segundos y no 15: es la RED de seguridad de que aparezca una carrera
+ * aunque el push falle —permiso denegado, token viejo, el teléfono con
+ * ahorro de batería—. Quince segundos mirando una lista vacía se sienten
+ * como que la app no anda.
+ */
+private const val INTERVALO_POLLING_MS = 8_000L
 
 /** Base del mapa embebido — el mismo host de `ApiCliente` (default de prod). */
 private const val URL_BASE_TRACKING = "https://api.leadai-pe.com"

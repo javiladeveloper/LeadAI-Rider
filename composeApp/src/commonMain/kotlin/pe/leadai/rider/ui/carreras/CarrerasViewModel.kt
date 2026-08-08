@@ -17,6 +17,7 @@ import pe.leadai.rider.datos.MonederoDto
 import pe.leadai.rider.datos.PerfilMotorizadoDto
 import pe.leadai.rider.datos.Resultado
 import pe.leadai.rider.push.tokenPushActual
+import pe.leadai.rider.push.pedirPermisoNotificaciones
 import pe.leadai.rider.ui.comunes.AvisosGlobales
 import pe.leadai.rider.ui.tema.centavosASoles
 
@@ -103,6 +104,12 @@ class CarrerasViewModel(
                     // sesión de pantalla, silencioso — sin token no pasa nada.
                     if (!pushRegistrado && resultado.valor != null) {
                         pushRegistrado = true
+                        // El PERMISO antes que el token: desde Android 13
+                        // `POST_NOTIFICATIONS` es de runtime, y sin él el
+                        // sistema descarta los avisos EN SILENCIO. El backend
+                        // los manda, FCM los acepta, y al rider no le llega
+                        // nada — un fallo mudo en las dos puntas.
+                        pedirPermisoNotificaciones()
                         obtenerTokenPush()?.let { token -> motorizadosApi.registrarDispositivo(token) }
                     }
                 }

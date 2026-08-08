@@ -18,6 +18,7 @@ import pe.leadai.rider.datos.MotorizadosApi
 import pe.leadai.rider.datos.PerfilApi
 import pe.leadai.rider.datos.PerfilPersonaDto
 import pe.leadai.rider.datos.Resultado
+import pe.leadai.rider.push.pedirPermisoNotificaciones
 import pe.leadai.rider.push.tokenPushActual
 import pe.leadai.rider.ui.carreras.UbicacionRider
 import pe.leadai.rider.ui.carreras.obtenerUbicacionActual
@@ -266,6 +267,9 @@ class ClienteViewModel(
         if (pushRegistrado) return
         pushRegistrado = true
         viewModelScope.launch(dispatcher) {
+            // El permiso primero: sin él Android descarta los avisos en
+            // silencio, y el cliente no se entera de que su moto llegó.
+            pedirPermisoNotificaciones()
             obtenerTokenPush()?.let { token -> motorizadosApi.registrarDispositivo(token) }
         }
     }
