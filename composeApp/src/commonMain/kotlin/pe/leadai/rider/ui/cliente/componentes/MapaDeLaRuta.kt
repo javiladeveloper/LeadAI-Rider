@@ -14,6 +14,9 @@ import pe.leadai.rider.ui.comunes.MapaEmbebido
 /** La página del recorrido vive en el backend, como la del tracking. */
 private const val URL_MAPA_RUTA = "https://api.leadai-pe.com/mapa/ruta"
 
+/** Alto del mapa, en dp. Se le pasa a la página para que no tenga que medir. */
+private const val ALTO_MAPA = 180
+
 /**
  * El recorrido dibujado, apenas hay origen y destino.
  *
@@ -41,12 +44,17 @@ fun MapaDeLaRuta(
             .fillMaxWidth()
             // Alto suficiente para leer el recorrido sin comerse el formulario:
             // más grande empuja el botón de pedir fuera de la pantalla.
-            .height(160.dp)
+            // Alto FIJO, y además se le manda a la página por la URL: el
+            // WebView reporta un viewport que no coincide con su tamaño real
+            // (medido: body=0, ventana=160 dentro de un contenedor de 549),
+            // así que ni 100%, ni 100dvh, ni el inset absoluto sirven. Con el
+            // alto explícito la página no tiene que adivinar.
+            .height(ALTO_MAPA.dp)
             .clip(RoundedCornerShape(16.dp)),
     ) {
         MapaEmbebido(
             url = "$URL_MAPA_RUTA?oLat=$origenLat&oLng=$origenLng" +
-                "&dLat=$destinoLat&dLng=$destinoLng",
+                "&dLat=$destinoLat&dLng=$destinoLng&alto=$ALTO_MAPA",
             // fillMaxSIZE, no fillMaxWidth: adentro el WebView usa
             // `fillMaxSize()`, y dentro de un modifier que solo fija el ancho
             // eso resuelve a CERO de alto. El WebView existía y cargaba la

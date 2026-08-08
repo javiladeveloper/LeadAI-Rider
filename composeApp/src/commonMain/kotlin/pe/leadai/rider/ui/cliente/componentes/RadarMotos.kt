@@ -32,6 +32,14 @@ fun RadarMotos(
     lat: Double?,
     lng: Double?,
     modifier: Modifier = Modifier,
+    /**
+     * Alto real del radar en dp, que se le pasa a la página.
+     *
+     * El WebView reporta un viewport que NO coincide con su tamaño (medido:
+     * body=0, ventana=160 dentro de un contenedor de 549), así que la página
+     * no puede deducirlo sola y quedaba dibujando en cero.
+     */
+    altoDp: Int = 420,
 ) {
     if (lat == null || lng == null) return
 
@@ -44,7 +52,7 @@ fun RadarMotos(
             .background(ColoresJala.actuales.marcaCarbon),
     ) {
         MapaEmbebido(
-            url = "$URL_RADAR?lat=$lat&lng=$lng",
+            url = "$URL_RADAR?lat=$lat&lng=$lng&alto=$altoDp",
             modifier = Modifier.fillMaxSize(),
         )
     }

@@ -66,6 +66,7 @@ import pe.leadai.rider.ui.tema.Movimiento
 import pe.leadai.rider.ui.tema.recordarInteraccion
 import pe.leadai.rider.ui.tema.toqueVivo
 import pe.leadai.rider.ui.tema.AparecerCard
+import pe.leadai.rider.ui.cliente.componentes.EstadoBusqueda
 import pe.leadai.rider.ui.cliente.componentes.MapaDeLaRuta
 import pe.leadai.rider.ui.cliente.componentes.PopupPrecio
 import pe.leadai.rider.ui.cliente.componentes.RadarMotos
@@ -116,6 +117,8 @@ fun ClientePantalla(
             // Las ofertas llegan mientras el cliente mira: sin esto tendría
             // que salir y volver a entrar para verlas.
             viewModel.refrescarOfertas()
+            // Cuántas motos hay alrededor, para el estado de la búsqueda.
+            viewModel.refrescarMotosCerca()
         }
     }
     LaunchedEffect(Unit) {
@@ -158,6 +161,11 @@ fun ClientePantalla(
                     // +S/2 sobre lo ofrecido: en Tacna es el salto que de
                     // verdad cambia la decisión del rider.
                     onSubirMonto = { viewModel.subirMonto(carrera.montoOfrecido + 200) },
+                    motosCerca = estado.motosCerca,
+                    // Lo calcula el BACKEND: el reloj del teléfono puede
+                    // estar corrido, y un contador que no coincide con el
+                    // vencimiento real haría esperar de más.
+                    segundosRestantes = carrera.segundosRestantes,
                 )
                 estado.cargando -> PantallaCargando()
                 // 2) Sin carrera: la pestaña que haya elegido.
@@ -470,16 +478,34 @@ private fun SeguimientoCarrera(
     eligiendoOferta: String? = null,
     onElegirOferta: (pe.leadai.rider.datos.OfertaDto) -> Unit = {},
     onSubirMonto: () -> Unit = {},
+    motosCerca: Int = 0,
+    segundosRestantes: Int = 0,
 ) {
     val enCamino = carrera.estado == "aceptada" || carrera.estado == "recogida"
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Text(
-            if (enCamino) tituloEnCamino(carrera) else "🔍 Buscando motorizado…",
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 10.dp),
-        )
+        if (enCamino) {
+            Text(
+                tituloEnCamino(carrera),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(
+                    start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp,
+                ),
+            )
+        } else {
+            // Mientras busca: qué está pasando y cuánto falta. Un "buscando…"
+            // sin contador ni contexto no distingue entre "hay diez motos
+            // mirando" y "no hay nadie", que piden decisiones distintas.
+            EstadoBusqueda(
+                segundosRestantes = segundosRestantes,
+                motosCerca = motosCerca,
+                ofertas = ofertas.size,
+                modifier = Modifier.padding(
+                    start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp,
+                ),
+            )
+        }
 
         if (enCamino) {
             // El MISMO mapa en vivo que usa el rider, a sangre completa.

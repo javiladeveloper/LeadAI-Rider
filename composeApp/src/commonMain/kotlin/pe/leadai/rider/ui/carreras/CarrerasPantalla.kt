@@ -188,9 +188,16 @@ fun CarrerasPantalla(
     // de app, y el cliente veía la moto congelada en el mapa mientras el
     // rider manejaba con el celular en el bolsillo. El service vive solo
     // mientras hay carrera: arranca al aceptar, para al entregar.
+    // El servicio corre con carrera EN CURSO y también EN TURNO sin carrera:
+    // un rider esperando trabajo tiene que aparecer en el radar del cliente,
+    // y el reporte atado a la pantalla moría apenas bloqueaba el teléfono.
+    //
+    // Eso explicaba la moto que "desaparecía": reportaba mientras el rider
+    // miraba la app y se congelaba en cuanto la guardaba en el bolsillo.
     val carreraEnCurso = estado.miCarrera
-    LaunchedEffect(carreraEnCurso?.pedidoId) {
-        if (carreraEnCurso == null) {
+    val enTurno = estado.perfil?.disponible == true
+    LaunchedEffect(carreraEnCurso?.pedidoId, enTurno) {
+        if (carreraEnCurso == null && !enTurno) {
             detenerServicioCarrera()
             return@LaunchedEffect
         }
@@ -198,7 +205,12 @@ fun CarrerasPantalla(
         // de permisos, así que el primer intento casi siempre falla. Sin
         // reinsistir, el rastreo quedaba muerto TODA la carrera — el efecto
         // depende del pedidoId y no vuelve a correr al conceder el permiso.
-        val destino = carreraEnCurso.destinoTexto ?: carreraEnCurso.direccion.orEmpty()
+        // En turno sin carrera no hay destino: la notificacion del service
+        // dice que esta disponible, que es lo que el rider necesita ver para
+        // saber que la app lo esta mostrando en el mapa del cliente.
+        val destino = carreraEnCurso?.destinoTexto
+            ?: carreraEnCurso?.direccion
+            ?: "Esperando carreras"
         while (isActive && !iniciarServicioCarrera(destino)) {
             delay(ESPERA_REINTENTO_SERVICIO_MS)
         }

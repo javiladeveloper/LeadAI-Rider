@@ -85,6 +85,13 @@ data class ClienteUiState(
      */
     val calculandoPrecio: Boolean = false,
     /**
+     * Cuántas motos hay cerca, para el estado de la búsqueda.
+     *
+     * Sale del MISMO endpoint que dibuja el radar: si el mapa muestra tres
+     * motos y el texto dice otra cosa, el cliente deja de creerle a los dos.
+     */
+    val motosCerca: Int = 0,
+    /**
      * En delivery: si el rider tiene que HACER el pedido y esperar.
      *
      * Arranca en `false` —"ya lo pedí"— porque es el caso más común y el más
@@ -398,6 +405,25 @@ class ClienteViewModel(
      * Las propuestas que llegaron. Silencioso: se llama en cada vuelta del
      * polling y un fallo puntual no debe borrar las que ya se ven.
      */
+    /**
+     * Cuántas motos hay alrededor del punto de recojo.
+     *
+     * Silencioso: si falla, el estado cae a "ampliando el área", que es lo
+     * honesto cuando no sabemos.
+     */
+    fun refrescarMotosCerca() {
+        val c = _estado.value.miCarrera ?: return
+        val lat = c.origenLat ?: return
+        val lng = c.origenLng ?: return
+        if (c.estado != "disponible") return
+        viewModelScope.launch(dispatcher) {
+            when (val r = api.motosCerca(lat, lng)) {
+                is Resultado.Ok -> _estado.update { it.copy(motosCerca = r.valor) }
+                is Resultado.Error -> Unit
+            }
+        }
+    }
+
     fun refrescarOfertas() {
         val carrera = _estado.value.miCarrera ?: return
         // Solo mientras nadie la tomó: después las ofertas ya no importan.

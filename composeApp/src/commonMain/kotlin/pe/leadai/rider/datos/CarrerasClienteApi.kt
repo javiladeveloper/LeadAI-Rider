@@ -121,6 +121,18 @@ class CarrerasClienteApi(private val api: ApiCliente) {
         }
     }
 
+    /**
+     * `GET /mapa/motos-cerca` — cuántas motos hay alrededor de un punto.
+     *
+     * El MISMO endpoint que alimenta el radar: si el mapa dibuja tres motos y
+     * el texto dice otra cosa, el cliente deja de creerle a los dos.
+     */
+    suspend fun motosCerca(lat: Double, lng: Double): Resultado<Int> =
+        when (val r = api.get<MotosCercaDto>("/mapa/motos-cerca?lat=$lat&lng=$lng")) {
+            is Resultado.Ok -> Resultado.Ok(r.valor.motos.size)
+            is Resultado.Error -> r
+        }
+
     /** `GET /carreras/direccion-en` — qué dirección hay en un punto del mapa. */
     suspend fun direccionEn(lat: Double, lng: Double): Resultado<String?> =
         when (val r = api.get<DireccionEnPuntoDto>("/carreras/direccion-en?lat=$lat&lng=$lng")) {

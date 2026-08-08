@@ -363,6 +363,8 @@ data class CarreraClienteDto(
     /** Cuándo se cerró. Solo lo manda el historial; en la carrera activa es `null`. */
     val entregadoEn: String? = null,
     val expiraEn: String? = null,
+    /** Segundos hasta que venza. Lo calcula el backend, no el teléfono. */
+    val segundosRestantes: Int = 0,
     val riderNombre: String? = null,
     val riderTelefono: String? = null,
     val riderPlaca: String? = null,
@@ -471,6 +473,20 @@ data class SugerenciaDireccionDto(
 @Serializable
 data class SugerenciasDireccionDto(
     val sugerencias: List<SugerenciaDireccionDto> = emptyList(),
+)
+
+/** Una moto del radar: solo el punto, sin identidad. */
+@Serializable
+data class MotoCercaDto(
+    val lat: Double = 0.0,
+    val lng: Double = 0.0,
+    val km: Double = 0.0,
+)
+
+/** `GET /mapa/motos-cerca` → las motos disponibles alrededor de un punto. */
+@Serializable
+data class MotosCercaDto(
+    val motos: List<MotoCercaDto> = emptyList(),
 )
 
 /**
