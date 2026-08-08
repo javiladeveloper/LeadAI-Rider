@@ -60,7 +60,6 @@ import pe.leadai.rider.ui.tema.AparecerCard
 import pe.leadai.rider.ui.cliente.componentes.MapaDeLaRuta
 import pe.leadai.rider.ui.cliente.componentes.PopupPrecio
 import pe.leadai.rider.ui.cliente.componentes.SelectorYaPedi
-import pe.leadai.rider.ui.cliente.componentes.CardTarifa
 import pe.leadai.rider.ui.comunes.BannerError
 import pe.leadai.rider.ui.comunes.BarraInferiorCliente
 import pe.leadai.rider.ui.comunes.SeccionCliente
