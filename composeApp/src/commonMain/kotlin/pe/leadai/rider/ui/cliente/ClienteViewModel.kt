@@ -70,6 +70,13 @@ data class ClienteUiState(
     /** Lo que dice el mapa donde está el pin, mientras el cliente lo mueve. */
     val direccionDelPin: String = "",
     /**
+     * `true` mientras se resuelve la ruta y no hay un monto de verdad.
+     *
+     * El popup muestra "calculando" en vez de un número: un precio inventado
+     * que después cambia es peor que esperar un segundo.
+     */
+    val calculandoPrecio: Boolean = false,
+    /**
      * En delivery: si el rider tiene que HACER el pedido y esperar.
      *
      * Arranca en `false` —"ya lo pedí"— porque es el caso más común y el más
@@ -517,13 +524,16 @@ class ClienteViewModel(
             ) {
                 is Resultado.Ok -> _estado.update {
                     it.copy(
+                        calculandoPrecio = false,
                         montoSugerido = r.valor.montoSugerido,
                         kmEstimado = r.valor.kmEstimado,
                         // Solo pre-llena si el usuario no escribió su monto.
                         monto = if (it.monto.isBlank()) (r.valor.montoSugerido / 100).toString() else it.monto,
                     )
                 }
-                is Resultado.Error -> Unit // la sugerencia es un nice-to-have
+                // Sin cálculo el cliente igual tiene que poder pedir: se corta
+                // el "calculando" y el popup cae a la referencia por defecto.
+                is Resultado.Error -> _estado.update { it.copy(calculandoPrecio = false) }
             }
         }
     }
@@ -545,9 +555,17 @@ class ClienteViewModel(
             _estado.update { it.copy(error = MENSAJE_SIN_DESTINO) }
             return
         }
-        _estado.update { it.copy(ajustandoPrecio = true, error = null) }
-        // Si todavía no hay cálculo, se pide ahora: el popup arranca con la
-        // referencia puesta en vez de un campo vacío.
+        // `calculandoPrecio` mientras no hay ruta: el popup muestra "calculando"
+        // en vez de un monto. Sin esto aparecía el valor por defecto durante un
+        // segundo y después saltaba al real — el cliente veía un precio que no
+        // era, que es justo lo que se quería evitar.
+        _estado.update {
+            it.copy(
+                ajustandoPrecio = true,
+                error = null,
+                calculandoPrecio = it.montoSugerido == null,
+            )
+        }
         if (a.montoSugerido == null) pedirSugerencia()
     }
 

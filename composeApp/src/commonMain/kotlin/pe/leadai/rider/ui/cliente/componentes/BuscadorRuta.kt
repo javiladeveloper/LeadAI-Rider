@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import pe.leadai.rider.datos.SugerenciaDireccionDto
 import pe.leadai.rider.ui.comunes.CardJala
+import pe.leadai.rider.ui.tema.AparecerFila
 import pe.leadai.rider.ui.tema.ColoresJala
 
 /**
@@ -117,7 +118,11 @@ fun BuscadorRuta(
                     // Altura acotada: con 5 resultados largos, sin tope tapa
                     // el botón de pedir.
                     LazyColumn(modifier = Modifier.heightIn(max = 260.dp)) {
-                        items(sugerencias) { s -> FilaSugerencia(s, onElegirSugerencia) }
+                        items(sugerencias) { s ->
+                            // Cada fila entra deslizando: una lista que se
+                            // llena de golpe no se registra como algo nuevo.
+                            AparecerFila { FilaSugerencia(s, onElegirSugerencia) }
+                        }
                     }
                 }
             }

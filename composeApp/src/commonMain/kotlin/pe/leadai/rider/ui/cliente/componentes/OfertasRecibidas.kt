@@ -23,7 +23,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pe.leadai.rider.datos.OfertaDto
 import pe.leadai.rider.ui.comunes.CardJala
+import pe.leadai.rider.ui.tema.AparecerFila
 import pe.leadai.rider.ui.tema.ColoresJala
+import pe.leadai.rider.ui.tema.recordarInteraccion
+import pe.leadai.rider.ui.tema.toqueVivo
 import pe.leadai.rider.ui.tema.centavosASoles
 
 /**
@@ -63,6 +66,9 @@ fun OfertasRecibidas(
         )
 
         ofertas.forEach { oferta ->
+            // Las ofertas llegan de a una mientras el cliente mira: sin
+            // animación aparecen de un salto y no se nota que son nuevas.
+            AparecerFila {
             CardOferta(
                 oferta = oferta,
                 montoOfrecido = montoOfrecido,
@@ -70,6 +76,7 @@ fun OfertasRecibidas(
                 habilitado = eligiendo == null,
                 onElegir = { onElegir(oferta) },
             )
+            }
         }
     }
 }
@@ -153,19 +160,25 @@ private fun CardOferta(
 
         Spacer(Modifier.height(12.dp))
 
+        val interaccion = recordarInteraccion()
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
+                .toqueVivo(interaccion)
                 .background(
                     color = if (habilitado) {
                         MaterialTheme.colorScheme.primary
                     } else {
                         MaterialTheme.colorScheme.surfaceVariant
                     },
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(16.dp),
                 )
-                .clickable(enabled = habilitado) { onElegir() },
+                .clickable(
+                    interactionSource = interaccion,
+                    indication = null,
+                    enabled = habilitado,
+                ) { onElegir() },
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -196,7 +209,7 @@ private fun SinOfertasTodavia(montoOfrecido: Long, onSubirMonto: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
         )
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(8.dp))
         Text(
             "Ofreciste " + centavosASoles(montoOfrecido) +
                 ". Si nadie responde, puede que sea poco para la distancia.",
@@ -205,12 +218,12 @@ private fun SinOfertasTodavia(montoOfrecido: Long, onSubirMonto: () -> Unit) {
             modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp),
             textAlign = TextAlign.Center,
         )
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.height(16.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
-                .background(colores.esperaFondo, RoundedCornerShape(14.dp))
+                .background(colores.esperaFondo, RoundedCornerShape(16.dp))
                 .clickable { onSubirMonto() },
             contentAlignment = Alignment.Center,
         ) {

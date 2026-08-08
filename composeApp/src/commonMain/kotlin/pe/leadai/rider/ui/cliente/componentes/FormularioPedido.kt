@@ -154,7 +154,7 @@ fun CardTarifa(
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center,
         )
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(8.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -210,7 +210,7 @@ fun CardTarifa(
             )
         }
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(8.dp))
 
         // Un RANGO, no un número exacto: sugerir "S/7.60" finge una precisión
         // que no existe, y un rango invita a moverse dentro de él.
@@ -275,7 +275,7 @@ fun CardMontoCompra(
             tipoTeclado = androidx.compose.ui.text.input.KeyboardType.Number,
             prefijo = "S/",
         )
-        Spacer(Modifier.height(6.dp))
+        Spacer(Modifier.height(8.dp))
         Text(
             "Se lo devolvés aparte de la tarifa: el motorizado pone esa plata de su bolsillo.",
             style = MaterialTheme.typography.labelSmall,

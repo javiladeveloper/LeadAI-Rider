@@ -15,7 +15,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -25,6 +28,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.draw.clip
 import pe.leadai.rider.ui.comunes.MapaElegirPunto
 import pe.leadai.rider.ui.tema.ColoresJala
+import pe.leadai.rider.ui.tema.Movimiento
+import pe.leadai.rider.ui.tema.recordarInteraccion
+import pe.leadai.rider.ui.tema.toqueVivo
 import pe.leadai.rider.ui.tema.centavosASoles
 
 /**
@@ -73,6 +79,8 @@ internal fun montoMinimoOfertable(sugeridoCentavos: Long?): Long {
 @Composable
 fun PopupPrecio(
     montoCentavos: Long,
+    /** `true` mientras se resuelve la ruta: se muestra "calculando", no un monto. */
+    calculando: Boolean = false,
     /** Lo que calculó la app — para contrastar cuando el cliente lo mueve. */
     sugeridoCentavos: Long?,
     kmEstimado: Double?,
@@ -93,8 +101,8 @@ fun PopupPrecio(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp))
-                .padding(20.dp),
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(24.dp))
+                .padding(24.dp),
         ) {
             Text(
                 "¿Cuánto ofrecés?",
@@ -105,61 +113,54 @@ fun PopupPrecio(
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                textoDeReferencia(sugeridoCentavos, kmEstimado),
+                if (calculando) {
+                    "Calculando el recorrido…"
+                } else {
+                    textoDeReferencia(sugeridoCentavos, kmEstimado)
+                },
                 style = MaterialTheme.typography.bodySmall,
                 color = colores.tintaSecundaria,
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
             )
 
-            // El mapa para confirmar DÓNDE recogen. El autocompletado puede
-            // dejar el pin media cuadra corrido, y el rider termina llamando
-            // por teléfono para encontrar la puerta.
-            if (origenLat != null && origenLng != null) {
-                Spacer(Modifier.height(14.dp))
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(150.dp)
-                        .clip(RoundedCornerShape(14.dp)),
-                ) {
-                    MapaElegirPunto(
-                        url = "$URL_MAPA_PUNTO?lat=$origenLat&lng=$origenLng",
-                        onPunto = onMoverPin,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-                Spacer(Modifier.height(6.dp))
-                Text(
-                    direccionDelPin.ifBlank { "Movés el mapa para ajustar el punto" },
-                    style = MaterialTheme.typography.labelSmall,
-                    color = colores.tintaSecundaria,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                )
-            }
-
-            Spacer(Modifier.height(18.dp))
+            Spacer(Modifier.height(16.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 val minimo = montoMinimoOfertable(sugeridoCentavos)
-                BotonPaso("−", habilitado = !enviando && montoCentavos > minimo) {
+                BotonPaso("−", habilitado = !enviando && !calculando && montoCentavos > minimo) {
                     onCambiar(maxOf(minimo, montoCentavos - PASO_CENTAVOS))
                 }
+                // El monto ANIMA hasta su valor: al tocar +/- el número sube
+                // en vez de saltar, y al terminar el cálculo cuenta desde la
+                // referencia. Un número que salta no se lee como que cambió
+                // por algo; uno que se mueve, sí.
+                val montoAnimado by animateIntAsState(
+                    targetValue = montoCentavos.toInt(),
+                    animationSpec = tween(Movimiento.NORMAL_MS, easing = Movimiento.SUAVE),
+                    label = "monto",
+                )
                 Text(
-                    centavosASoles(montoCentavos),
+                    // Un precio inventado que después cambia es peor que
+                    // esperar un segundo: el cliente decidiría sobre un número
+                    // que no es.
+                    if (calculando) "…" else centavosASoles(montoAnimado.toLong()),
                     style = MaterialTheme.typography.displaySmall.copy(
                         fontWeight = FontWeight.ExtraBold,
                     ),
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = if (calculando) {
+                        colores.tintaSecundaria
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
                 )
-                BotonPaso("+", habilitado = !enviando) {
+                BotonPaso("+", habilitado = !enviando && !calculando) {
                     onCambiar(montoCentavos + PASO_CENTAVOS)
                 }
             }
@@ -181,21 +182,30 @@ fun PopupPrecio(
                 textAlign = TextAlign.Center,
             )
 
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(24.dp))
 
+            val interaccionConfirmar = recordarInteraccion()
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp)
+                    .height(56.dp)
+                    // Se hunde al tocarlo: sin esto el dedo toca y no pasa
+                    // nada hasta que la pantalla cambia, y el cliente duda de
+                    // si registró el toque.
+                    .toqueVivo(interaccionConfirmar)
                     .background(
                         color = if (enviando) {
                             MaterialTheme.colorScheme.surfaceVariant
                         } else {
                             MaterialTheme.colorScheme.primary
                         },
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(16.dp),
                     )
-                    .clickable(enabled = !enviando) { onConfirmar() },
+                    .clickable(
+                        interactionSource = interaccionConfirmar,
+                        indication = null,
+                        enabled = !enviando && !calculando,
+                    ) { onConfirmar() },
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
@@ -205,7 +215,7 @@ fun PopupPrecio(
                 )
             }
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(8.dp))
             Text(
                 "Cancelar",
                 style = MaterialTheme.typography.labelLarge,
@@ -213,7 +223,7 @@ fun PopupPrecio(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable(enabled = !enviando) { onCerrar() }
-                    .padding(vertical = 6.dp),
+                    .padding(vertical = 8.dp),
                 textAlign = TextAlign.Center,
             )
         }
@@ -225,11 +235,11 @@ fun PopupPrecio(
 private fun BotonPaso(simbolo: String, habilitado: Boolean, onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .size(52.dp)
+            .size(56.dp)
             .border(
                 width = 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(26.dp),
+                shape = RoundedCornerShape(24.dp),
             )
             .clickable(enabled = habilitado) { onClick() },
         contentAlignment = Alignment.Center,

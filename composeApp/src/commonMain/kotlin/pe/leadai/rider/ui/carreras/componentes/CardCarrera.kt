@@ -203,7 +203,7 @@ private fun EsperandoRespuestaDelCliente() {
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp)
-            .background(colores.esperaFondo, RoundedCornerShape(14.dp)),
+            .background(colores.esperaFondo, RoundedCornerShape(16.dp)),
         contentAlignment = Alignment.Center,
     ) {
         Text(

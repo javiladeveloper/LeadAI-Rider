@@ -22,6 +22,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pe.leadai.rider.ui.comunes.CardJala
 import pe.leadai.rider.ui.tema.ColoresJala
+import pe.leadai.rider.ui.tema.recordarInteraccion
+import pe.leadai.rider.ui.tema.toqueVivo
 
 /**
  * ¿El pedido ya está hecho, o lo tiene que hacer el rider?
@@ -54,11 +56,11 @@ fun SelectorYaPedi(
             style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
             color = MaterialTheme.colorScheme.onSurface,
         )
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(8.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             OpcionPedido(
                 titulo = "Sí, solo recoger",
@@ -104,15 +106,15 @@ private fun OpcionPedido(
             .height(64.dp)
             .background(
                 color = if (elegida) colores.esperaFondo else MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(16.dp),
             )
             .border(
                 width = if (elegida) 0.dp else 1.dp,
                 color = MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(16.dp),
             )
             .clickable { onClick() }
-            .padding(horizontal = 10.dp),
+            .padding(horizontal = 8.dp),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

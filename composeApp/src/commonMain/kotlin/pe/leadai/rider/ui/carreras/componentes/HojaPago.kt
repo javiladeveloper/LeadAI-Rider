@@ -56,7 +56,7 @@ fun HojaPago(
             modifier = Modifier
                 .fillMaxWidth(0.96f)
                 .fillMaxHeight(0.9f)
-                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp)),
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(24.dp)),
         ) {
             Row(
                 modifier = Modifier

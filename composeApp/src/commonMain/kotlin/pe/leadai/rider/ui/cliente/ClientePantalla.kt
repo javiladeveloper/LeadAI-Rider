@@ -56,6 +56,8 @@ import pe.leadai.rider.ui.cliente.componentes.CardMontoCompra
 import pe.leadai.rider.ui.cliente.componentes.BuscadorRuta
 import pe.leadai.rider.ui.cliente.componentes.OfertasRecibidas
 import pe.leadai.rider.ui.cliente.componentes.PopupCalificar
+import pe.leadai.rider.ui.tema.AparecerCard
+import pe.leadai.rider.ui.cliente.componentes.MapaDeLaRuta
 import pe.leadai.rider.ui.cliente.componentes.PopupPrecio
 import pe.leadai.rider.ui.cliente.componentes.SelectorYaPedi
 import pe.leadai.rider.ui.cliente.componentes.CardTarifa
@@ -197,6 +199,7 @@ fun ClientePantalla(
         if (estado.ajustandoPrecio) {
             PopupPrecio(
                 montoCentavos = montoElegidoCentavos(estado),
+                calculando = estado.calculandoPrecio,
                 sugeridoCentavos = estado.montoSugerido,
                 kmEstimado = estado.kmEstimado,
                 enviando = estado.pidiendo,
@@ -294,21 +297,41 @@ private fun FormularioPedir(
             onUsarMiUbicacion = onUsarMiUbicacion,
         )
 
-        CardTarifa(
-            monto = estado.monto,
-            onMontoCambia = onMonto,
-            montoSugeridoCentavos = estado.montoSugerido,
-        )
+        // El recorrido, apenas hay los dos pines: el cliente confirma que el
+        // destino es el que quiso ANTES de que se le proponga un precio.
+        // Entra animado: apenas el cliente elige el destino, el mapa "crece"
+        // del formulario. Aparecer de golpe hace que el resto salte y no se
+        // registre que algo nuevo pasó.
+        AparecerCard(visible = estado.destinoLat != null) {
+            Column {
+                MapaDeLaRuta(
+                    origenLat = estado.origenLat,
+                    origenLng = estado.origenLng,
+                    destinoLat = estado.destinoLat,
+                    destinoLng = estado.destinoLng,
+                )
+                Spacer(Modifier.height(16.dp))
+            }
+        }
+
+        // El precio NO se pide acá (2026-08-08). Aparecía apenas se abría la
+        // pantalla, antes de que hubiera destino y por lo tanto antes de que
+        // se pudiera calcular nada: el cliente veía "Ofrece tu tarifa S/6" y
+        // ese 6 no era un cálculo, era el valor por defecto. Decidir a ciegas
+        // y que después el popup muestre otro número es peor que no mostrar
+        // nada. Ahora el precio se elige en el popup, con la ruta ya resuelta.
 
         // Solo en delivery: cambia el trabajo del rider y el precio. En un
         // envío el paquete ya existe y en un viaje no hay nada que esperar.
-        if (estado.tipo == TIPO_DELIVERY) {
-            SelectorYaPedi(
-                esperaEnLocal = estado.esperaEnLocal,
-                extraCentavos = EXTRA_ESPERA_CENTAVOS,
-                onCambiar = onEsperaEnLocal,
-            )
-            Spacer(Modifier.height(12.dp))
+        AparecerCard(visible = estado.tipo == TIPO_DELIVERY) {
+            Column {
+                SelectorYaPedi(
+                    esperaEnLocal = estado.esperaEnLocal,
+                    extraCentavos = EXTRA_ESPERA_CENTAVOS,
+                    onCambiar = onEsperaEnLocal,
+                )
+                Spacer(Modifier.height(12.dp))
+            }
         }
 
         // Cuánta plata adelanta el rider en la compra. En delivery también:

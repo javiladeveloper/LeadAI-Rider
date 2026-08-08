@@ -26,6 +26,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import pe.leadai.rider.ui.tema.ColoresJala
+import pe.leadai.rider.ui.tema.recordarInteraccion
+import pe.leadai.rider.ui.tema.toqueVivo
 
 /**
  * Calificar al rider apenas termina la carrera.
@@ -51,8 +53,8 @@ fun PopupCalificar(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp))
-                .padding(20.dp),
+                .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(24.dp))
+                .padding(24.dp),
         ) {
             Text(
                 "¿Cómo te fue?",
@@ -72,7 +74,7 @@ fun PopupCalificar(
                 textAlign = TextAlign.Center,
             )
 
-            Spacer(Modifier.height(18.dp))
+            Spacer(Modifier.height(16.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -98,20 +100,20 @@ fun PopupCalificar(
                 }
             }
 
-            Spacer(Modifier.height(18.dp))
+            Spacer(Modifier.height(16.dp))
 
             val listo = elegidas > 0 && !enviando
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(52.dp)
+                    .height(56.dp)
                     .background(
                         color = if (listo) {
                             MaterialTheme.colorScheme.primary
                         } else {
                             MaterialTheme.colorScheme.surfaceVariant
                         },
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(16.dp),
                     )
                     .clickable(enabled = listo) { onCalificar(elegidas) },
                 contentAlignment = Alignment.Center,
@@ -127,7 +129,7 @@ fun PopupCalificar(
                 )
             }
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(8.dp))
             Text(
                 "Ahora no",
                 style = MaterialTheme.typography.labelLarge,
@@ -135,7 +137,7 @@ fun PopupCalificar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable(enabled = !enviando) { onOmitir() }
-                    .padding(vertical = 6.dp),
+                    .padding(vertical = 8.dp),
                 textAlign = TextAlign.Center,
             )
         }

@@ -31,6 +31,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import pe.leadai.rider.ui.tema.ColoresJala
+import pe.leadai.rider.ui.tema.recordarInteraccion
+import pe.leadai.rider.ui.tema.toqueVivo
 import pe.leadai.rider.ui.tema.centavosASoles
 
 /**
@@ -71,22 +73,30 @@ fun BotonesOferta(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
             )
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(8.dp))
         }
 
+        val interaccionAceptar = recordarInteraccion()
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp)
+                .height(56.dp)
+                // El rider toca esto con guantes y a veces en movimiento: que
+                // el botón responda al instante evita el doble toque.
+                .toqueVivo(interaccionAceptar)
                 .background(
                     color = if (enviando) {
                         MaterialTheme.colorScheme.surfaceVariant
                     } else {
                         MaterialTheme.colorScheme.primary
                     },
-                    shape = RoundedCornerShape(14.dp),
+                    shape = RoundedCornerShape(16.dp),
                 )
-                .clickable(enabled = !enviando) { onOfertar(montoOfrecidoCentavos) },
+                .clickable(
+                    interactionSource = interaccionAceptar,
+                    indication = null,
+                    enabled = !enviando,
+                ) { onOfertar(montoOfrecidoCentavos) },
             contentAlignment = Alignment.Center,
         ) {
             Text(
@@ -100,12 +110,12 @@ fun BotonesOferta(
             )
         }
 
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(8.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Box(
                 modifier = Modifier
@@ -114,9 +124,9 @@ fun BotonesOferta(
                     .border(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.outlineVariant,
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(16.dp),
                     )
-                    .padding(horizontal = 14.dp),
+                    .padding(horizontal = 16.dp),
                 contentAlignment = Alignment.CenterStart,
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -165,7 +175,7 @@ fun BotonesOferta(
                         } else {
                             MaterialTheme.colorScheme.surfaceVariant
                         },
-                        shape = RoundedCornerShape(14.dp),
+                        shape = RoundedCornerShape(16.dp),
                     )
                     .clickable(enabled = listo) { contraoferta?.let(onOfertar) },
                 contentAlignment = Alignment.Center,
@@ -183,7 +193,7 @@ fun BotonesOferta(
         }
 
         if (contraoferta != null && contraoferta != centavosCrudos(texto)) {
-            Spacer(Modifier.height(6.dp))
+            Spacer(Modifier.height(8.dp))
             Text(
                 // Si el rider escribe 7.57 se le cobra 7.60: mejor que lo vea
                 // ahora y no cuando le llegue distinto.
