@@ -492,6 +492,18 @@ private fun SeguimientoCarrera(
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp),
             ) {
+                // El recorrido mientras espera. Sin esto la pantalla quedaba
+                // vacía hasta que llegara la primera oferta: el cliente ya
+                // pidió, pagó su decisión, y lo único que veía era un texto.
+                // Ver su ruta confirma que el pedido salió como quería.
+                MapaDeLaRuta(
+                    origenLat = carrera.origenLat,
+                    origenLng = carrera.origenLng,
+                    destinoLat = carrera.destinoLat,
+                    destinoLng = carrera.destinoLng,
+                )
+                Spacer(Modifier.height(16.dp))
+
                 OfertasRecibidas(
                     ofertas = ofertas,
                     montoOfrecido = carrera.montoOfrecido,

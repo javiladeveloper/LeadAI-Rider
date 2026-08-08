@@ -338,6 +338,17 @@ data class CarreraClienteDto(
     val estado: String = "disponible",
     val origenTexto: String = "",
     val destinoTexto: String = "",
+    /**
+     * Los pines del recorrido, para dibujarlo mientras espera.
+     *
+     * Sin esto la pantalla de "buscando motorizado" quedaba vacía hasta que
+     * llegara la primera oferta: el cliente ya pidió y lo único que veía era
+     * un texto.
+     */
+    val origenLat: Double? = null,
+    val origenLng: Double? = null,
+    val destinoLat: Double? = null,
+    val destinoLng: Double? = null,
     /** El FLETE: lo que el cliente paga por el servicio. */
     val montoOfrecido: Long = 0,
     /**

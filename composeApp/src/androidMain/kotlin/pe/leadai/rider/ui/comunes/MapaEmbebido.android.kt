@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,9 +42,26 @@ import pe.leadai.rider.ui.tema.ColoresJala
 @Composable
 actual fun MapaEmbebido(url: String, modifier: Modifier) {
     var cargando by remember(url) { mutableStateOf(true) }
-    // Qué URL se mandó a cargar. NO se usa `webView.url` porque el WebView la
-    // normaliza y la comparación nunca coincide.
-    var urlCargada by remember { mutableStateOf<String?>(null) }
+    // Qué URL se mandó a cargar.
+    //
+    // NO se usa `webView.url`: el WebView la normaliza (escapa caracteres,
+    // reordena parámetros) y la comparación nunca coincide, así que recargaba
+    // en bucle y el mapa quedaba en blanco.
+    //
+    // `remember(url)` y no `remember`: si la URL cambia hay que volver a
+    // empezar. Con un `remember` pelado, `factory` cargaba una url y dejaba
+    // este valor en null, así que `update` la recargaba de inmediato — el
+    // mismo bucle, movido de lugar.
+    val urlCargada = remember(url) { mutableStateOf<String?>(null) }
+
+    // Red de seguridad: si a los 8 segundos el WebView no avisó que terminó,
+    // se descubre igual. Un `onPageFinished` que no llega —por un recurso
+    // externo colgado, por ejemplo— dejaba el indicador girando para siempre
+    // encima de un mapa que ya estaba dibujado abajo.
+    LaunchedEffect(url) {
+        delay(8_000)
+        cargando = false
+    }
     val colores = ColoresJala.actuales
 
     Box(modifier = modifier) {
@@ -92,6 +111,9 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
                         if (request.isForMainFrame) reintentarLuego(view)
                     }
                 }
+                // Se marca ANTES de cargar: si no, `update` corre con el
+                // valor todavía en null y dispara una segunda carga.
+                urlCargada.value = url
                 loadUrl(url)
             }
         },
@@ -101,8 +123,8 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
             // parámetros), así que `webView.url != url` daba true para
             // siempre. El mapa recargaba en bucle y se quedaba en blanco —
             // que es justo lo que pasaba al elegir el destino.
-            if (urlCargada != url) {
-                urlCargada = url
+            if (urlCargada.value != url) {
+                urlCargada.value = url
                 cargando = true
                 webView.loadUrl(url)
             }
