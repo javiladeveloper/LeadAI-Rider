@@ -18,6 +18,7 @@ import pe.leadai.rider.datos.PerfilMotorizadoDto
 import pe.leadai.rider.datos.Resultado
 import pe.leadai.rider.push.tokenPushActual
 import pe.leadai.rider.ui.comunes.AvisosGlobales
+import pe.leadai.rider.ui.tema.centavosASoles
 
 /** Estado inmutable de [CarrerasPantalla]. */
 data class CarrerasUiState(
@@ -189,13 +190,26 @@ class CarrerasViewModel(
         viewModelScope.launch(dispatcher) {
             when (val resultado = motorizadosApi.ofertarCarrera(carrera.pedidoId, montoCentavos)) {
                 is Resultado.Ok -> {
-                    _estado.update {
-                        it.copy(
-                            accionEnCurso = null,
-                            ofertadas = it.ofertadas + carrera.pedidoId,
-                        )
+                    // Aceptar el precio TAL CUAL asigna la carrera al toque
+                    // (el backend lo resuelve así): no hay nada que esperar,
+                    // el cliente ya dijo cuánto paga. Solo cuando pide MÁS
+                    // queda como propuesta.
+                    val tomoLaCarrera = montoCentavos <= carrera.montoOfrecido
+                    if (tomoLaCarrera) {
+                        _estado.update { it.copy(accionEnCurso = null) }
+                        avisos.mostrar("🏍️ ¡Carrera tuya! Andá al punto de recojo")
+                        // El backend ya la asignó: se recarga para que aparezca
+                        // como carrera en curso con su mapa.
+                        cargar()
+                    } else {
+                        _estado.update {
+                            it.copy(
+                                accionEnCurso = null,
+                                ofertadas = it.ofertadas + carrera.pedidoId,
+                            )
+                        }
+                        avisos.mostrar("✅ Pediste " + centavosASoles(montoCentavos) + ". Te avisamos si te eligen.")
                     }
-                    avisos.mostrar("✅ Propuesta enviada. Te avisamos si te eligen.")
                 }
                 is Resultado.Error -> {
                     _estado.update { it.copy(accionEnCurso = null) }

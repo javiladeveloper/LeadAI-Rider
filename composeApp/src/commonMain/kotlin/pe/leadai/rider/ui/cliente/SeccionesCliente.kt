@@ -32,6 +32,7 @@ import pe.leadai.rider.ui.billetera.fechaLegible
 import pe.leadai.rider.ui.comunes.BotonPrincipal
 import pe.leadai.rider.ui.comunes.CampoJala
 import pe.leadai.rider.ui.comunes.CardJala
+import pe.leadai.rider.ui.comunes.PieDeVersion
 import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.centavosASoles
 
@@ -275,6 +276,8 @@ fun PerfilCliente(
 
         Spacer(Modifier.height(16.dp))
     }
+
+    PieDeVersion()
 }
 
 /**

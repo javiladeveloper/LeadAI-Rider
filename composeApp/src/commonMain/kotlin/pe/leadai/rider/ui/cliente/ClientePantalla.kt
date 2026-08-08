@@ -1,5 +1,10 @@
 package pe.leadai.rider.ui.cliente
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -56,6 +61,9 @@ import pe.leadai.rider.ui.cliente.componentes.CardMontoCompra
 import pe.leadai.rider.ui.cliente.componentes.BuscadorRuta
 import pe.leadai.rider.ui.cliente.componentes.OfertasRecibidas
 import pe.leadai.rider.ui.cliente.componentes.PopupCalificar
+import pe.leadai.rider.ui.tema.Movimiento
+import pe.leadai.rider.ui.tema.recordarInteraccion
+import pe.leadai.rider.ui.tema.toqueVivo
 import pe.leadai.rider.ui.tema.AparecerCard
 import pe.leadai.rider.ui.cliente.componentes.MapaDeLaRuta
 import pe.leadai.rider.ui.cliente.componentes.PopupPrecio
@@ -228,6 +236,9 @@ fun ClientePantalla(
 private const val EXTRA_ESPERA_CENTAVOS = 200L
 
 private fun montoElegidoCentavos(estado: ClienteUiState): Long {
+    // Lo que tocó en el popup manda, y viene ya en centavos: pasar por soles
+    // perdía los 50 céntimos de cada paso.
+    estado.montoCentavos?.let { if (it > 0) return it }
     val escrito = estado.monto.toLongOrNull()
     if (escrito != null && escrito > 0) return escrito * 100
     return estado.montoSugerido ?: 500L
@@ -377,7 +388,16 @@ private fun FormularioPedir(
     }
 }
 
-/** Un tipo de carrera: elegido en teal, el otro en contorno. */
+/**
+ * Un tipo de carrera. El elegido va en ÁMBAR y los otros apenas se ven.
+ *
+ * Antes el elegido era un `Button` y el resto `OutlinedButton`: ambos con
+ * fondo claro y texto oscuro, así que a simple vista los tres se leían igual
+ * y no se sabía en qué sección estabas.
+ *
+ * El color anima al cambiar en vez de saltar, que es lo que hace que el
+ * cambio se registre como una acción tuya y no como un parpadeo.
+ */
 @Composable
 private fun BotonTipo(
     texto: String,
@@ -385,22 +405,42 @@ private fun BotonTipo(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (elegido) {
-        Button(
-            onClick = onClick,
-            modifier = modifier.height(52.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Text(texto, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center)
-        }
-    } else {
-        OutlinedButton(
-            onClick = onClick,
-            modifier = modifier.height(52.dp),
-            shape = RoundedCornerShape(16.dp),
-        ) {
-            Text(texto, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center)
-        }
+    val colores = ColoresJala.actuales
+    val fondo by animateColorAsState(
+        targetValue = if (elegido) colores.marcaAmarillo else MaterialTheme.colorScheme.surface,
+        animationSpec = tween(Movimiento.RAPIDO_MS),
+        label = "fondoTipo",
+    )
+    // El ámbar SIEMPRE lleva texto carbón: blanco sobre amarillo da 1.9:1,
+    // ilegible al sol (regla de contraste de los tokens).
+    val tinta by animateColorAsState(
+        targetValue = if (elegido) colores.marcaCarbon else colores.tintaSecundaria,
+        animationSpec = tween(Movimiento.RAPIDO_MS),
+        label = "tintaTipo",
+    )
+    val interaccion = recordarInteraccion()
+
+    Box(
+        modifier = modifier
+            .height(56.dp)
+            .toqueVivo(interaccion)
+            .background(fondo, RoundedCornerShape(16.dp))
+            .border(
+                width = if (elegido) 0.dp else 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(16.dp),
+            )
+            .clickable(interactionSource = interaccion, indication = null) { onClick() },
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            texto,
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontWeight = if (elegido) FontWeight.Bold else FontWeight.Normal,
+            ),
+            color = tinta,
+            textAlign = TextAlign.Center,
+        )
     }
 }
 

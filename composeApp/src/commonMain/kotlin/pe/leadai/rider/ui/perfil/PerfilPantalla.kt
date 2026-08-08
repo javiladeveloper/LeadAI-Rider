@@ -35,6 +35,7 @@ import pe.leadai.rider.datos.TemaRepositorio
 import pe.leadai.rider.ui.carreras.componentes.colorDeEstadoRider
 import pe.leadai.rider.ui.comunes.BadgeEstado
 import pe.leadai.rider.ui.comunes.CardJala
+import pe.leadai.rider.ui.comunes.PieDeVersion
 import pe.leadai.rider.ui.tema.ColoresJala
 
 /**
@@ -146,7 +147,10 @@ fun PerfilPantalla(
             OpcionDePerfil("🚪", "Cerrar sesión", onCerrarSesion, color = colores.calor)
         }
 
-        Spacer(Modifier.height(16.dp))
+        // Al pie: la primera pregunta al reportar algo raro es siempre "¿qué
+        // versión tenés?", y deducirlo de Play confunde bugs ya arreglados con
+        // bugs nuevos.
+        PieDeVersion()
     }
 }
 

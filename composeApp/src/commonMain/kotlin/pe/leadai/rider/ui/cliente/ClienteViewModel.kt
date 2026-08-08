@@ -70,6 +70,13 @@ data class ClienteUiState(
     /** Lo que dice el mapa donde está el pin, mientras el cliente lo mueve. */
     val direccionDelPin: String = "",
     /**
+     * Lo que ofrece el cliente, en centavos. `null` = todavía no lo tocó.
+     *
+     * Los pasos son de 50 céntimos, así que no entra en `monto` (soles
+     * enteros) sin perder la mitad en cada toque.
+     */
+    val montoCentavos: Long? = null,
+    /**
      * `true` mientras se resuelve la ruta y no hay un monto de verdad.
      *
      * El popup muestra "calculando" en vez de un número: un precio inventado
@@ -611,8 +618,24 @@ class ClienteViewModel(
     private var reversaEnCurso: Job? = null
 
     /** El precio que el cliente ofrece, en centavos (viene de los +/- del popup). */
+    /**
+     * El monto que ofrece el cliente, en CENTAVOS.
+     *
+     * Se guarda aparte de `monto` (que está en soles enteros) porque los
+     * pasos del popup son de 50 céntimos: al pasar por soles, `450 / 100` daba
+     * "4" y al volver a leerlo eran 400 otra vez. El cliente tocaba "+" y el
+     * número no se movía — quedaba atrapado en el mínimo.
+     */
     fun cambiarMontoCentavos(centavos: Long) =
-        _estado.update { it.copy(monto = (centavos / 100).toString(), error = null) }
+        _estado.update {
+            it.copy(
+                montoCentavos = centavos,
+                // `monto` se mantiene al día para lo que todavía lo lee (el
+                // envío del pedido), redondeado al sol como siempre.
+                monto = (centavos / 100).toString(),
+                error = null,
+            )
+        }
 
     fun pedir() {
         val a = _estado.value
@@ -637,7 +660,9 @@ class ClienteViewModel(
                     destinoTexto = a.destino,
                     destinoLat = a.destinoLat,
                     destinoLng = a.destinoLng,
-                    montoOfrecidoCentavos = aCentavos(a.monto),
+                    // El del popup si lo tocó: ya viene en centavos y conserva
+                    // los 50 de cada paso. `aCentavos(monto)` los perdía.
+                    montoOfrecidoCentavos = a.montoCentavos ?: aCentavos(a.monto),
                     // El monto de compra SOLO en encomienda: es lo que el rider
                     // adelanta y el cliente le devuelve, nunca parte del flete.
                     montoCompraEstimadoCentavos = if (a.tipo == TIPO_ENCOMIENDA) aCentavos(a.montoCompra) else null,
