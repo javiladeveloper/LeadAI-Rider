@@ -1,6 +1,7 @@
 package pe.leadai.rider.ui.cliente.componentes
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,6 +34,13 @@ fun MapaDeLaRuta(
     destinoLng: Double?,
     modifier: Modifier = Modifier,
 ) {
+    // Diagnóstico temporal: sin esto, un mapa que no aparece puede ser el
+    // componente que no se llama, las coordenadas en null, o el WebView que
+    // no carga — y desde afuera los tres se ven igual.
+    println(
+        "MapaRuta: o=" + origenLat + "," + origenLng +
+            " d=" + destinoLat + "," + destinoLng,
+    )
     if (origenLat == null || origenLng == null || destinoLat == null || destinoLng == null) return
 
     Box(
@@ -46,7 +54,12 @@ fun MapaDeLaRuta(
         MapaEmbebido(
             url = "$URL_MAPA_RUTA?oLat=$origenLat&oLng=$origenLng" +
                 "&dLat=$destinoLat&dLng=$destinoLng",
-            modifier = Modifier.fillMaxWidth(),
+            // fillMaxSIZE, no fillMaxWidth: adentro el WebView usa
+            // `fillMaxSize()`, y dentro de un modifier que solo fija el ancho
+            // eso resuelve a CERO de alto. El WebView existía y cargaba la
+            // página —el cache lo confirma— pero medía 0 px, así que se veía
+            // un hueco vacío. Ese era el "mapa en blanco".
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }

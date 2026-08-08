@@ -110,6 +110,7 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
                 }
                 webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView, url: String) {
+                        android.util.Log.i("MapaWeb", "terminó de cargar: " + url)
                         cargando = false
                     }
 
@@ -136,6 +137,7 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
                 }
                 // Se marca ANTES de cargar: si no, `update` corre con el
                 // valor todavía en null y dispara una segunda carga.
+                android.util.Log.i("MapaWeb", "factory: cargando " + url)
                 urlCargada.value = url
                 loadUrl(url)
             }

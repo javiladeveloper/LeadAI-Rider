@@ -158,10 +158,17 @@ class CarrerasViewModel(
                     _estado.update {
                         it.copy(carreras = resultado.valor.carreras, miCarrera = resultado.valor.miCarrera)
                     }
-                    // Tracking nivel 2: con carrera en curso, cada vuelta del
-                    // polling también reporta el GPS — así el cliente ve al
-                    // rider moverse en el mapa de /track/:pedidoId.
-                    if (resultado.valor.miCarrera != null) reportarPosicion()
+                    // El GPS se reporta con carrera en curso (para que el
+                    // cliente vea la moto en /track/:id) y TAMBIÉN estando en
+                    // turno sin carrera: es lo que alimenta el radar de
+                    // "buscando motorizado".
+                    //
+                    // Antes solo reportaba durante una carrera, así que un
+                    // rider esperando trabajo no existía para el radar — el
+                    // cliente veía un mapa vacío aunque hubiera motos a la
+                    // vuelta.
+                    val enTurno = _estado.value.perfil?.disponible == true
+                    if (resultado.valor.miCarrera != null || enTurno) reportarPosicion()
                 }
                 is Resultado.Error -> Unit
             }
@@ -199,26 +206,23 @@ class CarrerasViewModel(
         viewModelScope.launch(dispatcher) {
             when (val resultado = motorizadosApi.ofertarCarrera(carrera.pedidoId, montoCentavos)) {
                 is Resultado.Ok -> {
-                    // Aceptar el precio TAL CUAL asigna la carrera al toque
-                    // (el backend lo resuelve así): no hay nada que esperar,
-                    // el cliente ya dijo cuánto paga. Solo cuando pide MÁS
-                    // queda como propuesta.
-                    val tomoLaCarrera = montoCentavos <= carrera.montoOfrecido
-                    if (tomoLaCarrera) {
-                        _estado.update { it.copy(accionEnCurso = null) }
-                        avisos.mostrar("🏍️ ¡Carrera tuya! Andá al punto de recojo")
-                        // El backend ya la asignó: se recarga para que aparezca
-                        // como carrera en curso con su mapa.
-                        cargar()
-                    } else {
-                        _estado.update {
-                            it.copy(
-                                accionEnCurso = null,
-                                ofertadas = it.ofertadas + carrera.pedidoId,
-                            )
-                        }
-                        avisos.mostrar("✅ Pediste " + centavosASoles(montoCentavos) + ". Te avisamos si te eligen.")
+                    // TODO va como propuesta, incluso aceptar el precio exacto:
+                    // el cliente elige entre los que ofertaron mirando también
+                    // calificación y tiempo de llegada, no solo el monto.
+                    _estado.update {
+                        it.copy(
+                            accionEnCurso = null,
+                            ofertadas = it.ofertadas + carrera.pedidoId,
+                        )
                     }
+                    val texto = if (montoCentavos <= carrera.montoOfrecido) {
+                        "✅ Aceptaste " + centavosASoles(montoCentavos) +
+                            ". El cliente elige entre los que se ofrecieron."
+                    } else {
+                        "✅ Pediste " + centavosASoles(montoCentavos) +
+                            ". Te avisamos si te eligen."
+                    }
+                    avisos.mostrar(texto)
                 }
                 is Resultado.Error -> {
                     _estado.update { it.copy(accionEnCurso = null) }

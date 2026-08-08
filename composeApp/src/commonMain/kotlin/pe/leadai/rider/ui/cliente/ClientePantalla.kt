@@ -67,6 +67,7 @@ import pe.leadai.rider.ui.tema.toqueVivo
 import pe.leadai.rider.ui.tema.AparecerCard
 import pe.leadai.rider.ui.cliente.componentes.MapaDeLaRuta
 import pe.leadai.rider.ui.cliente.componentes.PopupPrecio
+import pe.leadai.rider.ui.cliente.componentes.RadarMotos
 import pe.leadai.rider.ui.cliente.componentes.SelectorYaPedi
 import pe.leadai.rider.ui.comunes.BannerError
 import pe.leadai.rider.ui.comunes.BarraInferiorCliente
@@ -312,7 +313,10 @@ private fun FormularioPedir(
         // Entra animado: apenas el cliente elige el destino, el mapa "crece"
         // del formulario. Aparecer de golpe hace que el resto salte y no se
         // registre que algo nuevo pasó.
-        AparecerCard(visible = estado.destinoLat != null) {
+        // SIN AparecerCard: el `expandVertically` mide el contenido para
+        // animar el alto, y un WebView todavía no tiene tamaño cuando eso
+        // ocurre — la animación lo dejaba colapsado en 0 y se veía un hueco.
+        if (estado.destinoLat != null) {
             Column {
                 MapaDeLaRuta(
                     origenLat = estado.origenLat,
@@ -484,33 +488,32 @@ private fun SeguimientoCarrera(
             )
             Spacer(Modifier.height(10.dp))
         } else {
-            // Mientras nadie la tomó, el cliente ELIGE entre las ofertas que
-            // llegaron — no espera pasivo a que alguien la agarre.
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp),
-            ) {
-                // El recorrido mientras espera. Sin esto la pantalla quedaba
-                // vacía hasta que llegara la primera oferta: el cliente ya
-                // pidió, pagó su decisión, y lo único que veía era un texto.
-                // Ver su ruta confirma que el pedido salió como quería.
-                MapaDeLaRuta(
-                    origenLat = carrera.origenLat,
-                    origenLng = carrera.origenLng,
-                    destinoLat = carrera.destinoLat,
-                    destinoLng = carrera.destinoLng,
+            // El RADAR de fondo y las ofertas ENCIMA.
+            //
+            // El radar ocupa todo el espacio porque es lo único que pasa
+            // mientras nadie responde: ver motos moverse alrededor dice que
+            // hay gente ahí, que la búsqueda sigue, y cuántos hay. Las
+            // ofertas se apilan sobre él a medida que llegan, sin taparlo.
+            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                RadarMotos(
+                    lat = carrera.origenLat,
+                    lng = carrera.origenLng,
+                    modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                 )
-                Spacer(Modifier.height(16.dp))
-
-                OfertasRecibidas(
-                    ofertas = ofertas,
-                    montoOfrecido = carrera.montoOfrecido,
-                    eligiendo = eligiendoOferta,
-                    onElegir = onElegirOferta,
-                    onSubirMonto = onSubirMonto,
-                )
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(horizontal = 16.dp),
+                ) {
+                    OfertasRecibidas(
+                        ofertas = ofertas,
+                        montoOfrecido = carrera.montoOfrecido,
+                        eligiendo = eligiendoOferta,
+                        onElegir = onElegirOferta,
+                        onSubirMonto = onSubirMonto,
+                    )
+                }
             }
         }
 
