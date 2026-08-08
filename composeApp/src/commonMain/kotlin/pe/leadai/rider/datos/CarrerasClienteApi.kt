@@ -26,6 +26,8 @@ class CarrerasClienteApi(private val api: ApiCliente) {
         destinoTexto: String,
         destinoLat: Double? = null,
         destinoLng: Double? = null,
+        /** Delivery donde el rider tiene que pedir en el local y esperar. */
+        esperaEnLocal: Boolean = false,
     ): Resultado<SugerenciaDto> =
         api.post<JsonObject, SugerenciaDto>(
             path = "/carreras/sugerir",
@@ -36,6 +38,7 @@ class CarrerasClienteApi(private val api: ApiCliente) {
                 origenLng?.let { put("origenLng", it) }
                 put("destinoTexto", destinoTexto)
                 destinoLat?.let { put("destinoLat", it) }
+                if (esperaEnLocal) put("esperaEnLocal", true)
                 destinoLng?.let { put("destinoLng", it) }
             },
             requiereSesion = true,

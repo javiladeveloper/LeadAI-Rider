@@ -22,6 +22,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.draw.clip
+import pe.leadai.rider.ui.comunes.MapaElegirPunto
 import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.centavosASoles
 
@@ -32,6 +34,9 @@ import pe.leadai.rider.ui.tema.centavosASoles
  * pasa de largo el precio que quería; con saltos de 10 céntimos necesita diez
  * toques para mover un sol.
  */
+/** La página del mini mapa vive en el backend, como la del tracking. */
+private const val URL_MAPA_PUNTO = "https://api.leadai-pe.com/mapa/punto"
+
 private const val PASO_CENTAVOS = 50L
 
 /**
@@ -75,6 +80,12 @@ fun PopupPrecio(
     onCambiar: (Long) -> Unit,
     onConfirmar: () -> Unit,
     onCerrar: () -> Unit,
+    /** El punto de recojo, para confirmarlo en el mapa. `null` = sin mapa. */
+    origenLat: Double? = null,
+    origenLng: Double? = null,
+    /** Dirección del pin mientras el cliente lo mueve. */
+    direccionDelPin: String = "",
+    onMoverPin: (lat: Double, lng: Double) -> Unit = { _, _ -> },
 ) {
     val colores = ColoresJala.actuales
 
@@ -100,6 +111,33 @@ fun PopupPrecio(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
             )
+
+            // El mapa para confirmar DÓNDE recogen. El autocompletado puede
+            // dejar el pin media cuadra corrido, y el rider termina llamando
+            // por teléfono para encontrar la puerta.
+            if (origenLat != null && origenLng != null) {
+                Spacer(Modifier.height(14.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp)
+                        .clip(RoundedCornerShape(14.dp)),
+                ) {
+                    MapaElegirPunto(
+                        url = "$URL_MAPA_PUNTO?lat=$origenLat&lng=$origenLng",
+                        onPunto = onMoverPin,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    direccionDelPin.ifBlank { "Movés el mapa para ajustar el punto" },
+                    style = MaterialTheme.typography.labelSmall,
+                    color = colores.tintaSecundaria,
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                )
+            }
 
             Spacer(Modifier.height(18.dp))
 

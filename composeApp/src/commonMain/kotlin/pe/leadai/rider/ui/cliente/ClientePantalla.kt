@@ -57,6 +57,7 @@ import pe.leadai.rider.ui.cliente.componentes.BuscadorRuta
 import pe.leadai.rider.ui.cliente.componentes.OfertasRecibidas
 import pe.leadai.rider.ui.cliente.componentes.PopupCalificar
 import pe.leadai.rider.ui.cliente.componentes.PopupPrecio
+import pe.leadai.rider.ui.cliente.componentes.SelectorYaPedi
 import pe.leadai.rider.ui.cliente.componentes.CardTarifa
 import pe.leadai.rider.ui.comunes.BannerError
 import pe.leadai.rider.ui.comunes.BarraInferiorCliente
@@ -162,6 +163,7 @@ fun ClientePantalla(
                         onContacto = viewModel::cambiarContacto,
                         onSugerir = viewModel::pedirSugerencia,
                         onPedir = viewModel::revisarPrecio,
+                        onEsperaEnLocal = viewModel::cambiarEsperaEnLocal,
                         onFoco = viewModel::enfocarCampo,
                         onElegirSugerencia = viewModel::elegirSugerencia,
                     )
@@ -201,6 +203,10 @@ fun ClientePantalla(
                 onCambiar = viewModel::cambiarMontoCentavos,
                 onConfirmar = viewModel::pedir,
                 onCerrar = viewModel::cerrarAjustePrecio,
+                origenLat = estado.origenLat,
+                origenLng = estado.origenLng,
+                direccionDelPin = estado.direccionDelPin,
+                onMoverPin = viewModel::moverPin,
             )
         }
     }
@@ -212,6 +218,13 @@ fun ClientePantalla(
  * Nunca cero: un popup que arranca en S/0 obliga a subir de a un sol desde
  * abajo. Sin ninguna referencia cae en S/5, el piso típico en Tacna.
  */
+/**
+ * Lo que suma la espera en el local. Igual que `ESPERA_EN_LOCAL_CENTAVOS` del
+ * backend, que es quien manda: acá solo se muestra antes de que el cliente
+ * elija.
+ */
+private const val EXTRA_ESPERA_CENTAVOS = 200L
+
 private fun montoElegidoCentavos(estado: ClienteUiState): Long {
     val escrito = estado.monto.toLongOrNull()
     if (escrito != null && escrito > 0) return escrito * 100
@@ -233,6 +246,7 @@ private fun FormularioPedir(
     onContacto: (String) -> Unit,
     onSugerir: () -> Unit,
     onPedir: () -> Unit,
+    onEsperaEnLocal: (Boolean) -> Unit,
     onFoco: (Boolean) -> Unit,
     onElegirSugerencia: (pe.leadai.rider.datos.SugerenciaDireccionDto) -> Unit,
 ) {
@@ -285,6 +299,17 @@ private fun FormularioPedir(
             onMontoCambia = onMonto,
             montoSugeridoCentavos = estado.montoSugerido,
         )
+
+        // Solo en delivery: cambia el trabajo del rider y el precio. En un
+        // envío el paquete ya existe y en un viaje no hay nada que esperar.
+        if (estado.tipo == TIPO_DELIVERY) {
+            SelectorYaPedi(
+                esperaEnLocal = estado.esperaEnLocal,
+                extraCentavos = EXTRA_ESPERA_CENTAVOS,
+                onCambiar = onEsperaEnLocal,
+            )
+            Spacer(Modifier.height(12.dp))
+        }
 
         // Cuánta plata adelanta el rider en la compra. En delivery también:
         // el pollo lo paga él y se lo devolvés al recibirlo.

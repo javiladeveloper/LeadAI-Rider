@@ -62,6 +62,7 @@ import pe.leadai.rider.ui.permisos.PermisosPantalla
 import pe.leadai.rider.ui.carreras.componentes.CardCarrera
 import pe.leadai.rider.ui.carreras.componentes.ChipMontoSobreMapa
 import pe.leadai.rider.ui.carreras.componentes.EncabezadoRider
+import pe.leadai.rider.ui.carreras.componentes.HojaPago
 import pe.leadai.rider.ui.carreras.componentes.HojaCarreraActiva
 import pe.leadai.rider.ui.carreras.componentes.CardSaldo
 import pe.leadai.rider.ui.carreras.componentes.colorDeEstadoRider
@@ -132,6 +133,13 @@ fun CarrerasPantalla(
     var confirmandoCancelar by remember { mutableStateOf(false) }
     // Recarga del monedero: elige paquete → abre la página de pago (Culqi).
     var eligiendoPaquete by remember { mutableStateOf(false) }
+    /**
+     * URL de la recarga mientras está abierta, o `null`.
+     *
+     * Va embebida y no en el navegador: salir de la app justo cuando hay que
+     * escribir una tarjeta es donde más riders abandonan la recarga.
+     */
+    var urlDePago by remember { mutableStateOf<String?>(null) }
     // Los permisos del sistema, a demanda desde "⚙️ Permisos".
     var viendoPermisos by remember { mutableStateOf(false) }
     var seccion by remember { mutableStateOf(SeccionRider.INICIO) }
@@ -291,9 +299,8 @@ fun CarrerasPantalla(
                                 onRecargar = { eligiendoPaquete = true },
                                 onElegirPaquete = { paqueteId ->
                                     val token = sesion?.token.orEmpty()
-                                    abridorPago.openUri(
-                                        "$URL_BASE_TRACKING/pago/rider?token=$token&paquete=$paqueteId",
-                                    )
+                                    urlDePago =
+                                        "$URL_BASE_TRACKING/pago/rider?token=$token&paquete=$paqueteId"
                                 },
                             )
                             SeccionRider.PERFIL -> PerfilPantalla(
@@ -313,16 +320,28 @@ fun CarrerasPantalla(
         }
     }
 
+    urlDePago?.let { url ->
+        HojaPago(
+            url = url,
+            onCerrar = {
+                urlDePago = null
+                // Al volver puede haber saldo nuevo: sin esto el rider veía el
+                // saldo viejo y creía que la recarga no entró.
+                viewModel.cargar()
+            },
+        )
+    }
+
     if (eligiendoPaquete) {
         DialogoRecargar(
             paquetes = estado.monedero?.paquetes.orEmpty(),
             onElegir = { paqueteId ->
                 eligiendoPaquete = false
                 // La página de pago vive en el backend (ahí corre el SDK de
-                // Culqi que tokeniza la tarjeta). El token de sesión va en la
-                // URL porque el navegador no comparte la sesión de la app.
+                // Culqi que tokeniza la tarjeta). El token va en la URL porque
+                // el WebView no comparte la sesión de la app.
                 val token = sesion?.token.orEmpty()
-                abridorPago.openUri("$URL_BASE_TRACKING/pago/rider?token=$token&paquete=$paqueteId")
+                urlDePago = "$URL_BASE_TRACKING/pago/rider?token=$token&paquete=$paqueteId"
             },
             onCancelar = { eligiendoPaquete = false },
         )

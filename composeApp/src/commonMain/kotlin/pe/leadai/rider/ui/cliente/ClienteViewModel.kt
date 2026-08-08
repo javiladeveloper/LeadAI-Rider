@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -57,6 +58,24 @@ data class ClienteUiState(
     val origen: String = "",
     val origenLat: Double? = null,
     val origenLng: Double? = null,
+    /**
+     * El pin del destino, cuando salió de una sugerencia.
+     *
+     * Sin esto el monto sugerido no se podía calcular: el backend necesita
+     * los DOS puntos para pedirle la ruta a OSRM, y con solo el texto el
+     * precio caía al valor por defecto.
+     */
+    val destinoLat: Double? = null,
+    val destinoLng: Double? = null,
+    /** Lo que dice el mapa donde está el pin, mientras el cliente lo mueve. */
+    val direccionDelPin: String = "",
+    /**
+     * En delivery: si el rider tiene que HACER el pedido y esperar.
+     *
+     * Arranca en `false` —"ya lo pedí"— porque es el caso más común y el más
+     * barato: si el cliente no toca nada, no se le cobra de más.
+     */
+    val esperaEnLocal: Boolean = false,
     val destino: String = "",
     /** El FLETE que ofrece pagar, en soles como texto (lo edita el usuario). */
     val monto: String = "",
@@ -278,6 +297,28 @@ class ClienteViewModel(
         _estado.update { it.copy(editandoOrigen = esOrigen, sugerencias = emptyList()) }
     }
 
+    /**
+     * El punto de referencia para acotar la búsqueda: el origen si ya está,
+     * si no el GPS del teléfono.
+     *
+     * El GPS se cachea en memoria: pedirlo en cada tecleo es lento y consume
+     * batería, y la ciudad no cambia mientras se escribe una dirección.
+     */
+    private var ultimaUbicacionConocida: Pair<Double, Double>? = null
+
+    private suspend fun ubicacionParaBuscar(a: ClienteUiState): Pair<Double, Double>? {
+        val origen = a.origenLat to a.origenLng
+        if (origen.first != null && origen.second != null) {
+            @Suppress("UNCHECKED_CAST")
+            return origen as Pair<Double, Double>
+        }
+        ultimaUbicacionConocida?.let { return it }
+        val u = obtenerUbicacion() ?: return null
+        val punto = u.lat to u.lng
+        ultimaUbicacionConocida = punto
+        return punto
+    }
+
     /** Busca direcciones con lo que lleva escrito. */
     private fun buscarDirecciones(texto: String) {
         busquedaEnCurso?.cancel()
@@ -291,7 +332,14 @@ class ClienteViewModel(
             kotlinx.coroutines.delay(400)
             _estado.update { it.copy(buscandoDirecciones = true) }
             val a = _estado.value
-            when (val r = api.buscarDirecciones(texto, a.origenLat, a.origenLng)) {
+            // Dónde está el cliente, para acotar la búsqueda a SU ciudad.
+            //
+            // El origen sirve cuando ya lo eligió, pero al escribir el ORIGEN
+            // ese campo está vacío: se mandaba null, el backend no sabía la
+            // ciudad y caía a Lima. Buscar "jose olaya 110" desde Tacna
+            // devolvía un local de San Martín de Porres.
+            val punto = ubicacionParaBuscar(a)
+            when (val r = api.buscarDirecciones(texto, punto?.first, punto?.second)) {
                 is Resultado.Ok -> _estado.update {
                     it.copy(sugerencias = r.valor, buscandoDirecciones = false)
                 }
@@ -313,7 +361,13 @@ class ClienteViewModel(
                     sugerencias = emptyList(),
                 )
             } else {
-                it.copy(destino = s.texto, sugerencias = emptyList())
+                // Las coordenadas del destino también: sin ellas el backend
+                // tiene que geocodificar el texto a ciegas, y si no acierta no
+                // hay ruta — el precio caía al valor por defecto.
+                it.copy(
+                    destino = s.texto, destinoLat = s.lat, destinoLng = s.lng,
+                    sugerencias = emptyList(),
+                )
             }
         }
         // Con los dos puntos ya se puede calcular cuánto conviene ofrecer.
@@ -421,6 +475,9 @@ class ClienteViewModel(
     }
 
     fun cambiarDestino(valor: String) {
+        // Al escribir a mano el pin anterior deja de valer: si no, se cotiza
+        // contra el destino viejo mientras el texto ya dice otra cosa.
+        _estado.update { it.copy(destinoLat = null, destinoLng = null) }
         _estado.update { it.copy(destino = valor, error = null, editandoOrigen = false) }
         buscarDirecciones(valor)
     }
@@ -448,6 +505,14 @@ class ClienteViewModel(
                     origenLat = a.origenLat,
                     origenLng = a.origenLng,
                     destinoTexto = a.destino,
+                    // Con los dos pines el backend rutea de verdad; sin ellos
+                    // tiene que geocodificar a ciegas y el monto sale del
+                    // valor por defecto.
+                    destinoLat = a.destinoLat,
+                    destinoLng = a.destinoLng,
+                    // Solo en delivery: en un envío el paquete ya existe y en
+                    // un viaje de pasajero no hay nada que esperar.
+                    esperaEnLocal = a.tipo == TIPO_DELIVERY && a.esperaEnLocal,
                 )
             ) {
                 is Resultado.Ok -> _estado.update {
@@ -488,6 +553,45 @@ class ClienteViewModel(
 
     fun cerrarAjustePrecio() = _estado.update { it.copy(ajustandoPrecio = false) }
 
+    /** "Ya lo pedí" / "Pedilo vos": cambia el monto sugerido al instante. */
+    fun cambiarEsperaEnLocal(espera: Boolean) {
+        _estado.update { it.copy(esperaEnLocal = espera) }
+        // Recotiza: el cliente tiene que ver el precio nuevo al tocar, no
+        // descubrirlo después en el popup.
+        pedirSugerencia()
+    }
+
+    /**
+     * El cliente movió el pin del mapa: se guarda el punto y se busca qué
+     * dirección hay ahí.
+     *
+     * El texto se actualiza solo, así que el pin y la dirección nunca dicen
+     * cosas distintas. Antes ganaba el texto, que es el dato menos preciso —
+     * y el rider llegaba a la cuadra equivocada.
+     */
+    fun moverPin(lat: Double, lng: Double) {
+        _estado.update { it.copy(origenLat = lat, origenLng = lng) }
+        // Se cancela la consulta anterior: arrastrar el mapa dispara varios
+        // avisos seguidos y Nominatim admite uno por segundo.
+        reversaEnCurso?.cancel()
+        reversaEnCurso = viewModelScope.launch(dispatcher) {
+            kotlinx.coroutines.delay(500)
+            when (val r = api.direccionEn(lat, lng)) {
+                is Resultado.Ok -> {
+                    val texto = r.valor
+                    if (!texto.isNullOrBlank()) {
+                        _estado.update { it.copy(origen = texto, direccionDelPin = texto) }
+                    }
+                }
+                // Sin dirección el punto sigue valiendo: son las coordenadas
+                // las que guían al rider, no el texto.
+                is Resultado.Error -> Unit
+            }
+        }
+    }
+
+    private var reversaEnCurso: Job? = null
+
     /** El precio que el cliente ofrece, en centavos (viene de los +/- del popup). */
     fun cambiarMontoCentavos(centavos: Long) =
         _estado.update { it.copy(monto = (centavos / 100).toString(), error = null) }
@@ -513,8 +617,8 @@ class ClienteViewModel(
                     origenLat = a.origenLat,
                     origenLng = a.origenLng,
                     destinoTexto = a.destino,
-                    destinoLat = null,
-                    destinoLng = null,
+                    destinoLat = a.destinoLat,
+                    destinoLng = a.destinoLng,
                     montoOfrecidoCentavos = aCentavos(a.monto),
                     // El monto de compra SOLO en encomienda: es lo que el rider
                     // adelanta y el cliente le devuelve, nunca parte del flete.

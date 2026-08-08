@@ -82,11 +82,13 @@ fun BilleteraPantalla(
         item(key = "acciones") {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 BotonRecargar(onClick = onRecargar)
-                // "Retirar ganancias" está en el diseño pero el backend no
-                // tiene ese flujo todavía: el monedero solo acredita saldo
-                // para comisiones, no devuelve plata. Se muestra desactivado
-                // en vez de esconderlo, para que el rider sepa que existe.
-                BotonRetirar()
+                // Acá había un "Retirar ganancias" apagado con un
+                // "Próximamente". Se quitó (2026-08-08): este monedero es
+                // PREPAGO —el rider carga saldo para pagar comisiones— y lo
+                // que gana lo cobra en efectivo del cliente. No hay plata
+                // nuestra que retirar, así que el botón no prometía una
+                // función futura: sugería que la app le guarda dinero, y un
+                // rider podía quedarse esperando un pago que no existe.
             }
         }
 
@@ -206,49 +208,6 @@ private fun BotonRecargar(onClick: () -> Unit) {
     }
 }
 
-/**
- * "Retirar Ganancias" — en el diseño, con borde y fondo neutro.
- *
- * Desactivado a propósito: el monedero de hoy es PREPAGO (se carga saldo para
- * pagar comisiones), no una cuenta de la que se pueda sacar plata. Lo que el
- * rider gana lo cobra en efectivo del cliente. Mostrarlo apagado es más
- * honesto que esconderlo: el diseño lo prevé y algún día va a existir.
- */
-@Composable
-private fun BotonRetirar() {
-    val colores = ColoresJala.actuales
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .background(
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                shape = RoundedCornerShape(16.dp),
-            )
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(16.dp),
-            ),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text("💵", style = MaterialTheme.typography.bodyLarge)
-        Spacer(Modifier.size(8.dp))
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-                "Retirar Ganancias",
-                style = MaterialTheme.typography.bodyLarge,
-                color = colores.tintaSecundaria,
-            )
-            Text(
-                "Próximamente",
-                style = MaterialTheme.typography.labelSmall,
-                color = colores.tintaSecundaria,
-            )
-        }
-    }
-}
 
 /** "S/20" tocable: atajo directo al pago de ese paquete. */
 @Composable
