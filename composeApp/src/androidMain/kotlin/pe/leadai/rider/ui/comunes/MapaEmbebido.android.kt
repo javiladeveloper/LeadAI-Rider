@@ -142,7 +142,23 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
                 }
                 webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView, url: String) {
-                        android.util.Log.i("MapaWeb", "terminó de cargar: " + url)
+                        // El TAMAÑO REAL en el log, no solo que terminó.
+                        //
+                        // Un mapa en blanco tiene dos causas que se ven igual:
+                        // la página falló, o el WebView mide cero. Sin este
+                        // dato hay que adivinar entre las dos —y ya perdimos
+                        // varios intentos haciendo justo eso—.
+                        android.util.Log.i(
+                            "MapaWeb",
+                            "terminó de cargar (" + view.width + "x" + view.height + "px): " + url,
+                        )
+                        if (view.height == 0) {
+                            android.util.Log.w(
+                                "MapaWeb",
+                                "ALTO CERO: la página está bien pero el contenedor no mide. " +
+                                    "Mirar el modifier de quien lo dibuja, no la página.",
+                            )
+                        }
                         cargando = false
                     }
 
@@ -177,10 +193,19 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
             }
         },
         onRelease = { webView ->
-            // Sin esto la referencia sobrevive a la pantalla y el observador
-            // seguiría hablándole a un WebView ya destruido.
+            // Se suelta la referencia para que el observador del ciclo de vida
+            // no le hable a una vista que ya no está en pantalla.
+            //
+            // Pero NO se llama a `destroy()`: AndroidView mantiene un pool y
+            // puede REUTILIZAR esta misma instancia cuando el mapa vuelve al
+            // árbol —que acá pasa seguido, porque aparece y desaparece según
+            // haya destino elegido—. Un WebView destruido no se recupera:
+            // queda en blanco para siempre. Eso fue exactamente el mapa en
+            // blanco del formulario.
+            //
+            // El WebView se libera solo cuando Android recoge la vista.
             webViewActual.value = null
-            webView.destroy()
+            webView.stopLoading()
         },
         update = { webView ->
             // Se compara contra la ÚLTIMA URL PEDIDA, no contra `webView.url`:
