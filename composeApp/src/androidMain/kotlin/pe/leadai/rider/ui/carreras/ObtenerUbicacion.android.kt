@@ -21,10 +21,23 @@ import kotlin.coroutines.resume
  */
 private var permisoYaPedido = false
 
-actual suspend fun obtenerUbicacionActual(): UbicacionRider? {
+/** Cuántas veces se pidió, para que cada registro tenga una clave distinta. */
+private var pedidosDePermiso = 0
+
+actual suspend fun obtenerUbicacionActual(loPidioElUsuario: Boolean): UbicacionRider? {
     val activity = ContextoActividad.activity ?: return null
     if (!tienePermisoUbicacion(activity)) {
-        if (permisoYaPedido) return null
+        // Un TOQUE del usuario siempre vuelve a preguntar.
+        //
+        // `permisoYaPedido` es global al proceso y no se reseteaba nunca, así
+        // que bastaba un intento fallido —la pantalla abriendo antes de que la
+        // Activity estuviera lista, o un "ahora no"— para que TODAS las
+        // llamadas siguientes devolvieran null sin pedir nada. El botón verde
+        // quedaba muerto y sin ninguna señal de por qué.
+        //
+        // En automático se sigue pidiendo una sola vez: insistir en cada
+        // pantalla sería un diálogo cada dos por tres.
+        if (permisoYaPedido && !loPidioElUsuario) return null
         permisoYaPedido = true
         val componente = activity as? ComponentActivity ?: return null
         if (!pedirPermisoUbicacion(componente)) return null
@@ -59,7 +72,10 @@ private suspend fun pedirPermisoUbicacion(componente: ComponentActivity): Boolea
     suspendCancellableCoroutine { cont ->
         var launcher: ActivityResultLauncher<String>? = null
         launcher = componente.activityResultRegistry.register(
-            "permiso-ubicacion-rider",
+            // Clave única por pedido: `activityResultRegistry` revienta si se
+            // registra dos veces la misma, y ahora se puede pedir más de una
+            // vez en la misma sesión.
+            "permiso-ubicacion-" + (++pedidosDePermiso),
             ActivityResultContracts.RequestPermission(),
         ) { concedido ->
             launcher?.unregister()

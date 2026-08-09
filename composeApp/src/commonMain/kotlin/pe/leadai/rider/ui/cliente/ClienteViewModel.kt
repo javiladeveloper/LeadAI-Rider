@@ -175,7 +175,9 @@ class ClienteViewModel(
     private val perfilApi: PerfilApi,
     private val dispatcher: CoroutineDispatcher = Dispatchers.Main.immediate,
     /** GPS inyectable (mismo patrón que `CarrerasViewModel`) — en tests, `null`. */
-    private val obtenerUbicacion: suspend () -> UbicacionRider? = { obtenerUbicacionActual() },
+    private val obtenerUbicacion: suspend (Boolean) -> UbicacionRider? = { loPidio ->
+        obtenerUbicacionActual(loPidio)
+    },
     /** Token FCM inyectable (mismo patrón que `CarrerasViewModel`). */
     private val obtenerTokenPush: suspend () -> String? = { tokenPushActual() },
 ) : ViewModel() {
@@ -197,7 +199,7 @@ class ClienteViewModel(
             }
         }
         registrarPush()
-        usarMiUbicacion()
+        usarMiUbicacion(loPidioElUsuario = false)
         refrescarHistorial()
         refrescarPerfil()
     }
@@ -298,10 +300,10 @@ class ClienteViewModel(
      * y en un envío es la casa de quien manda el paquete — poner ahí la
      * ubicación del cliente manda al rider al lugar equivocado.
      */
-    fun usarMiUbicacion() {
+    fun usarMiUbicacion(loPidioElUsuario: Boolean = true) {
         if (_estado.value.tipo != TIPO_PASAJERO) return
         viewModelScope.launch(dispatcher) {
-            val u = obtenerUbicacion() ?: return@launch
+            val u = obtenerUbicacion(loPidioElUsuario) ?: return@launch
             _estado.update {
                 it.copy(
                     origenLat = u.lat,
@@ -345,7 +347,7 @@ class ClienteViewModel(
             return origen as Pair<Double, Double>
         }
         ultimaUbicacionConocida?.let { return it }
-        val u = obtenerUbicacion() ?: return null
+        val u = obtenerUbicacion(false) ?: return null
         val punto = u.lat to u.lng
         ultimaUbicacionConocida = punto
         return punto

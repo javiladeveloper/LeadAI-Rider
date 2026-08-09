@@ -28,6 +28,7 @@ import pe.leadai.rider.ui.comunes.AvisosGlobales
 import kotlin.random.Random
 import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
+import pe.leadai.rider.ui.carreras.UbicacionRider
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -69,6 +70,27 @@ class ClienteViewModelTest {
             dispatcher = testDispatcher,
             obtenerUbicacion = { null },
             obtenerTokenPush = { tokenPush },
+        )
+    }
+
+    /** Como el anterior, pero con GPS: devuelve `ubicacion` y anota cómo se pidió. */
+    private fun vmConGps(
+        engine: MockEngine,
+        ubicacion: UbicacionRider? = UbicacionRider(-17.99, -70.23),
+        comoSePidio: MutableList<Boolean> = mutableListOf(),
+    ): ClienteViewModel {
+        val apiCliente = ApiCliente(sesion = SesionRepositorio(dataStoreDePrueba()), engine = engine)
+        return ClienteViewModel(
+            api = CarrerasClienteApi(apiCliente),
+            avisos = AvisosGlobales(),
+            motorizadosApi = MotorizadosApi(apiCliente),
+            perfilApi = PerfilApi(apiCliente),
+            dispatcher = testDispatcher,
+            obtenerUbicacion = { loPidio ->
+                comoSePidio.add(loPidio)
+                ubicacion
+            },
+            obtenerTokenPush = { null },
         )
     }
 
@@ -445,4 +467,82 @@ class ClienteViewModelTest {
         assertEquals("2026-08-06T10:30:00.000Z", viaje.entregadoEn)
     }
 
+    // ── Mi ubicación como origen ────────────────────────────────────────
+
+    @Test
+    fun en_pasajero_el_origen_se_llena_solo_con_el_gps() = runTest {
+        // El cliente abre la app para pedir un viaje DESDE donde está: que
+        // tenga que escribir su propia dirección es trabajo que la app puede
+        // ahorrarle. Se veía "¿Desde dónde?" vacío.
+        val engine = MockEngine {
+            respond(
+                content = """{"carrera":null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val vm = vmConGps(engine)
+        vm.cargar()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(-17.99, vm.estado.value.origenLat)
+        assertEquals("Mi ubicación actual", vm.estado.value.origen)
+    }
+
+    @Test
+    fun el_boton_de_ubicacion_insiste_aunque_el_arranque_haya_fallado() = runTest {
+        // El bug: `permisoYaPedido` es global al proceso y no se reseteaba, así
+        // que un intento fallido al abrir dejaba el botón verde MUERTO para
+        // siempre —tocarlo no hacía nada y no había ninguna señal de por qué—.
+        //
+        // El arranque pide en automático (false) y el botón como toque
+        // explícito (true), que es lo que permite volver a preguntar.
+        val engine = MockEngine {
+            respond(
+                content = """{"carrera":null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val comoSePidio = mutableListOf<Boolean>()
+        val vm = vmConGps(engine, comoSePidio = comoSePidio)
+        vm.cargar()
+        testDispatcher.scheduler.advanceUntilIdle()
+        comoSePidio.clear()
+
+        vm.usarMiUbicacion()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals(
+            listOf(true),
+            comoSePidio,
+            "el toque del botón debe pedir como explícito, para volver a preguntar",
+        )
+    }
+
+    @Test
+    fun en_delivery_el_gps_no_se_usa_como_origen() = runTest {
+        // En un delivery el origen es el LOCAL donde está el pedido, no donde
+        // está parado el cliente: poner su ubicación manda al rider al lugar
+        // equivocado.
+        val engine = MockEngine {
+            respond(
+                content = """{"carrera":null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val comoSePidio = mutableListOf<Boolean>()
+        val vm = vmConGps(engine, comoSePidio = comoSePidio)
+        vm.cargar()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        vm.elegirTipo(TIPO_DELIVERY)
+        comoSePidio.clear()
+        vm.usarMiUbicacion()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        // Ni siquiera se consulta el GPS: no hay nada que hacer con él acá.
+        assertEquals(emptyList(), comoSePidio, "en delivery no se pide la ubicación")
+    }
 }
