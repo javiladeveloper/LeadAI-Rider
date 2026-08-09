@@ -1,3 +1,4 @@
+import java.util.Properties
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -27,6 +28,24 @@ if (tieneGoogleServicesJson) {
 // Ahora en 200, muy por encima del 65 que llegó a Play con los builds
 // manuales. El margen es a propósito: si algún día vuelve a subirse algo a
 // mano, el CI sigue ganando sin tener que tocar esto de nuevo.
+/**
+ * La clave de Google Maps.
+ *
+ * Sale de `MAPS_API_KEY` en `local.properties` (que está en .gitignore) o de la
+ * variable de entorno homónima en el CI. Nunca se escribe en el repo.
+ *
+ * Si falta, el mapa se ve GRIS y el log dice "Authorization failure" — que es
+ * un síntoma bastante mudo, así que conviene revisar esto primero.
+ */
+val claveDeMapas: String = run {
+    val props = Properties()
+    val archivo = rootProject.file("local.properties")
+    if (archivo.exists()) archivo.inputStream().use { props.load(it) }
+    props.getProperty("MAPS_API_KEY")
+        ?: System.getenv("MAPS_API_KEY")
+        ?: ""
+}
+
 val VERSION_CODE_OFFSET = 200
 // Los builds LOCALES (sin GITHUB_RUN_NUMBER) usan esto. Queda bajo a
 // propósito: un AAB local no debería poder pisar lo que publica el CI.
@@ -142,6 +161,10 @@ kotlin {
             // negocios (ver ObtenerIdTokenGoogle.android.kt).
             implementation(libs.androidx.credentials)
             implementation(libs.androidx.credentials.play.services.auth)
+            // Mapas nativos: se dibujan con Compose, no con HTML dentro de un
+            // WebView que reporta un tamaño que no es el suyo.
+            implementation(libs.maps.compose)
+            implementation(libs.play.services.maps)
             implementation(libs.googleid)
             implementation(libs.gms.auth)
         }
@@ -168,6 +191,7 @@ android {
         minSdk = 26
         targetSdk = 35
         // En CI cada corrida incrementa solo; en local queda fijo en BASE.
+        manifestPlaceholders["MAPS_API_KEY"] = claveDeMapas
         versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()?.plus(VERSION_CODE_OFFSET)
             ?: VERSION_CODE_BASE
         versionName = versionNameDelTag

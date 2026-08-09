@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import pe.leadai.rider.datos.Rutas
-import pe.leadai.rider.ui.comunes.MapaQueSeMide
+import pe.leadai.rider.ui.comunes.MapaRuta
+import pe.leadai.rider.ui.comunes.PuntoMapa
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -38,12 +38,12 @@ fun MapaDeLaRuta(
 ) {
     if (origenLat == null || origenLng == null || destinoLat == null || destinoLng == null) return
 
-    // 180dp: suficiente para leer el recorrido sin comerse el formulario
-    // —mas grande empuja el boton de pedir fuera de la pantalla—.
-    MapaQueSeMide(
-        url = { alto ->
-            Rutas.Mapas.ruta(origenLat, origenLng, destinoLat, destinoLng, alto)
-        },
+    // Mapa NATIVO: se mide solo y no depende de un WebView que reporta un
+    // tamaño distinto del suyo. 180dp deja leer el recorrido sin comerse el
+    // formulario —más grande empuja el botón de pedir fuera de la pantalla—.
+    MapaRuta(
+        origen = PuntoMapa(origenLat, origenLng),
+        destino = PuntoMapa(destinoLat, destinoLng),
         modifier = modifier.fillMaxWidth().height(ALTO_MAPA.dp),
     )
 }

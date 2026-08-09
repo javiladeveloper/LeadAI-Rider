@@ -170,9 +170,26 @@ actual fun MapaEmbebido(url: String, modifier: Modifier) {
                         request: WebResourceRequest,
                         error: WebResourceError,
                     ) {
-                        // Sigue "cargando" a propósito: hay un reintento en
-                        // camino, y mostrar el mapa vacío sería peor.
-                        if (request.isForMainFrame) reintentarLuego(view)
+                        // Los RECURSOS también al log (tiles, Leaflet).
+                        //
+                        // Antes solo se miraba el frame principal, así que un
+                        // tile que no baja —bloqueado, sin red, CDN caído— no
+                        // dejaba NINGÚN rastro: la página cargaba "bien" y el
+                        // mapa se veía en blanco sin explicación.
+                        if (!request.isForMainFrame) {
+                            android.util.Log.w(
+                                "MapaWeb",
+                                "recurso FALLÓ (" + error.errorCode + " " +
+                                    error.description + "): " + request.url,
+                            )
+                            return
+                        }
+                        android.util.Log.e(
+                            "MapaWeb",
+                            "página FALLÓ (" + error.errorCode + " " +
+                                error.description + "): " + request.url,
+                        )
+                        reintentarLuego(view)
                     }
 
                     override fun onReceivedHttpError(

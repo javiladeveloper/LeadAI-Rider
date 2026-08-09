@@ -67,6 +67,14 @@
             android:name=".ui.carreras.ServicioCarreraActiva"
             android:exported="false"
             android:foregroundServiceType="location" />
-    </application>
+    
+        <!-- La clave de Google Maps. Sale de MAPS_API_KEY en local.properties
+             (o de la variable de entorno en el CI): nunca se commitea.
+             Sin clave el mapa se ve gris y en el log aparece
+             "Authorization failure". -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+</application>
 
 </manifest>

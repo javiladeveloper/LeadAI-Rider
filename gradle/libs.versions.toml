@@ -17,6 +17,10 @@ kotlinx-coroutines-play-services = "1.9.0"
 androidx-credentials = "1.5.0"
 googleid = "1.1.1"
 gms-auth = "21.3.0"
+# Mapas NATIVOS (Android). Reemplazan al WebView: el viewport del WebView no
+# coincide con su tamaño real y cada mapa pagaba ese peaje.
+maps-compose = "6.4.1"
+play-services-maps = "19.0.0"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
@@ -40,6 +44,8 @@ androidx-credentials = { module = "androidx.credentials:credentials", version.re
 androidx-credentials-play-services-auth = { module = "androidx.credentials:credentials-play-services-auth", version.ref = "androidx-credentials" }
 googleid = { module = "com.google.android.libraries.identity.googleid:googleid", version.ref = "googleid" }
 gms-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "gms-auth" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "maps-compose" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "play-services-maps" }
 
 [plugins]
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
