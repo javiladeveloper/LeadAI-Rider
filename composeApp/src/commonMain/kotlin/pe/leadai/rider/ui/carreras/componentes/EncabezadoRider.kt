@@ -24,6 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import pe.leadai.rider.ui.tema.Formas
 import pe.leadai.rider.ui.tema.centavosAnimados
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -87,7 +89,27 @@ fun EncabezadoRider(
         // de motivar.
         if (carrerasHoy > 0) {
             Spacer(Modifier.height(8.dp))
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clip(Formas.card)
+                    // Degradado SUTIL, no un bloque de color plano.
+                    //
+                    // Es la plata que ganó: merece verse como algo, pero un
+                    // verde saturado a todo lo ancho competiría con el
+                    // interruptor de turno, que es la acción de la pantalla.
+                    // Un degradado que se apaga hacia la derecha destaca el
+                    // monto sin robarse la atención.
+                    .background(
+                        Brush.horizontalGradient(
+                            listOf(
+                                colores.exito.copy(alpha = 0.16f),
+                                colores.exito.copy(alpha = 0.02f),
+                            ),
+                        ),
+                    )
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+            ) {
                 Text(
                     // CUENTA hasta el valor nuevo: al entregar una carrera el
                     // rider ve el número subir, que es la recompensa del

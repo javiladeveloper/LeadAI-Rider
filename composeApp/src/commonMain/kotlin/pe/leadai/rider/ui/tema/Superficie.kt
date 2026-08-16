@@ -1,4 +1,9 @@
 package pe.leadai.rider.ui.tema
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.Dp
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
@@ -53,4 +58,35 @@ object Elevacion {
 
     /** Diálogos y hojas: lo que exige atención y bloquea el resto. */
     val dialogo = 12.dp
+}
+
+/**
+ * Sombra con el COLOR de la marca, no negra.
+ *
+ * Una sombra negra pura se ve barata: es lo que hace por defecto cualquier
+ * framework, y el ojo lo registra como "sin terminar". Tiñéndola apenas con el
+ * carbón de la marca, la pieza parece apoyada sobre la misma superficie en vez
+ * de recortada encima.
+ *
+ * Es el detalle más barato que sube la percepción de calidad: no cuesta
+ * rendimiento, funciona desde Android 8 y no depende de ninguna librería.
+ *
+ * @param elevacion cuánto se separa del fondo. Usar la escala de `Elevacion`.
+ */
+@Composable
+fun Modifier.sombraDeMarca(
+    elevacion: Dp,
+    forma: Shape = Formas.card,
+): Modifier {
+    val colores = ColoresJala.actuales
+    return this.shadow(
+        elevation = elevacion,
+        shape = forma,
+        // Las dos tintadas con el carbón de la marca. `ambient` es la luz
+        // difusa y `spot` la direccional: si solo se tiñe una, la sombra sale
+        // con dos tonos y se nota.
+        ambientColor = colores.marcaCarbon.copy(alpha = 0.5f),
+        spotColor = colores.marcaCarbon.copy(alpha = 0.5f),
+        clip = false,
+    )
 }

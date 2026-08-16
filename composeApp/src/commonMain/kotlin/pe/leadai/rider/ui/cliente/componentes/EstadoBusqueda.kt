@@ -20,6 +20,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.size
+import pe.leadai.rider.ui.tema.Movimiento
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -75,8 +82,37 @@ fun EstadoBusqueda(
         label = "busqueda",
     )
 
+    // Un PUNTO que late mientras se busca.
+    //
+    // El contador bajando dice cuánto falta, pero no que el sistema siga
+    // trabajando: un número que baja se ve igual con o sin conexión. El
+    // latido es la señal de que hay algo vivo del otro lado, y es lo que hace
+    // tolerable esperar sin respuesta.
+    //
+    // Se apaga cuando ya hay ofertas: ahí lo que importa es elegir, no
+    // esperar.
+    val pulso = rememberInfiniteTransition(label = "pulso")
+    val opacidadPulso by pulso.animateFloat(
+        initialValue = 0.35f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(900, easing = Movimiento.SUAVE),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "opacidadPulso",
+    )
+
     Column(modifier = modifier.fillMaxWidth()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
+            if (ofertas == 0) {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(colores.exito.copy(alpha = opacidadPulso)),
+                )
+                Spacer(Modifier.size(8.dp))
+            }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     tituloDeLaBusqueda(ofertas, motosCerca),

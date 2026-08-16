@@ -22,6 +22,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.material3.CircularProgressIndicator
 import pe.leadai.rider.ui.tema.Formas
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import pe.leadai.rider.ui.tema.Elevacion
+import pe.leadai.rider.ui.tema.sombraDeMarca
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -188,10 +192,33 @@ fun PopupPrecio(
             Spacer(Modifier.height(24.dp))
 
             val interaccionConfirmar = recordarInteraccion()
+
+            // El botón SE TRANSFORMA mientras envía: se angosta y se redondea
+            // hacia una píldora, en vez de solo cambiar el texto.
+            //
+            // Es la diferencia entre "el botón dice otra cosa" y "el botón se
+            // convirtió en el estado de espera". Lo segundo se lee como que la
+            // app está haciendo algo; lo primero, como que se trabó.
+            val anchoBoton by animateFloatAsState(
+                targetValue = if (enviando) 0.62f else 1f,
+                animationSpec = tween(Movimiento.NORMAL_MS, easing = Movimiento.SUAVE),
+                label = "anchoBoton",
+            )
+            val radioBoton by animateDpAsState(
+                targetValue = if (enviando) 28.dp else 16.dp,
+                animationSpec = tween(Movimiento.NORMAL_MS, easing = Movimiento.SUAVE),
+                label = "radioBoton",
+            )
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(anchoBoton)
                     .height(56.dp)
+                    // La sombra tiñe con el carbón de la marca, no negra: una
+                    // sombra negra pura se lee como "sin terminar".
+                    .sombraDeMarca(
+                        elevacion = if (enviando) Elevacion.card else Elevacion.flotante,
+                        forma = RoundedCornerShape(radioBoton),
+                    )
                     // Se hunde al tocarlo: sin esto el dedo toca y no pasa
                     // nada hasta que la pantalla cambia, y el cliente duda de
                     // si registró el toque.
@@ -204,7 +231,7 @@ fun PopupPrecio(
                         } else {
                             MaterialTheme.colorScheme.primary
                         },
-                        shape = Formas.card,
+                        shape = RoundedCornerShape(radioBoton),
                     )
                     .clickable(
                         interactionSource = interaccionConfirmar,
