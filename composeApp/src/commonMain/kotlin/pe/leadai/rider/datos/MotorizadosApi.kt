@@ -31,6 +31,10 @@ class MotorizadosApi(private val api: ApiCliente) {
             is Resultado.Error -> respuesta
         }
 
+    /** Como `miPerfil`, pero con lo ganado hoy: viene en la misma respuesta. */
+    suspend fun miPerfilConHoy(): Resultado<MiPerfilMotorizadoDto> =
+        api.get<MiPerfilMotorizadoDto>("/motorizados/mi-perfil")
+
     /**
      * `POST /motorizados/mi-perfil` — upsert (alta o edición del
      * distrito/teléfono/placa). Body armado con `buildJsonObject` (mismo

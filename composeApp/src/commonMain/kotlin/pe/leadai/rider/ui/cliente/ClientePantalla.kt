@@ -71,6 +71,7 @@ import pe.leadai.rider.ui.tema.toqueVivo
 import pe.leadai.rider.ui.tema.AparecerCard
 import pe.leadai.rider.ui.cliente.componentes.EstadoBusqueda
 import pe.leadai.rider.ui.cliente.componentes.MapaDeLaRuta
+import pe.leadai.rider.ui.cliente.componentes.DialogoMotivoCancelar
 import pe.leadai.rider.ui.cliente.componentes.PopupPrecio
 import pe.leadai.rider.ui.cliente.componentes.RadarMotos
 import pe.leadai.rider.ui.cliente.componentes.SelectorYaPedi
@@ -150,6 +151,9 @@ fun ClientePantalla(
 
     var seccion by remember { mutableStateOf(SeccionCliente.PEDIR) }
     val carrera = estado.miCarrera
+    // Se pregunta el motivo ANTES de cancelar: con la carrera ya borrada no
+    // hay a qué asociarlo.
+    var pidiendoMotivo by remember { mutableStateOf(false) }
 
     // ATRÁS: desde Viajes o Perfil se vuelve a Pedir, no se sale de la app.
     // En Pedir se deja pasar el evento — ahí salir SÍ es lo esperado.
@@ -177,7 +181,7 @@ fun ClientePantalla(
                 // 1) Carrera activa: manda sobre todo lo demás.
                 carrera != null -> SeguimientoCarrera(
                     carrera = carrera,
-                    onCancelar = viewModel::cancelar,
+                    onCancelar = { pidiendoMotivo = true },
                     ofertas = estado.ofertas,
                     eligiendoOferta = estado.eligiendoOferta,
                     onElegirOferta = viewModel::elegirOferta,
@@ -250,6 +254,20 @@ fun ClientePantalla(
                 origenLng = estado.origenLng,
                 direccionDelPin = estado.direccionDelPin,
                 onMoverPin = viewModel::moverPin,
+            )
+        }
+
+        // El motivo se pregunta ANTES de cancelar: después la carrera ya no
+        // existe y no hay a qué asociarlo.
+        if (pidiendoMotivo) {
+            DialogoMotivoCancelar(
+                conRiderAsignado = carrera?.estado == "aceptada" ||
+                    carrera?.estado == "recogida",
+                onCancelarCarrera = { motivo ->
+                    pidiendoMotivo = false
+                    viewModel.cancelar(motivo)
+                },
+                onCerrar = { pidiendoMotivo = false },
             )
         }
     }

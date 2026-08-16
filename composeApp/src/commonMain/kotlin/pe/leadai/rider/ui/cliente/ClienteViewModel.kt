@@ -744,10 +744,10 @@ class ClienteViewModel(
         }
     }
 
-    fun cancelar() {
+    fun cancelar(motivo: String? = null) {
         val id = _estado.value.miCarrera?.id ?: return
         viewModelScope.launch(dispatcher) {
-            when (val r = api.cancelar(id)) {
+            when (val r = api.cancelar(id, motivo)) {
                 is Resultado.Ok -> {
                     // Sin `carreraPorCalificar`: nadie califica un viaje que
                     // canceló él mismo.

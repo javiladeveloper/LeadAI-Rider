@@ -292,6 +292,8 @@ fun CarrerasPantalla(
                     // aceptó algo, lo que importa es llegar.
                     if (estado.miCarrera != null) {
                         ContenidoRider(
+                            carrerasHoy = estado.carrerasHoy,
+                            gananciaHoyCentavos = estado.gananciaHoyCentavos,
                             nombreUsuario = sesion?.usuarioNombre.orEmpty(),
                             perfil = estado.perfil!!,
                             carreras = estado.carreras,
@@ -321,6 +323,8 @@ fun CarrerasPantalla(
                         // tocarlas no hacía nada.
                         when (seccion) {
                             SeccionRider.INICIO -> ContenidoRider(
+                                carrerasHoy = estado.carrerasHoy,
+                                gananciaHoyCentavos = estado.gananciaHoyCentavos,
                                 nombreUsuario = sesion?.usuarioNombre.orEmpty(),
                                 perfil = estado.perfil!!,
                                 carreras = estado.carreras,
@@ -448,6 +452,9 @@ fun CarrerasPantalla(
 private fun ContenidoRider(
     nombreUsuario: String,
     perfil: PerfilMotorizadoDto,
+    /** Lo ganado hoy: va en el encabezado, sin entrar a otra pantalla. */
+    carrerasHoy: Int,
+    gananciaHoyCentavos: Long,
     carreras: List<CarreraDto>,
     miCarrera: CarreraDto?,
     historial: HistorialRiderResponseDto?,
@@ -532,6 +539,8 @@ private fun ContenidoRider(
                 monedero = monedero,
                 onRecargar = onRecargar,
                 onCambiarTurno = onCambiarTurno,
+                carrerasHoy = carrerasHoy,
+                gananciaHoyCentavos = gananciaHoyCentavos,
                 cambiandoTurno = cambiandoTurno,
             )
         }

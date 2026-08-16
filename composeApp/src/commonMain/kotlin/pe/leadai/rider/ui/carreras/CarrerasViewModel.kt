@@ -26,6 +26,9 @@ data class CarrerasUiState(
     val cargando: Boolean = true,
     val error: String? = null,
     val perfil: PerfilMotorizadoDto? = null,
+    /** Cuántas carreras entregó hoy y cuánto le quedó limpio, en centavos. */
+    val carrerasHoy: Int = 0,
+    val gananciaHoyCentavos: Long = 0,
     /** POOL v0: pedidos "listos" de los negocios de la zona, esperando rider. */
     val carreras: List<CarreraDto> = emptyList(),
     /** La carrera EN CURSO del rider (aceptada, aún no entregada) — manda sobre la lista. */
@@ -95,14 +98,22 @@ class CarrerasViewModel(
     fun cargar() {
         _estado.update { it.copy(cargando = true, error = null) }
         viewModelScope.launch(dispatcher) {
-            when (val resultado = motorizadosApi.miPerfil()) {
+            when (val resultado = motorizadosApi.miPerfilConHoy()) {
                 is Resultado.Ok -> {
                     _estado.update {
-                        it.copy(cargando = false, error = null, perfil = resultado.valor)
+                        it.copy(
+                            cargando = false,
+                            error = null,
+                            perfil = resultado.valor.perfil,
+                            // Lo ganado hoy viene en la MISMA respuesta: es lo
+                            // que hace que el rider deje la app abierta.
+                            carrerasHoy = resultado.valor.hoy.carreras,
+                            gananciaHoyCentavos = resultado.valor.hoy.gananciaCentavos,
+                        )
                     }
                     // Push del rider ("nueva carrera en tu zona"): una vez por
                     // sesión de pantalla, silencioso — sin token no pasa nada.
-                    if (!pushRegistrado && resultado.valor != null) {
+                    if (!pushRegistrado && resultado.valor.perfil != null) {
                         pushRegistrado = true
                         // El PERMISO antes que el token: desde Android 13
                         // `POST_NOTIFICATIONS` es de runtime, y sin él el

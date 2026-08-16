@@ -195,10 +195,23 @@ class CarrerasClienteApi(private val api: ApiCliente) {
         )
 
     /** `POST /carreras/:id/cancelar` — 409 si un rider ya la tomó (está yendo). */
-    suspend fun cancelar(carreraId: String): Resultado<AvanzarEstadoResponseDto> =
+    /**
+     * Cancela la carrera, contando POR QUÉ.
+     *
+     * El motivo no es un formalismo: sin él, "17 canceladas de 28" no dice
+     * nada —no distingue a alguien que se arrepintió de un rider que nunca
+     * llegó, y son problemas distintos—.
+     *
+     * Va vacío si el cliente cierra el diálogo sin elegir: la cancelación
+     * nunca se bloquea por esto.
+     */
+    suspend fun cancelar(
+        carreraId: String,
+        motivo: String? = null,
+    ): Resultado<AvanzarEstadoResponseDto> =
         api.post<JsonObject, AvanzarEstadoResponseDto>(
             path = "/carreras/$carreraId/cancelar",
-            body = buildJsonObject { },
+            body = buildJsonObject { if (motivo != null) put("motivo", motivo) },
             requiereSesion = true,
         )
 }

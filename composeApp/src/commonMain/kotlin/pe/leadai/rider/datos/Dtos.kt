@@ -295,6 +295,23 @@ data class PerfilMotorizadoDto(
 @Serializable
 data class MiPerfilMotorizadoDto(
     val perfil: PerfilMotorizadoDto? = null,
+    val hoy: GananciaDeHoyDto = GananciaDeHoyDto(),
+)
+
+/**
+ * Lo que el rider lleva ganado HOY.
+ *
+ * Viaja con el perfil, sin una llamada aparte: es el dato que hace que un
+ * motorizado deje la app abierta —saber que lleva S/47 en el día—, y enterrado
+ * en otra pantalla no lo mira nadie.
+ *
+ * `gananciaCentavos` ya viene LIMPIA (flete menos comisión): mostrar el bruto
+ * sería mentirle sobre lo que va a cobrar.
+ */
+@Serializable
+data class GananciaDeHoyDto(
+    val carreras: Int = 0,
+    val gananciaCentavos: Long = 0,
 )
 
 // ── Modo CLIENTE: pedir una moto ────────────────────────────────────────

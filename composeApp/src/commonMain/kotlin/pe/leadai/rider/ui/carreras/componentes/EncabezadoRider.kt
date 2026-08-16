@@ -47,6 +47,9 @@ fun EncabezadoRider(
     modifier: Modifier = Modifier,
     /** Entrar o salir de turno. Sin esto no llegan avisos de carrera nueva. */
     onCambiarTurno: (Boolean) -> Unit = {},
+    /** Cuánto lleva ganado hoy (limpio) y cuántas carreras entregó. */
+    carrerasHoy: Int = 0,
+    gananciaHoyCentavos: Long = 0,
     cambiandoTurno: Boolean = false,
 ) {
     val colores = ColoresJala.actuales
@@ -71,6 +74,33 @@ fun EncabezadoRider(
             cambiando = cambiandoTurno,
             onCambiar = onCambiarTurno,
         )
+
+        // LO GANADO HOY, arriba y sin entrar a ningún lado.
+        //
+        // Es el dato que hace que un motorizado deje la app abierta: saber que
+        // lleva S/47 en el día. Enterrado en la pantalla de ganancias no lo
+        // mira nadie.
+        //
+        // Solo cuando ya trabajó: un "S/0.00" a primera hora desanima en vez
+        // de motivar.
+        if (carrerasHoy > 0) {
+            Spacer(Modifier.height(8.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    "💰 Hoy: ${centavosASoles(gananciaHoyCentavos)}",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                    ),
+                    color = colores.exito,
+                )
+                Spacer(Modifier.size(8.dp))
+                Text(
+                    if (carrerasHoy == 1) "1 carrera" else "$carrerasHoy carreras",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = colores.tintaSecundaria,
+                )
+            }
+        }
 
         Spacer(Modifier.height(8.dp))
 
