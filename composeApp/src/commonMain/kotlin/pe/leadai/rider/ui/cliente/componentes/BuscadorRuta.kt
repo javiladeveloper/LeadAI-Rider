@@ -181,6 +181,34 @@ private fun FilaDireccion(
             onFoco = onFoco,
             modifier = Modifier.weight(1f),
         )
+
+        // Vaciar el campo de UN toque.
+        //
+        // "Mi ubicación actual" son 19 caracteres: cambiarlo por otra
+        // dirección obligaba a borrarlos a mano, uno por uno, con el teclado
+        // tapando media pantalla. Es el caso más común —el cliente abre la
+        // app, ve su ubicación puesta sola, y quiere escribir otra cosa—.
+        //
+        // Solo cuando hay algo escrito: una × sobre un campo vacío no hace
+        // nada y ensucia la fila.
+        if (valor.isNotEmpty()) {
+            Text(
+                "✕",
+                style = MaterialTheme.typography.bodyMedium,
+                color = colores.tintaSecundaria,
+                modifier = Modifier
+                    .clickable {
+                        onCambio("")
+                        // El foco queda en este campo: se borra para escribir
+                        // otra cosa, así que el teclado tiene que seguir ahí.
+                        onFoco()
+                    }
+                    // 8dp alrededor del glifo: sin esto el área de toque es
+                    // del tamaño del carácter y hay que apuntar.
+                    .padding(8.dp),
+            )
+        }
+
         accion?.invoke()
     }
 }

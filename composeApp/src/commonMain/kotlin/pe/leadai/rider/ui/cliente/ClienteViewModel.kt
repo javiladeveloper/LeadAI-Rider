@@ -286,8 +286,22 @@ class ClienteViewModel(
     /** Refresco silencioso: un fallo puntual no debe borrar lo que ya se ve. */
     fun refrescar() {
         viewModelScope.launch(dispatcher) {
-            when (val r = api.miCarrera()) {
-                is Resultado.Ok -> _estado.update { alLlegarLaCarrera(it, r.valor) }
+            // UNA sola llamada trae carrera, ofertas y motos.
+            //
+            // Eran tres, y cada request cuesta ~1s porque el servidor está
+            // lejos: la app pasaba casi todo el ciclo esperando red, que es lo
+            // que se sentía pesado.
+            when (val r = api.miCarreraCompleta()) {
+                is Resultado.Ok -> _estado.update { estado ->
+                    val conCarrera = alLlegarLaCarrera(estado, r.valor.carrera)
+                    conCarrera.copy(
+                        // Las ofertas solo mientras la carrera sigue libre: si
+                        // ya tiene rider, el backend manda lista vacía y pisar
+                        // con eso es correcto.
+                        ofertas = r.valor.ofertas,
+                        motosCerca = r.valor.motosCerca.size,
+                    )
+                }
                 is Resultado.Error -> Unit
             }
         }

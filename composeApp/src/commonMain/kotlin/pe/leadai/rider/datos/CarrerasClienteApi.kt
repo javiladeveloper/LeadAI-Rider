@@ -93,6 +93,15 @@ class CarrerasClienteApi(private val api: ApiCliente) {
             is Resultado.Error -> respuesta
         }
 
+    /**
+     * Todo lo de la pantalla en UNA llamada: carrera, ofertas y motos cerca.
+     *
+     * Existe para no pagar tres veces la latencia del servidor —cerca de un
+     * segundo cada request— en cada vuelta del polling.
+     */
+    suspend fun miCarreraCompleta(): Resultado<MiCarreraClienteDto> =
+        api.get<MiCarreraClienteDto>("/carreras/mia")
+
     /** `GET /carreras/historial` → las carreras ya cerradas, de la más nueva a la más vieja. */
     suspend fun historial(): Resultado<List<CarreraClienteDto>> =
         when (val respuesta = api.get<HistorialClienteDto>("/carreras/historial")) {

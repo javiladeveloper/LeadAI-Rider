@@ -85,8 +85,18 @@ import pe.leadai.rider.ui.tema.centavosASoles
 import pe.leadai.rider.ui.tema.epochMsAhora
 import pe.leadai.rider.ui.tema.epochMsDesdeIso
 
-/** Cada cuánto se refresca el estado de la carrera. Mismo ritmo que el pool del rider. */
-private const val INTERVALO_POLLING_MS = 10_000L
+/**
+ * Cada cuánto el cliente vuelve a preguntar por ofertas y por su carrera.
+ *
+ * Eran 10 segundos —el comentario decía "mismo ritmo que el rider", pero el
+ * del rider ya estaba en 3— y se notaba: el motorizado mandaba su oferta al
+ * instante y el cliente la veía hasta diez segundos después, mirando una
+ * pantalla que decía "buscando" cuando ya había alguien esperando respuesta.
+ *
+ * 3 segundos, igual que el rider. Además el push fuerza un refresco apenas
+ * entra, así que esto es solo la red de seguridad.
+ */
+private const val INTERVALO_POLLING_MS = 3_000L
 
 /** Base del mapa embebido — el mismo host de `ApiCliente` (default de prod). */
 
@@ -115,12 +125,14 @@ fun ClientePantalla(
         viewModel.cargar()
         while (isActive) {
             delay(INTERVALO_POLLING_MS)
+            // UNA sola llamada: trae la carrera, las ofertas y las motos.
+            //
+            // Antes eran tres, y cada request cuesta cerca de un segundo
+            // porque el servidor está lejos (230ms de conexión + 445ms de TLS
+            // + ~530ms hasta el primer byte). Con tres por ciclo la app pasaba
+            // casi todo el tiempo esperando red — eso era lo que se sentía
+            // pesado, más que cualquier animación.
             viewModel.refrescar()
-            // Las ofertas llegan mientras el cliente mira: sin esto tendría
-            // que salir y volver a entrar para verlas.
-            viewModel.refrescarOfertas()
-            // Cuántas motos hay alrededor, para el estado de la búsqueda.
-            viewModel.refrescarMotosCerca()
         }
     }
     // "Tu moto llegó" tiene que verse APENAS entra el push: el cliente está
@@ -633,6 +645,32 @@ private fun SeguimientoCarrera(
 
         if (enCamino) {
             DatosDelRider(carrera)
+
+            // Una salida TAMBIÉN cuando el rider ya viene.
+            //
+            // Antes el botón de cancelar solo existía mientras nadie tomaba la
+            // carrera: apenas alguien aceptaba, desaparecía y el cliente
+            // quedaba atrapado —si el motorizado no aparecía nunca, no tenía
+            // forma de pedir otra moto—.
+            //
+            // Discreto y no un botón grande: cancelar cuando alguien ya salió
+            // a buscarte es la excepción, no lo que se espera que hagas. El
+            // rider se entera por push.
+            //
+            // En "recogida" no aparece: ahí el viaje ya empezó.
+            if (carrera.estado == "aceptada") {
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    "Cancelar carrera",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = ColoresJala.actuales.calor,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onCancelar() }
+                        .padding(vertical = 12.dp),
+                    textAlign = TextAlign.Center,
+                )
+            }
         } else {
             // Solo mientras nadie la tomó: después ya salió a buscarlo.
             Spacer(Modifier.height(8.dp))

@@ -545,4 +545,50 @@ class ClienteViewModelTest {
         // Ni siquiera se consulta el GPS: no hay nada que hacer con él acá.
         assertEquals(emptyList(), comoSePidio, "en delivery no se pide la ubicación")
     }
+    @Test
+    fun vaciar_el_origen_tambien_borra_sus_coordenadas() = runTest {
+        // La "✕" del campo llama a `cambiarOrigen("")`. Si el texto se vaciara
+        // pero las coordenadas quedaran, el cliente escribiría otra dirección
+        // y el mapa —y el precio— seguirían apuntando a la anterior.
+        val engine = MockEngine {
+            respond(
+                content = """{"carrera":null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val vm = vmConGps(engine)
+        vm.cargar()
+        testDispatcher.scheduler.advanceUntilIdle()
+        // Arranca con la ubicación puesta por el GPS.
+        assertEquals(-17.99, vm.estado.value.origenLat)
+
+        vm.cambiarOrigen("")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals("", vm.estado.value.origen)
+        assertNull(vm.estado.value.origenLat, "sin texto no puede quedar coordenada")
+        assertNull(vm.estado.value.origenLng, "sin texto no puede quedar coordenada")
+    }
+
+    @Test
+    fun vaciar_el_destino_tambien_borra_sus_coordenadas() = runTest {
+        val engine = MockEngine {
+            respond(
+                content = """{"carrera":null}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
+        }
+        val vm = vmConGps(engine)
+        vm.cargar()
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        vm.cambiarDestino("")
+        testDispatcher.scheduler.advanceUntilIdle()
+
+        assertEquals("", vm.estado.value.destino)
+        assertNull(vm.estado.value.destinoLat, "sin texto no puede quedar coordenada")
+    }
+
 }

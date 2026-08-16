@@ -103,6 +103,11 @@ class CarrerasViewModelTest {
         val path = request.url.encodedPath
         rutasLlamadas.add(path)
         when {
+            path == "/motorizados/disponibilidad" -> respond(
+                content = """{"ok":true}""",
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json"),
+            )
             path == "/motorizados/posicion" -> respond(
                 content = """{"ok":true}""",
                 status = HttpStatusCode.OK,
@@ -302,4 +307,37 @@ class CarrerasViewModelTest {
         assertNull(vm.estado.value.miCarrera)
         assertEquals(emptyList<String>(), vm.estado.value.carreras.map { it.pedidoId })
     }
+    @Test
+    fun cambiar_el_turno_manda_un_solo_cambio_al_backend() = runTest {
+        // Cubre el ViewModel: una llamada a `cambiarTurno` = una sola llamada
+        // al backend, y la guarda `cambiandoTurno` no la duplica.
+        //
+        // OJO: el bug real que apagaba el turno estaba en la UI —la fila era
+        // `clickable` Y el Switch tenía `onCheckedChange`, así que un toque
+        // disparaba dos veces con valores opuestos—. Eso NO se ve desde acá;
+        // lo cubre `EncabezadoRiderTest`.
+        val rutas = mutableListOf<String>()
+        val vm = CarrerasViewModel(
+            MotorizadosApi(
+                ApiCliente(
+                    sesion = SesionRepositorio(dataStoreDePrueba()),
+                    engine = enginePool(rutasLlamadas = rutas),
+                ),
+            ),
+            AvisosGlobales(),
+            testDispatcher,
+        )
+        vm.cargar()
+        advanceUntilIdle()
+        vm.estado.esperarCondicion { it.perfil != null }
+
+        vm.cambiarTurno(true)
+        advanceUntilIdle()
+        vm.estado.esperarCondicion { !it.cambiandoTurno }
+        advanceUntilIdle()
+
+        val cambios = rutas.count { it.contains("disponibilidad") }
+        assertEquals(1, cambios, "una llamada = UN cambio en el backend. rutas=$rutas")
+    }
+
 }

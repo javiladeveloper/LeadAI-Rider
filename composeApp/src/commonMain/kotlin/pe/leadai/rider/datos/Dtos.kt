@@ -375,6 +375,20 @@ data class CarreraClienteDto(
 @Serializable
 data class MiCarreraClienteDto(
     val carrera: CarreraClienteDto? = null,
+    /**
+     * Las ofertas y las motos, EN LA MISMA respuesta.
+     *
+     * Antes eran dos llamadas aparte: tres requests cada tres segundos, y cada
+     * uno cuesta cerca de un segundo porque el servidor está lejos (medido:
+     * 230ms de conexión + 445ms de TLS + ~530ms hasta el primer byte). La app
+     * pasaba casi todo el tiempo esperando red, y eso es lo que se sentía
+     * pesado.
+     *
+     * Vienen vacías cuando la carrera ya tiene rider: ahí no hay ofertas que
+     * mostrar ni radar que dibujar.
+     */
+    val ofertas: List<OfertaDto> = emptyList(),
+    val motosCerca: List<MotoCercaDto> = emptyList(),
 )
 
 /**

@@ -250,9 +250,18 @@ private fun InterruptorDeTurno(
                 color = colores.tintaSecundaria,
             )
         }
+        // El Switch NO maneja el toque: lo maneja la fila que lo contiene.
+        //
+        // Con los dos activos, tocar el switch disparaba `onCheckedChange` Y el
+        // `clickable` de la fila: dos llamadas con valores opuestos. La guarda
+        // `cambiandoTurno` tapaba la segunda casi siempre, pero si la primera
+        // ya había respondido, la segunda apagaba el turno recién encendido.
+        //
+        // El rider quedaba fuera de turno sin tocar nada, y su moto
+        // desaparecía del radar del cliente a los pocos segundos.
         Switch(
             checked = enTurno,
-            onCheckedChange = { if (!cambiando) onCambiar(it) },
+            onCheckedChange = null,
             enabled = !cambiando,
         )
     }

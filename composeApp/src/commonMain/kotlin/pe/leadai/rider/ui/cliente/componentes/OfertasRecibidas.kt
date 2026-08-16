@@ -19,6 +19,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -221,14 +226,30 @@ private fun CardOferta(
 @Composable
 private fun BarraDeVigencia(segundosRestantes: Int) {
     val colores = ColoresJala.actuales
+
+    // La barra baja SOLA, segundo a segundo.
+    //
+    // Antes se dibujaba el valor tal como venía del backend, así que solo se
+    // movía cuando contestaba el polling: si una respuesta se demoraba o traía
+    // el mismo número, la barra quedaba quieta. Una barra de tiempo detenida
+    // dice lo contrario de lo que tiene que decir —que esto vence—.
+    //
+    // El backend sigue mandando la verdad: cada valor nuevo la resincroniza.
+    var segundos by remember(segundosRestantes) { mutableStateOf(segundosRestantes) }
+    LaunchedEffect(segundosRestantes) {
+        while (segundos > 0) {
+            delay(1_000)
+            segundos -= 1
+        }
+    }
+
     val fraccion by animateFloatAsState(
-        targetValue = (segundosRestantes / SEGUNDOS_VIGENCIA).coerceIn(0f, 1f),
-        // Lineal y del largo del polling: la barra baja parejo en vez de
-        // saltar en cada refresco.
-        animationSpec = tween(durationMillis = 3_000),
+        targetValue = (segundos / SEGUNDOS_VIGENCIA).coerceIn(0f, 1f),
+        // Lineal y de un segundo: acompaña al conteo sin saltos.
+        animationSpec = tween(durationMillis = 1_000),
         label = "vigencia",
     )
-    val porTerminar = segundosRestantes <= 20
+    val porTerminar = segundos <= 20
 
     Box(
         modifier = Modifier
