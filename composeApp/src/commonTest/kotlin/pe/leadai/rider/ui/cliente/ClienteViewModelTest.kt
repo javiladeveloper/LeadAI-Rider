@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.respond
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import kotlinx.coroutines.Dispatchers
@@ -136,9 +137,22 @@ class ClienteViewModelTest {
 
     @Test
     fun pedir_sin_destino_avisa_y_no_llama_al_backend() = runTest {
-        var llamadas = 0
-        val engine = MockEngine {
-            llamadas++
+        // Se cuentan SOLO los POST a /carreras, no todas las peticiones.
+        //
+        // Antes se contaba todo y se esperaba a que el contador "se quedara
+        // quieto" con un delay: eso es una carrera de tiempos —pasaba local y
+        // fallaba en CI, que es más lento—. Además `cambiarOrigen` dispara una
+        // búsqueda de direcciones, así que el contador subía por algo que no
+        // tenía nada que ver con `pedir()`.
+        //
+        // Lo que importa es UNA sola cosa: que no se cree la carrera.
+        var carrerasCreadas = 0
+        val engine = MockEngine { peticion ->
+            if (peticion.method == HttpMethod.Post &&
+                peticion.url.encodedPath.endsWith("/carreras")
+            ) {
+                carrerasCreadas++
+            }
             respond(
                 content = """{"carrera":null}""",
                 status = HttpStatusCode.OK,
@@ -149,24 +163,12 @@ class ClienteViewModelTest {
         vm.cargar()
         vm.estado.esperarCondicion { !it.cargando }
         advanceUntilIdle()
-        // `cargar()` dispara varias peticiones en paralelo (carrera, historial,
-        // perfil) y no todas terminan cuando `cargando` baja. Se espera a que
-        // el contador se quede QUIETO: si no, una que aterriza tarde se cuenta
-        // como si la hubiera hecho `pedir()`.
-        var previo = -1
-        while (previo != llamadas) {
-            previo = llamadas
-            advanceUntilIdle()
-            delay(20)
-            advanceUntilIdle()
-        }
-        val antes = llamadas
 
         vm.cambiarOrigen("Av. Grau 240")
         vm.pedir() // sin destino
-
         advanceUntilIdle()
-        assertEquals(antes, llamadas)
+
+        assertEquals(0, carrerasCreadas, "sin destino no se crea la carrera")
         assertEquals("Falta el destino", vm.estado.value.error)
     }
 
