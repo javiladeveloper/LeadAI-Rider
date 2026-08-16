@@ -174,9 +174,25 @@ class CarrerasViewModel(
         viewModelScope.launch(dispatcher) {
             when (val resultado = motorizadosApi.carreras()) {
                 is Resultado.Ok -> {
+                    // Se lee ANTES de escribir: `_estado.update` ya habría
+                    // puesto la carrera nueva y la comparación de abajo daría
+                    // siempre falso.
+                    val teniaCarrera = _estado.value.miCarrera != null
                     _estado.update {
                         it.copy(carreras = resultado.valor.carreras, miCarrera = resultado.valor.miCarrera)
                     }
+                    // Lo GANADO HOY se refresca cuando TERMINA una carrera.
+                    //
+                    // Vive en el perfil, que solo se traía al abrir la
+                    // pantalla: el rider entregaba y el monto no se movía
+                    // hasta salir y volver a entrar — justo el momento en que
+                    // quiere verlo subir.
+                    //
+                    // Pero NO en cada vuelta: son 20 ciclos por minuto para un
+                    // dato que solo cambia al entregar. Se pide cuando la
+                    // carrera en curso DESAPARECE, que es exactamente cuando
+                    // el número cambió.
+                    if (teniaCarrera && resultado.valor.miCarrera == null) refrescarLoDeHoy()
                     // El GPS se reporta con carrera en curso (para que el
                     // cliente vea la moto en /track/:id) y TAMBIÉN estando en
                     // turno sin carrera: es lo que alimenta el radar de
@@ -443,6 +459,27 @@ class CarrerasViewModel(
                     avisos.mostrar(resultado.mensaje.ifBlank { MENSAJE_ERROR_ACCION })
                 }
             }
+        }
+    }
+
+    /**
+     * Refresca lo ganado hoy, sin tocar el resto del perfil.
+     *
+     * Silencioso: es un extra sobre el feed y un fallo puntual no puede
+     * borrar lo que el rider ya está viendo.
+     */
+    private suspend fun refrescarLoDeHoy() {
+        when (val r = motorizadosApi.miPerfilConHoy()) {
+            is Resultado.Ok -> _estado.update {
+                it.copy(
+                    // El perfil también: así el interruptor de turno refleja
+                    // lo que dice el backend y no se queda con un valor viejo.
+                    perfil = r.valor.perfil ?: it.perfil,
+                    carrerasHoy = r.valor.hoy.carreras,
+                    gananciaHoyCentavos = r.valor.hoy.gananciaCentavos,
+                )
+            }
+            is Resultado.Error -> Unit
         }
     }
 

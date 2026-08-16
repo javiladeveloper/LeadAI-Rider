@@ -340,4 +340,35 @@ class CarrerasViewModelTest {
         assertEquals(1, cambios, "una llamada = UN cambio en el backend. rutas=$rutas")
     }
 
+    @Test
+    fun cargar_trae_lo_ganado_hoy_en_la_misma_llamada() = runTest {
+        // El monto vive en el perfil, que ya se consulta al abrir: viaja en la
+        // MISMA respuesta, sin una llamada aparte.
+        //
+        // Se refresca además cuando la carrera en curso desaparece —o sea, al
+        // entregar—, que es cuando el número cambia. No en cada vuelta del
+        // polling: serían 20 llamadas por minuto para un dato quieto.
+        val rutas = mutableListOf<String>()
+        val vm = CarrerasViewModel(
+            MotorizadosApi(
+                ApiCliente(
+                    sesion = SesionRepositorio(dataStoreDePrueba()),
+                    engine = enginePool(rutasLlamadas = rutas),
+                ),
+            ),
+            AvisosGlobales(),
+            testDispatcher,
+        )
+
+        vm.cargar()
+        advanceUntilIdle()
+        vm.estado.esperarCondicion { it.perfil != null }
+
+        assertEquals(
+            1,
+            rutas.count { it.contains("mi-perfil") },
+            "el perfil (con lo de hoy) se pide UNA vez al cargar. rutas=$rutas",
+        )
+    }
+
 }
