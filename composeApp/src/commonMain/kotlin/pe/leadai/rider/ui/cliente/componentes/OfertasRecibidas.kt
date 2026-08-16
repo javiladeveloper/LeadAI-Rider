@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
+import pe.leadai.rider.ui.tema.AparecerEnCascada
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -77,11 +78,13 @@ fun OfertasRecibidas(
             color = MaterialTheme.colorScheme.onSurface,
         )
 
-        ofertas.forEach { oferta ->
-            // Cada oferta entra deslizando: llegan de a una mientras el
-            // cliente mira, y sin animación aparecen de golpe sin que se note
-            // que hay algo nuevo.
-            AparecerFila {
+        ofertas.forEachIndexed { posicion, oferta ->
+            // En CASCADA: cada una entra un instante después de la anterior.
+            //
+            // Llegan de a una mientras el cliente mira, y con todas
+            // apareciendo a la vez el ojo no sabe cuál es la nueva. Escalonadas
+            // la vista las recorre en orden, de la más barata hacia abajo.
+            AparecerEnCascada(posicion) {
                 CardOferta(
                     oferta = oferta,
                     montoOfrecido = montoOfrecido,

@@ -48,6 +48,7 @@ import pe.leadai.rider.ui.comunes.MapaQueSeMide
 import pe.leadai.rider.ui.comunes.ChatCarrera
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.ui.draw.clip
+import pe.leadai.rider.ui.tema.Formas
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalUriHandler
@@ -852,7 +853,7 @@ private fun DatosDelRider(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .height(48.dp)
-                .clip(RoundedCornerShape(14.dp))
+                .clip(Formas.card)
                 .background(ColoresJala.actuales.marcaAmarillo)
                 .clickable { onAbrirChat() },
             contentAlignment = Alignment.Center,
@@ -872,14 +873,14 @@ private fun DatosDelRider(
             OutlinedButton(
                 onClick = { abridor.openUri("https://wa.me/$telefono") },
                 modifier = Modifier.weight(1f).height(44.dp),
-                shape = RoundedCornerShape(14.dp),
+                shape = Formas.card,
             ) {
                 Text("💬 WhatsApp", style = MaterialTheme.typography.labelLarge)
             }
             OutlinedButton(
                 onClick = { abridor.openUri("tel:+$telefono") },
                 modifier = Modifier.weight(1f).height(44.dp),
-                shape = RoundedCornerShape(14.dp),
+                shape = Formas.card,
             ) {
                 Text("📞 Llamar", style = MaterialTheme.typography.labelLarge)
             }

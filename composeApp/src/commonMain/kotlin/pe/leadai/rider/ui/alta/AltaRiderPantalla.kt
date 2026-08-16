@@ -37,6 +37,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import pe.leadai.rider.ui.tema.Formas
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -302,7 +303,7 @@ private fun FormularioMotorizado(
                     onClick = { onTipoVehiculoElegido(valor) },
                     enabled = habilitado,
                     modifier = Modifier.weight(1f).height(48.dp),
-                    shape = RoundedCornerShape(14.dp),
+                    shape = Formas.card,
                     colors = if (elegido) {
                         ButtonDefaults.outlinedButtonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,

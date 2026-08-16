@@ -20,6 +20,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.material3.CircularProgressIndicator
+import pe.leadai.rider.ui.tema.Formas
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -195,12 +197,14 @@ fun PopupPrecio(
                     // si registró el toque.
                     .toqueVivo(interaccionConfirmar)
                     .background(
+                        // Ámbar atenuado y no gris: en gris parece
+                        // deshabilitado, cuando en realidad está trabajando.
                         color = if (enviando) {
-                            MaterialTheme.colorScheme.surfaceVariant
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                         } else {
                             MaterialTheme.colorScheme.primary
                         },
-                        shape = RoundedCornerShape(16.dp),
+                        shape = Formas.card,
                     )
                     .clickable(
                         interactionSource = interaccionConfirmar,
@@ -209,11 +213,29 @@ fun PopupPrecio(
                     ) { onConfirmar() },
                 contentAlignment = Alignment.Center,
             ) {
-                Text(
-                    if (enviando) "ENVIANDO…" else "BUSCAR MOTORIZADO",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                )
+                // Mientras envía, un indicador REAL girando —no solo texto—.
+                //
+                // "ENVIANDO…" a secas se ve igual que un botón trabado: el
+                // texto no se mueve y el cliente no sabe si su pedido salió.
+                // Es el momento en que más importa, porque acaba de decidir
+                // cuánto pagar y está esperando que algo pase.
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                ) {
+                    if (enviando) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            strokeWidth = 2.dp,
+                        )
+                    }
+                    Text(
+                        if (enviando) "Buscando…" else "BUSCAR MOTORIZADO",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                    )
+                }
             }
 
             Spacer(Modifier.height(8.dp))

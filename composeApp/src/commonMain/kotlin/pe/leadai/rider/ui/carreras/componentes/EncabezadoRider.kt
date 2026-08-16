@@ -22,6 +22,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import pe.leadai.rider.ui.tema.Formas
+import pe.leadai.rider.ui.tema.centavosAnimados
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -87,7 +89,10 @@ fun EncabezadoRider(
             Spacer(Modifier.height(8.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "💰 Hoy: ${centavosASoles(gananciaHoyCentavos)}",
+                    // CUENTA hasta el valor nuevo: al entregar una carrera el
+                    // rider ve el número subir, que es la recompensa del
+                    // viaje. Saltando de golpe se lee como un parpadeo.
+                    "💰 Hoy: ${centavosASoles(centavosAnimados(gananciaHoyCentavos))}",
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                     ),
@@ -193,7 +198,7 @@ private fun CardSaldoAmarilla(
                 .fillMaxWidth()
                 .background(
                     color = colores.marcaCarbon.copy(alpha = if (sinSaldo) 0.06f else 0.12f),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = Formas.chip,
                 )
                 .padding(start = 14.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
             horizontalArrangement = Arrangement.SpaceBetween,

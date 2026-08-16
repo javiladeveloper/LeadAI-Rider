@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import pe.leadai.rider.ui.tema.Formas
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
@@ -28,7 +29,7 @@ fun BannerError(mensaje: String, modifier: Modifier = Modifier) {
             .fillMaxWidth()
             .background(
                 color = MaterialTheme.colorScheme.errorContainer,
-                shape = RoundedCornerShape(8.dp),
+                shape = Formas.chip,
             )
             .padding(12.dp),
     ) {

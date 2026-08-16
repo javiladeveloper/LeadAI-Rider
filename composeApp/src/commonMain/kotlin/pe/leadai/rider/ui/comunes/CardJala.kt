@@ -7,6 +7,8 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import pe.leadai.rider.ui.tema.Elevacion
+import pe.leadai.rider.ui.tema.Formas
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -31,9 +33,12 @@ fun CardJala(
 ) {
     Card(
         modifier = modifier,
-        shape = MaterialTheme.shapes.medium,
+        shape = Formas.card,
         colors = CardDefaults.cardColors(containerColor = color),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        // 2dp y no 1: con un solo dp la card no se despega del fondo y la
+        // pantalla se lee como una lista plana de texto. Poca elevación pero
+        // CONSISTENTE es lo que separa una app cuidada de una cargada.
+        elevation = CardDefaults.cardElevation(defaultElevation = Elevacion.card),
     ) {
         Column(
             modifier = Modifier.padding(paddingInterno.dp),

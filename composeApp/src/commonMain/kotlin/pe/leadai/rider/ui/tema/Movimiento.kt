@@ -1,4 +1,11 @@
 package pe.leadai.rider.ui.tema
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
+import androidx.compose.animation.core.animateIntAsState
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.CubicBezierEasing
@@ -131,3 +138,66 @@ fun AparecerFila(
         contenido()
     }
 }
+
+/**
+ * Entrada ESCALONADA: cada elemento aparece un instante después del anterior.
+ *
+ * Es lo que separa una lista que "aparece" de una que se siente viva. Con
+ * todas las cards entrando a la vez el ojo no sabe dónde mirar; escalonadas,
+ * la vista sigue el orden natural de arriba hacia abajo.
+ *
+ * El retraso es CHICO y con tope: 40ms por posición, sin pasar de 200ms. Con
+ * una lista de veinte carreras, un escalonado sin límite haría esperar casi
+ * un segundo a la última — y el rider necesita verlas ya.
+ *
+ * @param posicion el índice del elemento en la lista.
+ */
+@Composable
+fun AparecerEnCascada(
+    posicion: Int,
+    contenido: @Composable () -> Unit,
+) {
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        delay((posicion * RETRASO_POR_POSICION_MS).coerceAtMost(RETRASO_MAXIMO_MS).toLong())
+        visible = true
+    }
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(tween(Movimiento.NORMAL_MS)) +
+            slideInVertically(
+                animationSpec = tween(Movimiento.NORMAL_MS, easing = Movimiento.SUAVE),
+                initialOffsetY = { it / 6 },
+            ),
+        exit = fadeOut(tween(Movimiento.RAPIDO_MS)),
+    ) {
+        contenido()
+    }
+}
+
+private const val RETRASO_POR_POSICION_MS = 40
+private const val RETRASO_MAXIMO_MS = 200
+
+/**
+ * Un monto que CUENTA hasta su valor nuevo en vez de saltar.
+ *
+ * Cuando el cliente toca "+" o "−" en el precio, o cuando el rider ve subir lo
+ * ganado del día, el número saltando de golpe se lee como un parpadeo. Contando
+ * se entiende que ALGO cambió y en qué dirección.
+ *
+ * Corto (250ms): un contador largo se siente lento cuando alguien está tocando
+ * "+" varias veces seguidas para subir su oferta.
+ *
+ * @return el valor intermedio para dibujar, en centavos.
+ */
+@Composable
+fun centavosAnimados(objetivoCentavos: Long): Long {
+    val animado by animateIntAsState(
+        targetValue = objetivoCentavos.toInt(),
+        animationSpec = tween(DURACION_CONTADOR_MS, easing = Movimiento.SUAVE),
+        label = "monto",
+    )
+    return animado.toLong()
+}
+
+private const val DURACION_CONTADOR_MS = 250

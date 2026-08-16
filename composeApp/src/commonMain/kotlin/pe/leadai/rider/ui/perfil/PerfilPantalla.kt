@@ -24,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import pe.leadai.rider.ui.tema.Formas
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -207,7 +208,7 @@ private fun OpcionDeTema(
     val colores = ColoresJala.actuales
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(12.dp))
+            .clip(Formas.chip)
             .background(
                 if (elegida) colores.marcaAmarillo.copy(alpha = 0.18f)
                 else MaterialTheme.colorScheme.surfaceContainerHigh,
@@ -216,7 +217,7 @@ private fun OpcionDeTema(
                 width = if (elegida) 2.dp else 1.dp,
                 color = if (elegida) colores.marcaAmarillo
                 else MaterialTheme.colorScheme.outlineVariant,
-                shape = RoundedCornerShape(12.dp),
+                shape = Formas.chip,
             )
             .clickable { onElegir(valor) }
             .padding(vertical = 12.dp),

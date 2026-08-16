@@ -19,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import pe.leadai.rider.ui.tema.Formas
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -95,7 +96,7 @@ fun PermisosPantalla(alVolver: () -> Unit) {
                 .fillMaxWidth()
                 .background(
                     color = colores.exito.copy(alpha = 0.10f),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = Formas.chip,
                 )
                 .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -141,7 +142,7 @@ private fun CardPermiso(
                     .size(48.dp)
                     .background(
                         color = MaterialTheme.colorScheme.secondaryContainer,
-                        shape = RoundedCornerShape(12.dp),
+                        shape = Formas.chip,
                     ),
                 contentAlignment = Alignment.Center,
             ) {
@@ -172,7 +173,7 @@ private fun CardPermiso(
                 .height(44.dp)
                 .background(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    shape = RoundedCornerShape(12.dp),
+                    shape = Formas.chip,
                 )
                 .clickable { onConfigurar() },
             contentAlignment = Alignment.Center,

@@ -41,6 +41,9 @@ import pe.leadai.rider.datos.Rutas
 import pe.leadai.rider.ui.comunes.MapaQueSeMide
 import pe.leadai.rider.ui.comunes.ChatCarrera
 import androidx.compose.material3.ModalBottomSheet
+import pe.leadai.rider.ui.tema.AparecerEnCascada
+import androidx.compose.foundation.lazy.itemsIndexed
+import pe.leadai.rider.ui.tema.Formas
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
@@ -612,15 +615,20 @@ private fun ContenidoRider(
                 SalaDeEspera()
             }
         } else {
-            items(carreras, key = { it.pedidoId }) { carrera ->
-                CardCarrera(
-                    carrera = carrera,
-                    aceptando = accionEnCurso == carrera.pedidoId,
-                    habilitado = accionEnCurso == null,
-                    onAceptar = { onAceptar(carrera) },
-                    yaOfertaste = carrera.pedidoId in ofertadas,
-                    onOfertar = { monto -> onOfertar(carrera, monto) },
-                )
+            itemsIndexed(carreras, key = { _, c -> c.pedidoId }) { posicion, carrera ->
+                // En CASCADA: cada carrera entra un instante después de la
+                // anterior. Con todas apareciendo a la vez el feed "parpadea"
+                // en cada refresco; escalonadas se lee de arriba hacia abajo.
+                AparecerEnCascada(posicion) {
+                    CardCarrera(
+                        carrera = carrera,
+                        aceptando = accionEnCurso == carrera.pedidoId,
+                        habilitado = accionEnCurso == null,
+                        onAceptar = { onAceptar(carrera) },
+                        yaOfertaste = carrera.pedidoId in ofertadas,
+                        onOfertar = { monto -> onOfertar(carrera, monto) },
+                    )
+                }
             }
         }
 
@@ -676,7 +684,7 @@ private fun DatoDeHoy(valor: String, etiqueta: String) {
 private fun FilaEntrega(entrega: CarreraEntregadaDto) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
+        shape = Formas.chip,
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLowest),
     ) {
         Row(
@@ -740,7 +748,7 @@ private fun DialogoRecargar(
                     OutlinedButton(
                         onClick = { onElegir(paquete.id) },
                         modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp),
-                        shape = RoundedCornerShape(12.dp),
+                        shape = Formas.chip,
                     ) {
                         Text(
                             "S/${paquete.soles}  ·  ${paquete.soles} carreras",
