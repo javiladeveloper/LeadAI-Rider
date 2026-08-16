@@ -309,6 +309,10 @@ class ClienteViewModel(
                         // con eso es correcto.
                         ofertas = r.valor.ofertas,
                         motosCerca = r.valor.motosCerca.size,
+                        // Con el chat ABIERTO se ignora: el cliente los está
+                        // leyendo ahora, y encender el globito sobre la
+                        // conversación que mira sería absurdo.
+                        mensajesSinLeer = if (estado.chatAbierto) 0 else r.valor.sinLeerChat,
                     )
                 }
                 is Resultado.Error -> Unit

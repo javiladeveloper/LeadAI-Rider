@@ -202,6 +202,9 @@ fun CarrerasPantalla(
     LaunchedEffect(Unit) {
         pe.leadai.rider.ui.comunes.AvisoPush.avisos.collect {
             viewModel.refrescarCarreras()
+            // El chat también: si el cliente escribe mientras el rider tiene
+            // la conversación abierta, el mensaje aparece al instante.
+            viewModel.refrescarChat()
         }
     }
 

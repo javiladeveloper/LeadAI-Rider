@@ -149,8 +149,14 @@ fun ClientePantalla(
     // viendo "va en camino" con el rider ya en la puerta.
     LaunchedEffect(Unit) {
         pe.leadai.rider.ui.comunes.AvisoPush.avisos.collect {
+            // `refrescar()` ya trae carrera + ofertas + motos en una sola
+            // llamada: pedir las ofertas aparte era un request de más por cada
+            // push, justo cuando el teléfono está ocupado mostrando el aviso.
             viewModel.refrescar()
-            viewModel.refrescarOfertas()
+            // El chat TAMBIÉN: un mensaje que llega por push tiene que verse
+            // al instante si la conversación está abierta. Sin esto había que
+            // esperar al polling con el otro escribiendo del otro lado.
+            viewModel.refrescarChat()
         }
     }
     LaunchedEffect(Unit) {

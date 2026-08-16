@@ -406,6 +406,14 @@ data class MiCarreraClienteDto(
      */
     val ofertas: List<OfertaDto> = emptyList(),
     val motosCerca: List<MotoCercaDto> = emptyList(),
+    /**
+     * Mensajes del rider que el cliente todavía no vio.
+     *
+     * Viaja acá y no en una llamada aparte: es el globito del botón de chat,
+     * y sin él el cliente no se entera de que le escribieron mientras mira
+     * otra cosa.
+     */
+    val sinLeerChat: Int = 0,
 )
 
 /**
