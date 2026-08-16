@@ -44,7 +44,7 @@ import pe.leadai.rider.ui.tema.centavosASoles
 private const val PASO_CENTAVOS = 50L
 
 /**
- * Lo MENOS que se puede ofrecer: el 80% de lo sugerido, nunca bajo S/4.
+ * Lo MENOS que se puede ofrecer: el 80% de lo sugerido, nunca bajo S/5.
  *
  * Medido en inDrive: una carrera sugerida en S/8.90 solo dejaba bajar hasta
  * S/7.00. Sin tope, el cliente podría ofrecer S/2 por seis kilómetros — no es
@@ -54,7 +54,10 @@ private const val PASO_CENTAVOS = 50L
  * Lo calcula también el backend; acá se repite para que los botones se
  * apaguen en el momento, sin esperar una respuesta.
  */
-private const val MINIMO_ABSOLUTO_CENTAVOS = 400L
+// S/5.00 desde 2026-08-16 (antes S/4.00): es lo que se cobra de piso en
+// Tacna. TIENE QUE COINCIDIR con `MINIMO_CENTAVOS` del backend — si acá fuera
+// menor, los botones dejarían ofrecer un monto que el servidor rechaza.
+private const val MINIMO_ABSOLUTO_CENTAVOS = 500L
 private const val FRACCION_MINIMA = 0.8
 
 internal fun montoMinimoOfertable(sugeridoCentavos: Long?): Long {
