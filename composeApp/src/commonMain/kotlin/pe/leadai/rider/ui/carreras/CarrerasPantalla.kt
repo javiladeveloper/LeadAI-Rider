@@ -39,6 +39,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import pe.leadai.rider.datos.Rutas
 import pe.leadai.rider.ui.comunes.MapaQueSeMide
+import pe.leadai.rider.ui.comunes.ChatCarrera
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
@@ -191,6 +193,8 @@ fun CarrerasPantalla(
         while (isActive) {
             delay(INTERVALO_POLLING_MS)
             viewModel.refrescarCarreras()
+            // Solo si está abierto: si no, es una llamada al vacío.
+            viewModel.refrescarChat()
         }
     }
 
@@ -293,6 +297,14 @@ fun CarrerasPantalla(
                     if (estado.miCarrera != null) {
                         ContenidoRider(
                             carrerasHoy = estado.carrerasHoy,
+                            chatAbierto = estado.chatAbierto,
+                            mensajesChat = estado.mensajes,
+                            rapidosChat = estado.rapidosChat,
+                            enviandoMensaje = estado.enviandoMensaje,
+                            mensajesSinLeer = estado.mensajesSinLeer,
+                            onAbrirChat = viewModel::abrirChat,
+                            onCerrarChat = viewModel::cerrarChat,
+                            onEnviarMensaje = viewModel::enviarMensaje,
                             gananciaHoyCentavos = estado.gananciaHoyCentavos,
                             nombreUsuario = sesion?.usuarioNombre.orEmpty(),
                             perfil = estado.perfil!!,
@@ -324,6 +336,14 @@ fun CarrerasPantalla(
                         when (seccion) {
                             SeccionRider.INICIO -> ContenidoRider(
                                 carrerasHoy = estado.carrerasHoy,
+                            chatAbierto = estado.chatAbierto,
+                            mensajesChat = estado.mensajes,
+                            rapidosChat = estado.rapidosChat,
+                            enviandoMensaje = estado.enviandoMensaje,
+                            mensajesSinLeer = estado.mensajesSinLeer,
+                            onAbrirChat = viewModel::abrirChat,
+                            onCerrarChat = viewModel::cerrarChat,
+                            onEnviarMensaje = viewModel::enviarMensaje,
                                 gananciaHoyCentavos = estado.gananciaHoyCentavos,
                                 nombreUsuario = sesion?.usuarioNombre.orEmpty(),
                                 perfil = estado.perfil!!,
@@ -448,6 +468,9 @@ fun CarrerasPantalla(
     }
 }
 
+// `ModalBottomSheet` sigue marcado como experimental en Material 3, pero es la
+// hoja estándar y su API está estable en la práctica.
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 private fun ContenidoRider(
     nombreUsuario: String,
@@ -455,6 +478,15 @@ private fun ContenidoRider(
     /** Lo ganado hoy: va en el encabezado, sin entrar a otra pantalla. */
     carrerasHoy: Int,
     gananciaHoyCentavos: Long,
+    // ── Chat con el cliente ─────────────────────────────────────────────
+    chatAbierto: Boolean = false,
+    mensajesChat: List<pe.leadai.rider.datos.MensajeChatDto> = emptyList(),
+    rapidosChat: List<String> = emptyList(),
+    enviandoMensaje: Boolean = false,
+    mensajesSinLeer: Int = 0,
+    onAbrirChat: () -> Unit = {},
+    onCerrarChat: () -> Unit = {},
+    onEnviarMensaje: (String) -> Unit = {},
     carreras: List<CarreraDto>,
     miCarrera: CarreraDto?,
     historial: HistorialRiderResponseDto?,
@@ -519,7 +551,25 @@ private fun ContenidoRider(
                 telefonoCliente = telefonoCliente,
                 modifier = Modifier.align(Alignment.BottomCenter),
                 onCancelar = onCancelarCarrera,
+                sinLeer = mensajesSinLeer,
+                onAbrirChat = onAbrirChat,
             )
+
+            // El chat, sobre el mapa: cuando se abre es lo único que importa
+            // —el cliente está esperando una respuesta—.
+            if (chatAbierto) {
+                ModalBottomSheet(onDismissRequest = onCerrarChat) {
+                    Box(modifier = Modifier.fillMaxWidth().height(460.dp)) {
+                        ChatCarrera(
+                            mensajes = mensajesChat,
+                            yo = "rider",
+                            rapidos = rapidosChat,
+                            enviando = enviandoMensaje,
+                            onEnviar = onEnviarMensaje,
+                        )
+                    }
+                }
+            }
         }
         return
     }

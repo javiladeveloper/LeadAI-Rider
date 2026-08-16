@@ -50,6 +50,9 @@ fun HojaCarreraActiva(
     modifier: Modifier = Modifier,
     /** `null` oculta la salida: se usa en previews y en pantallas de solo lectura. */
     onCancelar: (() -> Unit)? = null,
+    /** Mensajes del cliente sin leer, y cómo abrir la conversación. */
+    sinLeer: Int = 0,
+    onAbrirChat: () -> Unit = {},
 ) {
     val colores = ColoresJala.actuales
 
@@ -130,9 +133,18 @@ fun HojaCarreraActiva(
 
             // Solo si el contacto es un teléfono marcable — los leads de
             // prueba usan ids, y un botón de llamar ahí no haría nada.
+            // EL CHAT primero: es la vía que no obliga a nadie a dar su
+            // número. WhatsApp y llamar exponen el teléfono del cliente para
+            // siempre, incluso después del viaje.
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                BotonRedondo(if (sinLeer > 0) "💬$sinLeer" else "💬") { onAbrirChat() }
+            }
+
+            // Solo si el contacto es un teléfono marcable — los leads de
+            // prueba usan ids, y un botón de llamar ahí no haría nada.
             if (telefonoCliente != null) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    BotonRedondo("💬") { onWhatsApp(telefonoCliente) }
+                    BotonRedondo("📱") { onWhatsApp(telefonoCliente) }
                     BotonRedondo("📞") { onLlamar(telefonoCliente) }
                 }
             }

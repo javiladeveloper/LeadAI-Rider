@@ -576,3 +576,41 @@ data class OfertasResponseDto(
     val estado: String = "disponible",
     val ofertas: List<OfertaDto> = emptyList(),
 )
+
+// ── Chat de la carrera ──────────────────────────────────────────────────
+
+/**
+ * Un mensaje entre el cliente y su motorizado.
+ *
+ * `de` es 'cliente' o 'rider': con eso la pantalla decide de qué lado del
+ * globo va cada uno, sin tener que saber quién es cada usuario.
+ */
+@Serializable
+data class MensajeChatDto(
+    val id: String = "",
+    val de: String = "",
+    val texto: String = "",
+    val creadoEn: String = "",
+    val leidoEn: String? = null,
+)
+
+/**
+ * `GET /carreras/:id/chat` → la conversación y los mensajes rápidos.
+ *
+ * Los rápidos vienen del BACKEND y no escritos en la app: cambian según quién
+ * pregunta —el rider busca la puerta, el cliente contesta cuánto falta— y así
+ * se pueden ajustar sin publicar una versión nueva.
+ */
+@Serializable
+data class ChatCarreraDto(
+    val mensajes: List<MensajeChatDto> = emptyList(),
+    val rapidos: List<String> = emptyList(),
+    /** 'cliente' | 'rider': quién soy YO en esta conversación. */
+    val yo: String = "",
+)
+
+/** `POST /carreras/:id/chat` → el mensaje recién creado. */
+@Serializable
+data class EnviarMensajeResponseDto(
+    val mensaje: MensajeChatDto = MensajeChatDto(),
+)

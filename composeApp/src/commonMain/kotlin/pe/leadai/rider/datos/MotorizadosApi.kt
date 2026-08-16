@@ -218,4 +218,27 @@ class MotorizadosApi(private val api: ApiCliente) {
             body = buildJsonObject { },
             requiereSesion = true,
         )
+
+    // ── Chat con el cliente ─────────────────────────────────────────────
+
+    /**
+     * `GET /carreras/:id/chat` → la conversación con el cliente.
+     *
+     * Es el MISMO endpoint que usa el cliente: el backend decide quién sos por
+     * la sesión, así que no hay dos rutas que mantener en paralelo. También
+     * devuelve los mensajes rápidos del rider, distintos a los del cliente.
+     */
+    suspend fun chat(carreraId: String): Resultado<ChatCarreraDto> =
+        api.get<ChatCarreraDto>("/carreras/$carreraId/chat")
+
+    /** `POST /carreras/:id/chat` → le escribe al cliente. */
+    suspend fun enviarMensaje(
+        carreraId: String,
+        texto: String,
+    ): Resultado<EnviarMensajeResponseDto> =
+        api.post<JsonObject, EnviarMensajeResponseDto>(
+            path = "/carreras/$carreraId/chat",
+            body = buildJsonObject { put("texto", texto) },
+            requiereSesion = true,
+        )
 }

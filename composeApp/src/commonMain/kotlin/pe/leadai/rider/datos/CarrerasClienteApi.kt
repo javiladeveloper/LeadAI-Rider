@@ -214,4 +214,27 @@ class CarrerasClienteApi(private val api: ApiCliente) {
             body = buildJsonObject { if (motivo != null) put("motivo", motivo) },
             requiereSesion = true,
         )
+
+    // ── Chat con el motorizado ──────────────────────────────────────────
+
+    /**
+     * `GET /carreras/:id/chat` → la conversación.
+     *
+     * Al traerla se marcan como leídos los mensajes del otro: si abriste el
+     * chat, ya los viste. Una llamada aparte solo para eso sería otro segundo
+     * de espera.
+     */
+    suspend fun chat(carreraId: String): Resultado<ChatCarreraDto> =
+        api.get<ChatCarreraDto>("/carreras/$carreraId/chat")
+
+    /** `POST /carreras/:id/chat` → manda un mensaje. */
+    suspend fun enviarMensaje(
+        carreraId: String,
+        texto: String,
+    ): Resultado<EnviarMensajeResponseDto> =
+        api.post<JsonObject, EnviarMensajeResponseDto>(
+            path = "/carreras/$carreraId/chat",
+            body = buildJsonObject { put("texto", texto) },
+            requiereSesion = true,
+        )
 }

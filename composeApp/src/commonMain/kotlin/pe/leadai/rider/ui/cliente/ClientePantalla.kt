@@ -45,6 +45,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalDensity
 import pe.leadai.rider.datos.Rutas
 import pe.leadai.rider.ui.comunes.MapaQueSeMide
+import pe.leadai.rider.ui.comunes.ChatCarrera
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalUriHandler
@@ -112,6 +115,9 @@ private const val INTERVALO_POLLING_MS = 3_000L
  * Polling de 10s: hoy el cliente se entera por acá de que un rider la tomó
  * (el push al cliente todavía no existe).
  */
+// `ModalBottomSheet` sigue marcado como experimental en Material 3, pero es la
+// hoja estándar y su API está estable en la práctica.
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun ClientePantalla(
     alCambiarModo: () -> Unit,
@@ -134,6 +140,8 @@ fun ClientePantalla(
             // casi todo el tiempo esperando red — eso era lo que se sentía
             // pesado, más que cualquier animación.
             viewModel.refrescar()
+            // Solo si el chat está abierto: si no, es una llamada al vacío.
+            viewModel.refrescarChat()
         }
     }
     // "Tu moto llegó" tiene que verse APENAS entra el push: el cliente está
@@ -193,6 +201,8 @@ fun ClientePantalla(
                     // estar corrido, y un contador que no coincide con el
                     // vencimiento real haría esperar de más.
                     segundosRestantes = carrera.segundosRestantes,
+                    mensajesSinLeer = estado.mensajesSinLeer,
+                    onAbrirChat = viewModel::abrirChat,
                 )
                 estado.cargando -> PantallaCargando()
                 // 2) Sin carrera: la pestaña que haya elegido.
@@ -255,6 +265,22 @@ fun ClientePantalla(
                 direccionDelPin = estado.direccionDelPin,
                 onMoverPin = viewModel::moverPin,
             )
+        }
+
+        // El chat, sobre todo lo demás: cuando se abre es lo único que
+        // importa —el rider está esperando en la puerta—.
+        if (estado.chatAbierto) {
+            ModalBottomSheet(onDismissRequest = viewModel::cerrarChat) {
+                Box(modifier = Modifier.fillMaxWidth().height(460.dp)) {
+                    ChatCarrera(
+                        mensajes = estado.mensajes,
+                        yo = "cliente",
+                        rapidos = estado.rapidosChat,
+                        enviando = estado.enviandoMensaje,
+                        onEnviar = viewModel::enviarMensaje,
+                    )
+                }
+            }
         }
 
         // El motivo se pregunta ANTES de cancelar: después la carrera ya no
@@ -522,6 +548,9 @@ private fun SeguimientoCarrera(
     onSubirMonto: () -> Unit = {},
     motosCerca: Int = 0,
     segundosRestantes: Int = 0,
+    /** Mensajes del rider sin leer: el globito del botón de chat. */
+    mensajesSinLeer: Int = 0,
+    onAbrirChat: () -> Unit = {},
 ) {
     val enCamino = carrera.estado == "aceptada" || carrera.estado == "recogida"
 
@@ -662,7 +691,11 @@ private fun SeguimientoCarrera(
         }
 
         if (enCamino) {
-            DatosDelRider(carrera)
+            DatosDelRider(
+                carrera = carrera,
+                sinLeer = mensajesSinLeer,
+                onAbrirChat = onAbrirChat,
+            )
 
             // Una salida TAMBIÉN cuando el rider ya viene.
             //
@@ -761,7 +794,11 @@ private fun EsperandoRider(carrera: CarreraClienteDto, modifier: Modifier = Modi
 
 /** El rider que la tomó: quién es, en qué anda y cómo se lo contacta. */
 @Composable
-private fun DatosDelRider(carrera: CarreraClienteDto) {
+private fun DatosDelRider(
+    carrera: CarreraClienteDto,
+    sinLeer: Int = 0,
+    onAbrirChat: () -> Unit = {},
+) {
     val telefono = telefonoDeContacto(carrera.riderTelefono)
 
     Spacer(Modifier.height(8.dp))
@@ -798,6 +835,30 @@ private fun DatosDelRider(carrera: CarreraClienteDto) {
     if (telefono != null) {
         val abridor = LocalUriHandler.current
         Spacer(Modifier.height(8.dp))
+        // EL CHAT primero, y a todo el ancho.
+        //
+        // Es la vía que no obliga a nadie a dar su número: WhatsApp y llamar
+        // exponen el teléfono del cliente para siempre, incluso después del
+        // viaje. Quedan abajo como salida cuando el chat no alcanza.
+        Spacer(Modifier.height(8.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .height(48.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(ColoresJala.actuales.marcaAmarillo)
+                .clickable { onAbrirChat() },
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                if (sinLeer > 0) "💬 Mensajes ($sinLeer)" else "💬 Escribirle",
+                style = MaterialTheme.typography.labelLarge,
+                color = ColoresJala.actuales.marcaCarbon,
+            )
+        }
+        Spacer(Modifier.height(8.dp))
+
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),

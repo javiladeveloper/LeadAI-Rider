@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import pe.leadai.rider.datos.MensajeChatDto
 import pe.leadai.rider.datos.MotorizadosApi
 import pe.leadai.rider.datos.CarreraDto
 import pe.leadai.rider.datos.HistorialRiderResponseDto
@@ -41,6 +42,13 @@ data class CarrerasUiState(
     val monedero: MonederoDto? = null,
     /** Cambiando el turno (deshabilita el interruptor mientras viaja). */
     val cambiandoTurno: Boolean = false,
+    // ── Chat con el cliente ─────────────────────────────────────────────
+    val chatAbierto: Boolean = false,
+    val mensajes: List<MensajeChatDto> = emptyList(),
+    val rapidosChat: List<String> = emptyList(),
+    val enviandoMensaje: Boolean = false,
+    /** Mensajes del cliente sin leer: el globito del botón. */
+    val mensajesSinLeer: Int = 0,
     /** Avisando al cliente que el rider llegó (deshabilita el botón). */
     val avisandoLlegada: Boolean = false,
     /**
@@ -437,4 +445,59 @@ class CarrerasViewModel(
             }
         }
     }
+
+    // ── Chat con el cliente ─────────────────────────────────────────────
+
+    /** Abre la conversación. El backend marca como leídos los del cliente. */
+    fun abrirChat() {
+        val id = _estado.value.miCarrera?.pedidoId ?: return
+        _estado.update { it.copy(chatAbierto = true, mensajesSinLeer = 0) }
+        viewModelScope.launch(dispatcher) { traerChat(id) }
+    }
+
+    fun cerrarChat() {
+        _estado.update { it.copy(chatAbierto = false) }
+    }
+
+    /** Le escribe al cliente. */
+    fun enviarMensaje(texto: String) {
+        val id = _estado.value.miCarrera?.pedidoId ?: return
+        if (texto.isBlank() || _estado.value.enviandoMensaje) return
+        _estado.update { it.copy(enviandoMensaje = true) }
+        viewModelScope.launch(dispatcher) {
+            when (motorizadosApi.enviarMensaje(id, texto)) {
+                is Resultado.Ok -> {
+                    _estado.update { it.copy(enviandoMensaje = false) }
+                    traerChat(id)
+                }
+                is Resultado.Error -> {
+                    _estado.update { it.copy(enviandoMensaje = false) }
+                    avisos.mostrar("No se pudo enviar el mensaje")
+                }
+            }
+        }
+    }
+
+    /** Refresca mientras está abierto: si no, hay que cerrar y volver a abrir. */
+    fun refrescarChat() {
+        if (!_estado.value.chatAbierto) return
+        val id = _estado.value.miCarrera?.pedidoId ?: return
+        viewModelScope.launch(dispatcher) { traerChat(id) }
+    }
+
+    private suspend fun traerChat(carreraId: String) {
+        when (val r = motorizadosApi.chat(carreraId)) {
+            is Resultado.Ok -> _estado.update {
+                it.copy(
+                    mensajes = r.valor.mensajes,
+                    rapidosChat = r.valor.rapidos,
+                    mensajesSinLeer = 0,
+                )
+            }
+            // Silencioso: el chat es un extra y un fallo puntual no puede
+            // llenar de errores la pantalla del rider, que está manejando.
+            is Resultado.Error -> Unit
+        }
+    }
+
 }

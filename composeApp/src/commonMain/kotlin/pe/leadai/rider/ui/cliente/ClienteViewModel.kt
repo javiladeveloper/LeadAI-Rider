@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import pe.leadai.rider.datos.CarreraClienteDto
+import pe.leadai.rider.datos.MensajeChatDto
 import pe.leadai.rider.datos.OfertaDto
 import pe.leadai.rider.datos.SugerenciaDireccionDto
 import pe.leadai.rider.datos.CarrerasClienteApi
@@ -134,6 +135,14 @@ data class ClienteUiState(
     // ── Mercado de ofertas ──────────────────────────────────────────────
     /** Las propuestas que llegaron, de la más barata a la más cara. */
     val ofertas: List<OfertaDto> = emptyList(),
+    // ── Chat con el motorizado ──────────────────────────────────────────
+    /** Si está abierta la conversación. */
+    val chatAbierto: Boolean = false,
+    val mensajes: List<MensajeChatDto> = emptyList(),
+    val rapidosChat: List<String> = emptyList(),
+    val enviandoMensaje: Boolean = false,
+    /** Cuántos mensajes del rider todavía no vio: el globito del botón. */
+    val mensajesSinLeer: Int = 0,
     /** Id de la oferta que se está eligiendo (deshabilita el resto). */
     val eligiendoOferta: String? = null,
     /**
@@ -759,6 +768,73 @@ class ClienteViewModel(
             }
         }
     }
+
+    // ── Chat con el motorizado ──────────────────────────────────────────
+
+    /**
+     * Abre la conversación y trae los mensajes.
+     *
+     * Al traerlos el backend los marca como leídos, así que el contador se
+     * pone en cero acá mismo: esperar al próximo polling dejaría el globito
+     * encendido sobre un chat que el cliente ya está mirando.
+     */
+    fun abrirChat() {
+        val id = _estado.value.miCarrera?.id ?: return
+        _estado.update { it.copy(chatAbierto = true, mensajesSinLeer = 0) }
+        viewModelScope.launch(dispatcher) { traerChat(id) }
+    }
+
+    fun cerrarChat() {
+        _estado.update { it.copy(chatAbierto = false) }
+    }
+
+    /** Manda un mensaje y refresca la conversación. */
+    fun enviarMensaje(texto: String) {
+        val id = _estado.value.miCarrera?.id ?: return
+        if (texto.isBlank() || _estado.value.enviandoMensaje) return
+        _estado.update { it.copy(enviandoMensaje = true) }
+        viewModelScope.launch(dispatcher) {
+            when (api.enviarMensaje(id, texto)) {
+                is Resultado.Ok -> {
+                    _estado.update { it.copy(enviandoMensaje = false) }
+                    traerChat(id)
+                }
+                is Resultado.Error -> {
+                    _estado.update { it.copy(enviandoMensaje = false) }
+                    avisos.mostrar("No se pudo enviar el mensaje")
+                }
+            }
+        }
+    }
+
+    /**
+     * Refresca la conversación mientras está abierta.
+     *
+     * Se llama desde el polling: sin esto el cliente tendría que cerrar y
+     * volver a abrir para ver la respuesta del rider.
+     */
+    fun refrescarChat() {
+        if (!_estado.value.chatAbierto) return
+        val id = _estado.value.miCarrera?.id ?: return
+        viewModelScope.launch(dispatcher) { traerChat(id) }
+    }
+
+    private suspend fun traerChat(carreraId: String) {
+        when (val r = api.chat(carreraId)) {
+            is Resultado.Ok -> _estado.update {
+                it.copy(
+                    mensajes = r.valor.mensajes,
+                    rapidosChat = r.valor.rapidos,
+                    // Se acaban de marcar como leídos del lado del servidor.
+                    mensajesSinLeer = 0,
+                )
+            }
+            // Silencioso: el chat es un extra sobre la carrera y un fallo
+            // puntual no puede llenar la pantalla de errores.
+            is Resultado.Error -> Unit
+        }
+    }
+
 }
 
 private fun soloNumeros(valor: String): String = valor.filter { it.isDigit() }.take(5)
