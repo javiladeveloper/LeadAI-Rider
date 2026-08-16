@@ -64,4 +64,19 @@ class RutasTest {
         assertTrue(Rutas.Mapas.radar(-17.99, -70.23, 420, oscuro = true).contains("oscuro=1"))
         assertTrue(!Rutas.Mapas.radar(-17.99, -70.23, 420).contains("oscuro"))
     }
+    @Test
+    fun solo_el_rider_entra_en_modo_navegacion() {
+        // El modo navegación —cámara pegada a la moto, tras recoger— es para
+        // el que MANEJA. Al cliente le sirve ver el viaje completo: la calle
+        // por donde va la moto no le dice nada, quiere saber cuánto falta.
+        //
+        // Antes el backend lo deducía de `embebido`, pero los DOS entran
+        // embebidos: el cliente caía en modo navegación sin ninguna razón.
+        val delRider = Rutas.Mapas.tracking("ped-1", altoDp = 500, esRider = true)
+        val delCliente = Rutas.Mapas.tracking("ped-1", altoDp = 500)
+
+        assertTrue(delRider.contains("modo=rider"), "el rider sí: $delRider")
+        assertTrue(!delCliente.contains("modo=rider"), "el cliente no: $delCliente")
+    }
+
 }

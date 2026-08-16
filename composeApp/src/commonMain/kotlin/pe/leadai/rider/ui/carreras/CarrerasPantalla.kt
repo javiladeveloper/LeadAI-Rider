@@ -531,7 +531,10 @@ private fun ContenidoRider(
         Box(modifier = Modifier.fillMaxSize()) {
             // A sangre completa: sin redondeo, que el mapa toque los bordes.
             MapaQueSeMide(
-                url = { alto -> Rutas.Mapas.tracking(miCarrera.pedidoId, alto) },
+                // `esRider = true`: el modo navegación (cámara pegada a la
+                // moto) es para el que MANEJA, y arranca recién cuando ya
+                // recogió. El cliente ve el mismo mapa sin ese modo.
+                url = { alto -> Rutas.Mapas.tracking(miCarrera.pedidoId, alto, esRider = true) },
                 modifier = Modifier.fillMaxSize(),
                 redondeado = false,
             )

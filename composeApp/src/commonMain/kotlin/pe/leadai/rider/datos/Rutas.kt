@@ -44,9 +44,21 @@ object Rutas {
         fun punto(lat: Double, lng: Double, altoDp: Int, oscuro: Boolean = false): String =
             "$BASE/mapa/punto?lat=$lat&lng=$lng&alto=$altoDp" + siOscuro(oscuro)
 
-        /** El seguimiento en vivo de una carrera, embebido en la app. */
-        fun tracking(pedidoId: String, altoDp: Int): String =
-            "$BASE/track/$pedidoId?embebido=1&alto=$altoDp"
+        /**
+         * El seguimiento en vivo de una carrera, embebido en la app.
+         *
+         * @param esRider quién mira. El MOTORIZADO entra en modo navegación
+         * una vez que recogió: la cámara lo sigue de cerca. El CLIENTE ve
+         * siempre el viaje completo —a él la calle donde va la moto no le
+         * dice nada, quiere saber cuánto falta—.
+         *
+         * Va explícito y no deducido de `embebido`: los dos entran embebidos,
+         * así que el backend no podía distinguirlos y metía al cliente en modo
+         * navegación sin razón.
+         */
+        fun tracking(pedidoId: String, altoDp: Int, esRider: Boolean = false): String =
+            "$BASE/track/$pedidoId?embebido=1&alto=$altoDp" +
+                (if (esRider) "&modo=rider" else "")
 
         private fun siOscuro(oscuro: Boolean) = if (oscuro) "&oscuro=1" else ""
     }
