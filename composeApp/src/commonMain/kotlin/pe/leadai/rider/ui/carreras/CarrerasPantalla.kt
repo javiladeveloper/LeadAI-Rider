@@ -44,6 +44,7 @@ import androidx.compose.material3.ModalBottomSheet
 import pe.leadai.rider.ui.tema.AparecerEnCascada
 import androidx.compose.foundation.lazy.itemsIndexed
 import pe.leadai.rider.ui.tema.Formas
+import pe.leadai.rider.ui.tema.AparecerSolicitud
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalUriHandler
@@ -619,10 +620,12 @@ private fun ContenidoRider(
             }
         } else {
             itemsIndexed(carreras, key = { _, c -> c.pedidoId }) { posicion, carrera ->
-                // En CASCADA: cada carrera entra un instante después de la
-                // anterior. Con todas apareciendo a la vez el feed "parpadea"
-                // en cada refresco; escalonadas se lee de arriba hacia abajo.
-                AparecerEnCascada(posicion) {
+                // Cada solicitud CRECE al entrar, escalonada.
+                //
+                // Es el momento más importante de la pantalla del rider:
+                // apareció trabajo. Una card que solo se desliza se confunde
+                // con el refresco del polling.
+                AparecerSolicitud(posicion) {
                     CardCarrera(
                         carrera = carrera,
                         aceptando = accionEnCurso == carrera.pedidoId,

@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.scaleOut
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.CubicBezierEasing
@@ -201,3 +202,49 @@ fun centavosAnimados(objetivoCentavos: Long): Long {
 }
 
 private const val DURACION_CONTADOR_MS = 250
+
+/**
+ * Cómo entra una SOLICITUD NUEVA en el feed del rider.
+ *
+ * Es el momento más importante de su pantalla: apareció trabajo. Una card que
+ * solo se desliza se confunde con el refresco del polling; esta CRECE desde
+ * un poco más chica, así el ojo la registra como algo que llegó recién.
+ *
+ * `overshootClamping = false` a propósito: el rebote apenas perceptible al
+ * final es lo que separa una animación "de sistema" de una que se siente
+ * física. Con `dampingRatio` alto no se ve exagerado.
+ *
+ * Se distingue de `AparecerEnCascada` —que es para listas que ya estaban— en
+ * que esta se usa cuando el elemento es NUEVO de verdad.
+ */
+@Composable
+fun AparecerSolicitud(
+    posicion: Int = 0,
+    contenido: @Composable () -> Unit,
+) {
+    var visible by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        delay((posicion * RETRASO_POR_POSICION_MS).coerceAtMost(RETRASO_MAXIMO_MS).toLong())
+        visible = true
+    }
+    AnimatedVisibility(
+        visible = visible,
+        enter = fadeIn(tween(Movimiento.NORMAL_MS)) +
+            scaleIn(
+                // Desde 92% y no desde cero: nacer de la nada se ve como un
+                // truco; crecer un poco se lee como que la card "aterrizó".
+                initialScale = 0.92f,
+                animationSpec = spring(
+                    dampingRatio = Spring.DampingRatioLowBouncy,
+                    stiffness = Spring.StiffnessMediumLow,
+                ),
+            ) +
+            slideInVertically(
+                animationSpec = tween(Movimiento.NORMAL_MS, easing = Movimiento.SUAVE),
+                initialOffsetY = { it / 5 },
+            ),
+        exit = fadeOut(tween(Movimiento.RAPIDO_MS)) + scaleOut(targetScale = 0.94f),
+    ) {
+        contenido()
+    }
+}

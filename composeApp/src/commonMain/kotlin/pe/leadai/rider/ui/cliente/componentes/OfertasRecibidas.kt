@@ -26,6 +26,8 @@ import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
 import androidx.compose.ui.Alignment
 import pe.leadai.rider.ui.tema.AparecerEnCascada
+import androidx.compose.animation.core.LinearEasing
+import pe.leadai.rider.ui.tema.AparecerSolicitud
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -84,7 +86,7 @@ fun OfertasRecibidas(
             // Llegan de a una mientras el cliente mira, y con todas
             // apareciendo a la vez el ojo no sabe cuál es la nueva. Escalonadas
             // la vista las recorre en orden, de la más barata hacia abajo.
-            AparecerEnCascada(posicion) {
+            AparecerSolicitud(posicion) {
                 CardOferta(
                     oferta = oferta,
                     montoOfrecido = montoOfrecido,
@@ -249,7 +251,13 @@ private fun BarraDeVigencia(segundosRestantes: Int) {
     val fraccion by animateFloatAsState(
         targetValue = (segundos / SEGUNDOS_VIGENCIA).coerceIn(0f, 1f),
         // Lineal y de un segundo: acompaña al conteo sin saltos.
-        animationSpec = tween(durationMillis = 1_000),
+        // LINEAL y exactamente 1 segundo: el tiempo corre parejo.
+        //
+        // El `tween` por defecto arranca lento y frena al final. Sobre un
+        // contador que baja de a un segundo eso se ve como tirones —la barra
+        // se queda quieta y después salta—, que es justo lo que se sentía
+        // "con delay".
+        animationSpec = tween(durationMillis = 1_000, easing = LinearEasing),
         label = "vigencia",
     )
     val porTerminar = segundos <= 20

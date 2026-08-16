@@ -27,6 +27,7 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.layout.size
 import pe.leadai.rider.ui.tema.Movimiento
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -78,7 +79,10 @@ fun EstadoBusqueda(
 
     val fraccion by animateFloatAsState(
         targetValue = (segundos / SEGUNDOS_BUSQUEDA.toFloat()).coerceIn(0f, 1f),
-        animationSpec = tween(1_000),
+        // Lineal: el tiempo corre parejo. El easing por defecto arranca lento
+        // y frena, y sobre un contador que baja de a un segundo eso se ve
+        // como tirones.
+        animationSpec = tween(1_000, easing = LinearEasing),
         label = "busqueda",
     )
 
