@@ -89,11 +89,16 @@ jobs:
       #
       # En CERRADA y PRODUCCION siguen corriendo: ahi hay motorizados reales
       # trabajando, y la red de seguridad vale los minutos.
+      # SIEMPRE, y en un paso propio: el chmod vivia dentro de "Correr los
+      # tests", que en interna ahora se saltea — y el AAB fallaba con
+      # "./gradlew: Permission denied". Un permiso de archivo no puede depender
+      # de que corra un paso opcional.
+      - name: Permiso de ejecucion a gradlew
+        run: chmod +x ./gradlew
+
       - name: Correr los tests
         if: steps.canal.outputs.canal != 'interna'
-        run: |
-          chmod +x ./gradlew
-          ./gradlew :composeApp:testDebugUnitTest
+        run: ./gradlew :composeApp:testDebugUnitTest
 
       # versionCode = número de corrida + offset (lo lee build.gradle.kts).
       - name: Compilar el AAB firmado
