@@ -82,7 +82,15 @@ jobs:
           echo "$KEYSTORE_BASE64" | base64 -d > composeApp/release.keystore
           echo "$GOOGLE_SERVICES_BASE64" | base64 -d > composeApp/google-services.json
 
+      # Los tests se saltan en INTERNA, que es el canal de iteracion: los
+      # corremos localmente antes de cada tag y ahi los ve quien publica. Son
+      # 3 de los 6 minutos del release, y en interna el unico que se expone a
+      # un fallo es el propio equipo.
+      #
+      # En CERRADA y PRODUCCION siguen corriendo: ahi hay motorizados reales
+      # trabajando, y la red de seguridad vale los minutos.
       - name: Correr los tests
+        if: steps.canal.outputs.canal != 'interna'
         run: |
           chmod +x ./gradlew
           ./gradlew :composeApp:testDebugUnitTest
