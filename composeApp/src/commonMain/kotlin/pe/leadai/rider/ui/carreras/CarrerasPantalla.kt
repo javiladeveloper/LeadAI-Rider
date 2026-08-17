@@ -225,6 +225,13 @@ fun CarrerasPantalla(
     // miraba la app y se congelaba en cuanto la guardaba en el bolsillo.
     val carreraEnCurso = estado.miCarrera
     val enTurno = estado.perfil?.disponible == true
+
+    // "Salir de turno" desde la notificación tiene que apagarlo TAMBIÉN en el
+    // backend: si solo se cortara el servicio, el rider desaparecería del mapa
+    // pero el backend lo seguiría dando por disponible y mandándole carreras.
+    LaunchedEffect(Unit) {
+        alSalirDeTurnoDesdeNotificacion { viewModel.cambiarTurno(false) }
+    }
     LaunchedEffect(carreraEnCurso?.pedidoId, enTurno) {
         if (carreraEnCurso == null && !enTurno) {
             detenerServicioCarrera()

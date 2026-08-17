@@ -14,3 +14,7 @@ actual fun iniciarServicioCarrera(destino: String): Boolean =
 actual fun detenerServicioCarrera() {
     ServicioCarreraActiva.detener(ContextoApp.context)
 }
+
+actual fun alSalirDeTurnoDesdeNotificacion(accion: () -> Unit) {
+    ServicioCarreraActiva.alSalirDeTurno = accion
+}

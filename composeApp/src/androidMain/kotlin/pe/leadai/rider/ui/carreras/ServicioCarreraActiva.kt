@@ -68,6 +68,15 @@ class ServicioCarreraActiva : Service(), KoinComponent {
         // Si falla, el servicio se detiene y no se arranca el loop: sin
         // permiso no hay ubicación que reportar. La carrera sigue viva — se
         // pierde el rastreo en segundo plano, no el trabajo.
+        // "Salir de turno" desde la notificacion: se apaga en el backend y se
+        // corta el servicio. Sin avisarle al backend, el rider seguiria
+        // apareciendo en el radar del cliente aunque su telefono ya no reporte.
+        if (intent?.action == ACCION_SALIR) {
+            alSalirDeTurno?.invoke()
+            stopSelf()
+            return START_NOT_STICKY
+        }
+
         val enPrimerPlano = runCatching {
             startForeground(ID_NOTIFICACION, construirNotificacion(destino))
         }
@@ -114,29 +123,91 @@ class ServicioCarreraActiva : Service(), KoinComponent {
         )
     }
 
+    /**
+     * Lo que pasa al tocar "Salir de turno" desde la notificacion.
+     *
+     * Apunta al PROPIO servicio con una accion: asi se apaga sin abrir la app,
+     * que es todo el punto —el rider termino su jornada y guardo el telefono—.
+     */
+    private fun intentDeSalir(): PendingIntent {
+        val intent = Intent(this, ServicioCarreraActiva::class.java).setAction(ACCION_SALIR)
+        return PendingIntent.getService(
+            this,
+            1,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+        )
+    }
+
     private fun construirNotificacion(destino: String): Notification {
         val canal = NotificationChannel(
             CANAL_ID,
-            "Carrera en curso",
+            // El nombre que el rider ve en los ajustes de Android: cubre las
+            // DOS situaciones en que este servicio corre.
+            "Turno y carrera activa",
             // BAJA a propósito: debe estar ahí, pero no sonar ni vibrar. El
             // canal ruidoso es el de "nueva carrera en tu zona"; este solo
             // acompaña al rider mientras maneja.
             NotificationManager.IMPORTANCE_LOW,
-        ).apply { description = "Mantiene tu ubicación en vivo mientras llevas una carrera" }
+        ).apply {
+            description = "Mantiene tu ubicación en vivo mientras estás en turno o llevas una carrera"
+        }
         getSystemService(NotificationManager::class.java).createNotificationChannel(canal)
 
+        // El aviso dice LO QUE ESTÁ PASANDO, no siempre "carrera en curso".
+        //
+        // El servicio corre en dos situaciones: con una carrera encima, y en
+        // turno esperando —para aparecer en el radar del cliente—. Decía
+        // "Carrera en curso" en las dos, así que un rider sin ninguna carrera
+        // veía un aviso permanente que no podía borrar hablándole de un viaje
+        // que no existe.
+        //
+        // Un aviso que miente es peor que ninguno: enseña a ignorarlos.
+        val enCarrera = destino.isNotBlank()
         return NotificationCompat.Builder(this, CANAL_ID)
-            .setContentTitle("🛵 Carrera en curso")
-            .setContentText(if (destino.isBlank()) "Compartiendo tu ubicación" else "Rumbo a $destino")
+            .setContentTitle(if (enCarrera) "🛵 Carrera en curso" else "🟢 Estás en turno")
+            .setContentText(
+                if (enCarrera) "Rumbo a $destino"
+                else "Te avisamos apenas haya una carrera cerca",
+            )
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setContentIntent(intentAlAbrir())
+            // SALIDA VISIBLE. La notificacion no se puede deslizar
+            // (`setOngoing`), y eso es correcto: si se pudiera, el rider la
+            // sacaria sin querer y dejaria de aparecer en el radar sin
+            // enterarse.
+            //
+            // Pero sin este boton la unica forma de sacarla era abrir la app y
+            // apagar el turno: quien ya la cerro se quedaba con un aviso
+            // permanente y sin forma obvia de quitarlo.
+            //
+            // Solo en turno: con una carrera encima, cortar el rastreo dejaria
+            // al cliente sin ver la moto que esta esperando.
+            .apply {
+                if (!enCarrera) {
+                    addAction(
+                        android.R.drawable.ic_menu_close_clear_cancel,
+                        "Salir de turno",
+                        intentDeSalir(),
+                    )
+                }
+            }
             .build()
     }
 
     companion object {
         private const val CANAL_ID = "carrera_activa"
+        private const val ACCION_SALIR = "pe.leadai.rider.SALIR_DE_TURNO"
+
+        /**
+         * Qué hacer cuando el rider sale de turno desde la notificacion.
+         *
+         * Lo setea la app al arrancar: el servicio no puede llamar al backend
+         * por su cuenta —no tiene la sesion— asi que avisa hacia afuera.
+         */
+        var alSalirDeTurno: (() -> Unit)? = null
         private const val ID_NOTIFICACION = 1001
         private const val EXTRA_DESTINO = "destino"
 

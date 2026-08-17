@@ -20,3 +20,18 @@ expect fun iniciarServicioCarrera(destino: String): Boolean
 
 /** Idempotente: parar un servicio que no corre es un no-op seguro. */
 expect fun detenerServicioCarrera()
+
+/**
+ * Qué hacer si el rider sale de turno DESDE LA NOTIFICACIÓN.
+ *
+ * El aviso del servicio no se puede deslizar para borrarlo —si se pudiera, el
+ * rider lo sacaría sin querer y dejaría de aparecer en el radar sin
+ * enterarse—, así que lleva un botón "Salir de turno".
+ *
+ * El servicio no puede avisarle al backend por su cuenta (no tiene la sesión),
+ * así que llama hacia afuera. Sin esto, el rider desaparecería del mapa pero
+ * el backend lo seguiría dando por disponible y le mandaría carreras.
+ *
+ * En iOS es un no-op: ahí no hay notificación de servicio (Fase D).
+ */
+expect fun alSalirDeTurnoDesdeNotificacion(accion: () -> Unit)

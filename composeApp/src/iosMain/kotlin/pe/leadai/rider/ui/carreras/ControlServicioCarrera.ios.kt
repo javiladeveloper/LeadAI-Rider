@@ -9,3 +9,6 @@ package pe.leadai.rider.ui.carreras
 actual fun iniciarServicioCarrera(destino: String): Boolean = true
 
 actual fun detenerServicioCarrera() = Unit
+
+/** iOS no tiene notificacion de servicio todavia (Fase D): no hay de donde salir. */
+actual fun alSalirDeTurnoDesdeNotificacion(accion: () -> Unit) = Unit
