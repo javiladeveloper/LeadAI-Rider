@@ -40,8 +40,15 @@ import pe.leadai.rider.ui.tema.centavosASoles
 import pe.leadai.rider.ui.tema.recordarInteraccion
 import pe.leadai.rider.ui.tema.toqueVivo
 
-/** Cuánto vale una oferta. Igual que `SEGUNDOS_VIGENCIA_OFERTA` del backend. */
-private const val SEGUNDOS_VIGENCIA = 90f
+/**
+ * Cuánto vale una oferta. TIENE QUE COINCIDIR con `SEGUNDOS_VIGENCIA_OFERTA`
+ * del backend.
+ *
+ * Si acá dice más que allá, la barra arranca por la mitad —el backend manda
+ * 45 y la app divide por 90— y baja al doble de lento que el tiempo real: se
+ * ve "con delay" aunque el conteo esté bien.
+ */
+private const val SEGUNDOS_VIGENCIA = 45f
 
 /**
  * Las propuestas que le llegaron al cliente: elige a quién, no solo cuánto.

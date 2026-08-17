@@ -63,8 +63,12 @@ fun HojaCarreraActiva(
                 color = colores.superficieCard,
                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
             )
-            .padding(20.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+            // 16 y no 20, con 12 entre bloques: la tarjeta tapaba media
+            // pantalla y el mapa es lo que el rider necesita ver mientras
+            // maneja. Sigue habiendo aire —el ritmo de 8 del diseño— pero sin
+            // robarle espacio a la calle.
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         // El "agarre" de la hoja: indica que esto es un panel, no el fondo.
         Box(
@@ -193,7 +197,9 @@ fun HojaCarreraActiva(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                // 52dp: por encima del mínimo de 48 que se toca manejando,
+                // y 4dp menos de tarjeta.
+                .height(52.dp)
                 .background(
                     color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(16.dp),

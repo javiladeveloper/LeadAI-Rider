@@ -35,10 +35,14 @@ import androidx.compose.ui.unit.dp
 import pe.leadai.rider.ui.tema.ColoresJala
 
 /**
- * Cuánto dura la búsqueda antes de que la carrera venza. Igual que
- * `MINUTOS_HASTA_EXPIRAR` del backend.
+ * Cuánto dura la búsqueda. TIENE QUE COINCIDIR con `MINUTOS_HASTA_EXPIRAR`
+ * del backend.
+ *
+ * Bajó de 15 a 5 minutos: quince es una eternidad esperando una moto. Si la
+ * app siguiera dividiendo por 15, la barra arrancaría en un tercio y se
+ * vaciaría tres veces más lento que el reloj de al lado.
  */
-private const val SEGUNDOS_BUSQUEDA = 15 * 60
+private const val SEGUNDOS_BUSQUEDA = 5 * 60
 
 /**
  * El estado de la búsqueda: qué está pasando y cuánto falta.
