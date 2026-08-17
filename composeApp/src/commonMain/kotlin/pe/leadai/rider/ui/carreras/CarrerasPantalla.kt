@@ -244,9 +244,17 @@ fun CarrerasPantalla(
         // En turno sin carrera no hay destino: la notificacion del service
         // dice que esta disponible, que es lo que el rider necesita ver para
         // saber que la app lo esta mostrando en el mapa del cliente.
+        // VACÍO cuando no hay carrera, no un texto de relleno.
+        //
+        // Antes acá iba "Esperando carreras" y la notificación armaba
+        // "🛵 Carrera en curso · Rumbo a Esperando carreras": dos frases
+        // correctas por separado, pegadas en algo que no se entiende.
+        //
+        // El servicio decide qué decir según venga o no un destino, así que la
+        // cadena vacía es la señal de "está en turno, sin viaje".
         val destino = carreraEnCurso?.destinoTexto
             ?: carreraEnCurso?.direccion
-            ?: "Esperando carreras"
+            ?: ""
         while (isActive && !iniciarServicioCarrera(destino)) {
             delay(ESPERA_REINTENTO_SERVICIO_MS)
         }
