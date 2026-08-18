@@ -42,7 +42,11 @@ import pe.leadai.rider.ui.tema.ColoresJala
  * app siguiera dividiendo por 15, la barra arrancaría en un tercio y se
  * vaciaría tres veces más lento que el reloj de al lado.
  */
-private const val SEGUNDOS_BUSQUEDA = 5 * 60
+// DOS minutos, los mismos que `MINUTOS_HASTA_EXPIRAR` en el backend.
+//
+// Con 5 acá y 2 allá, la barra arrancaba al 40% y el cliente veía una espera
+// que ya empezaba por la mitad.
+private const val SEGUNDOS_BUSQUEDA = 2 * 60
 
 /**
  * El estado de la búsqueda: qué está pasando y cuánto falta.
@@ -60,6 +64,8 @@ fun EstadoBusqueda(
     motosCerca: Int,
     ofertas: Int,
     modifier: Modifier = Modifier,
+    /** El contador llegó a cero: la búsqueda terminó. */
+    onSeAcabo: () -> Unit = {},
 ) {
     val colores = ColoresJala.actuales
 
@@ -79,6 +85,10 @@ fun EstadoBusqueda(
             delay(1_000)
             segundos -= 1
         }
+        // Llegó a cero: se avisa UNA vez. El servidor la marca vencida en su
+        // barrido de cada minuto, pero la pantalla no puede quedarse
+        // buscando con el contador en 0:00.
+        if (segundosRestantes > 0) onSeAcabo()
     }
 
     val fraccion by animateFloatAsState(

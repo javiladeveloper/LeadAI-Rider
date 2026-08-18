@@ -18,6 +18,19 @@ import kotlin.test.assertEquals
  */
 class DuracionesTest {
 
+    /**
+     * Un archivo del BACKEND, que vive en otro repo al lado de este.
+     *
+     * Si no está —alguien clonó solo la app—, el test se salta en vez de
+     * fallar: no tiene sentido romper la build por no poder comparar.
+     */
+    private fun fuenteBackend(ruta: String): String? {
+        val rutas = listOf("../leadia/$ruta", "../../leadia/$ruta")
+        return rutas.firstNotNullOfOrNull { r ->
+            runCatching { java.io.File(r).takeIf { it.exists() }?.readText() }.getOrNull()
+        }
+    }
+
     private fun fuente(ruta: String): String {
         val rutas = listOf(ruta, "composeApp/$ruta")
         return rutas.firstNotNullOfOrNull { r ->
@@ -40,7 +53,22 @@ class DuracionesTest {
         val texto = fuente("src/commonMain/kotlin/pe/leadai/rider/ui/cliente/componentes/EstadoBusqueda.kt")
         val minutos = Regex("""SEGUNDOS_BUSQUEDA = (\d+) \* 60""").find(texto)?.groupValues?.get(1)
 
-        assertEquals("5", minutos, "el backend expira a los 5 min")
+        // El número esperado se lee del BACKEND, no se escribe acá.
+        //
+        // Antes decía `assertEquals("5", ...)` a mano: cuando el backend bajó
+        // a 2 minutos, el test siguió verde y la barra quedó calculando sobre
+        // 5 —arrancaba al 40%—. Un test que hay que actualizar a mano cuando
+        // cambia la otra punta no está comparando nada.
+        val backend = fuenteBackend("src/core/carreras.ts") ?: return
+        val delBackend = Regex("""MINUTOS_HASTA_EXPIRAR = (\d+)""")
+            .find(backend)
+            ?.groupValues?.get(1)
+
+        assertEquals(
+            delBackend,
+            minutos,
+            "la barra tiene que durar lo mismo que la carrera: backend=$delBackend app=$minutos",
+        )
     }
 
     @Test

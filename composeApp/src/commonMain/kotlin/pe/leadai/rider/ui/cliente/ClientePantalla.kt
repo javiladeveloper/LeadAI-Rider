@@ -1,6 +1,9 @@
 package pe.leadai.rider.ui.cliente
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.WindowInsets
 import pe.leadai.rider.ui.cliente.componentes.DialogoCarreraVencida
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
@@ -214,10 +217,14 @@ fun ClientePantalla(
                     // verdad cambia la decisión del rider.
                     onSubirMonto = { viewModel.subirMonto(carrera.montoOfrecido + 200) },
                     motosCerca = estado.motosCerca,
+                    posicionesMotos = estado.posicionesMotos,
                     // Lo calcula el BACKEND: el reloj del teléfono puede
                     // estar corrido, y un contador que no coincide con el
                     // vencimiento real haría esperar de más.
                     segundosRestantes = carrera.segundosRestantes,
+                    // Al llegar a cero se cierra la búsqueda sin esperar al
+                    // barrido del servidor, que corre cada minuto.
+                    onSeAcaboElTiempo = viewModel::seAcaboElTiempo,
                     mensajesSinLeer = estado.mensajesSinLeer,
                     onAbrirChat = viewModel::abrirChat,
                 )
@@ -592,14 +599,26 @@ private fun SeguimientoCarrera(
     onElegirOferta: (pe.leadai.rider.datos.OfertaDto) -> Unit = {},
     onSubirMonto: () -> Unit = {},
     motosCerca: Int = 0,
+    /** Dónde están: el radar las dibuja para que se vea que hay gente cerca. */
+    posicionesMotos: List<pe.leadai.rider.datos.MotoCercaDto> = emptyList(),
     segundosRestantes: Int = 0,
+    /** Se acabó el tiempo de búsqueda: hay que cerrar la pantalla. */
+    onSeAcaboElTiempo: () -> Unit = {},
     /** Mensajes del rider sin leer: el globito del botón de chat. */
     mensajesSinLeer: Int = 0,
     onAbrirChat: () -> Unit = {},
 ) {
     val enCamino = carrera.estado == "aceptada" || carrera.estado == "recogida"
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    // El inset de la barra de estado: el Scaffold ya no lo aplica arriba —lo
+    // hace cada pantalla, para que el degradado del encabezado pueda llegar al
+    // borde—, así que acá hay que pedirlo. Sin esto el título del seguimiento
+    // quedaba pisado por el reloj y la señal.
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.statusBars),
+    ) {
         if (enCamino) {
             Text(
                 tituloEnCamino(carrera),
@@ -615,6 +634,7 @@ private fun SeguimientoCarrera(
             // mirando" y "no hay nadie", que piden decisiones distintas.
             EstadoBusqueda(
                 segundosRestantes = segundosRestantes,
+                onSeAcabo = onSeAcaboElTiempo,
                 motosCerca = motosCerca,
                 ofertas = ofertas.size,
                 modifier = Modifier.padding(
@@ -641,6 +661,7 @@ private fun SeguimientoCarrera(
                 RadarMotos(
                     lat = carrera.origenLat,
                     lng = carrera.origenLng,
+                    motos = posicionesMotos,
                     modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
                 )
                 // Las ofertas ARRIBA, sobre el radar: llegan de a una y se

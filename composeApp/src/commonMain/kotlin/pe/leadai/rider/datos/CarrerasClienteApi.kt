@@ -136,9 +136,11 @@ class CarrerasClienteApi(private val api: ApiCliente) {
      * El MISMO endpoint que alimenta el radar: si el mapa dibuja tres motos y
      * el texto dice otra cosa, el cliente deja de creerle a los dos.
      */
-    suspend fun motosCerca(lat: Double, lng: Double): Resultado<Int> =
+    suspend fun motosCerca(lat: Double, lng: Double): Resultado<List<MotoCercaDto>> =
         when (val r = api.get<MotosCercaDto>("/mapa/motos-cerca?lat=$lat&lng=$lng")) {
-            is Resultado.Ok -> Resultado.Ok(r.valor.motos.size)
+            // Las POSICIONES, no solo cuántas: el radar las dibuja. Devolver
+            // el conteo obligaba a pedir lo mismo dos veces para el mapa.
+            is Resultado.Ok -> Resultado.Ok(r.valor.motos)
             is Resultado.Error -> r
         }
 

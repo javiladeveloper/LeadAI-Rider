@@ -97,6 +97,8 @@ data class ClienteUiState(
      * motos y el texto dice otra cosa, el cliente deja de creerle a los dos.
      */
     val motosCerca: Int = 0,
+    /** Dónde están esas motos: el radar las dibuja moviéndose. */
+    val posicionesMotos: List<pe.leadai.rider.datos.MotoCercaDto> = emptyList(),
     /**
      * En delivery: si el rider tiene que HACER el pedido y esperar.
      *
@@ -333,6 +335,13 @@ class ClienteViewModel(
                         // con eso es correcto.
                         ofertas = r.valor.ofertas,
                         motosCerca = r.valor.motosCerca.size,
+                        // Y DÓNDE están, no solo cuántas.
+                        //
+                        // Este polling es el que corre mientras se busca, así
+                        // que guardar solo el conteo dejaba el radar sin motos
+                        // que dibujar: el texto decía "1 motorizado está cerca"
+                        // y el mapa no mostraba ninguna.
+                        posicionesMotos = r.valor.motosCerca,
                         // Con el chat ABIERTO se ignora: el cliente los está
                         // leyendo ahora, y encender el globito sobre la
                         // conversación que mira sería absurdo.
@@ -523,6 +532,36 @@ class ClienteViewModel(
      * polling y un fallo puntual no debe borrar las que ya se ven.
      */
     /**
+     * Se acabó el tiempo: la búsqueda se cierra ACÁ, sin esperar al servidor.
+     *
+     * El backend expira las carreras con un barrido que corre cada minuto, así
+     * que entre que el cronómetro llega a cero y el servidor la marca vencida
+     * puede pasar hasta un minuto entero. Mientras tanto el radar seguía
+     * girando sobre un contador en 0:00 — la pantalla decía que buscaba algo
+     * que ya no estaba vivo.
+     *
+     * El cronómetro es el mismo dato que usa el servidor (`expiraEn`), así que
+     * cuando llega a cero la carrera ESTÁ vencida: adelantarse no inventa nada,
+     * solo deja de mostrar una espera que ya terminó.
+     */
+    fun seAcaboElTiempo() {
+        val actual = _estado.value.miCarrera ?: return
+        if (actual.estado != "disponible") return
+        _estado.update {
+            it.copy(
+                miCarrera = null,
+                ofertas = emptyList(),
+                carreraVencida = true,
+                // `cargando = false`: sin esto la pantalla se quedaba en el
+                // spinner con el aviso detrás. Al soltar la carrera queda un
+                // polling en vuelo que dejaba `cargando` encendido, y la
+                // pantalla de carga gana sobre el formulario.
+                cargando = false,
+            )
+        }
+    }
+
+    /**
      * Cuántas motos hay alrededor del punto de recojo.
      *
      * Silencioso: si falla, el estado cae a "ampliando el área", que es lo
@@ -535,7 +574,9 @@ class ClienteViewModel(
         if (c.estado != "disponible") return
         viewModelScope.launch(dispatcher) {
             when (val r = api.motosCerca(lat, lng)) {
-                is Resultado.Ok -> _estado.update { it.copy(motosCerca = r.valor) }
+                is Resultado.Ok -> _estado.update {
+                    it.copy(motosCerca = r.valor.size, posicionesMotos = r.valor)
+                }
                 is Resultado.Error -> Unit
             }
         }

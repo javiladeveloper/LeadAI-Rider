@@ -1,6 +1,8 @@
 package pe.leadai.rider.ui.cliente.componentes
 
 import androidx.compose.foundation.background
+import pe.leadai.rider.ui.comunes.MapaRadar
+import pe.leadai.rider.ui.comunes.PuntoMapa
 import pe.leadai.rider.ui.tema.ColoresJala
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalDensity
-import pe.leadai.rider.datos.Rutas
 import pe.leadai.rider.ui.comunes.MapaQueSeMide
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,22 +37,29 @@ fun RadarMotos(
     lat: Double?,
     lng: Double?,
     modifier: Modifier = Modifier,
+    /** Las motos disponibles alrededor, del mismo endpoint que el contador. */
+    motos: List<pe.leadai.rider.datos.MotoCercaDto> = emptyList(),
 ) {
     if (lat == null || lng == null) return
 
-    // El alto se MIDE, no se asume.
+    // NATIVO, no un WebView.
     //
-    // Antes venía un 420 fijo por defecto y nadie se lo pasaba: la página
-    // dibujaba 420dp y si el espacio real era más grande quedaba una franja
-    // gris debajo. Peor todavía, los círculos del radar se dimensionan contra
-    // ese alto — con la proporción equivocada el pulso quedaba fuera de la
-    // parte visible y el mapa se veía plano, sin radar.
+    // El radar tiene que crecer y la cámara alejarse con él, y eso en la
+    // página web nunca quedó fluido: cada cambio de zoom hace que Leaflet pida
+    // tiles nuevos y tire los viejos, y ese ciclo se ve como un parpadeo. Se
+    // probó bajar la frecuencia, agrandar el buffer de tiles y hasta escalar
+    // el mapa por CSS —esto último además rompía las coordenadas de Leaflet y
+    // dejaba el mapa corrido—.
     //
-    // El WebView no puede deducirlo solo: reporta un viewport que no coincide
-    // con su tamaño (medido: body=0, ventana=160 en un contenedor de 549).
-    // El alto lo mide el componente, que ademas pone el fondo y el redondeo.
-    MapaQueSeMide(
-        url = { alto -> Rutas.Mapas.radar(lat, lng, alto) },
+    // Acá la cámara la anima Google Maps sobre lo que ya tiene dibujado: no
+    // hay nada que recargar, así que no puede titilar. Y de paso desaparece
+    // todo el problema del alto, que en el WebView había que mandar por la
+    // URL porque reportaba un viewport que no era el suyo.
+    MapaRadar(
+        centro = PuntoMapa(lat, lng),
+        // Las motos de verdad, moviéndose. Ver una moto cerca dice algo que
+        // el contador no: que hay ALGUIEN ahí, no un número.
+        motos = motos.map { PuntoMapa(it.lat, it.lng) },
         modifier = modifier,
     )
 }
