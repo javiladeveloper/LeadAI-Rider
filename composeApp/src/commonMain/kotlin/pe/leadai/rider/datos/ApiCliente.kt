@@ -177,6 +177,13 @@ class ApiCliente(
         } catch (e: kotlinx.coroutines.CancellationException) {
             throw e
         } catch (e: Exception) {
+            // AL LOG, no solo al usuario.
+            //
+            // "Sin conexión" cubre cosas muy distintas —timeout, DNS, TLS,
+            // certificado— y sin el detalle hay que adivinar cuál fue. Pasó
+            // buscando por qué el buscador de direcciones no cargaba: la
+            // excepción se tragaba y no quedaba rastro en ningún lado.
+            registrarFalloDeRed(e)
             return Resultado.Error(MENSAJE_SIN_CONEXION)
         }
 

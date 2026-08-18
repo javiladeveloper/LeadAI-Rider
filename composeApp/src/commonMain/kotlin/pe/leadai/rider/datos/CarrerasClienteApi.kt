@@ -123,7 +123,7 @@ class CarrerasClienteApi(private val api: ApiCliente) {
     ): Resultado<List<SugerenciaDireccionDto>> {
         val coords = if (lat != null && lng != null) "&lat=$lat&lng=$lng" else ""
         return when (
-            val r = api.get<SugerenciasDireccionDto>("/carreras/direcciones?q=$consulta$coords")
+            val r = api.get<SugerenciasDireccionDto>("/carreras/direcciones?q=${paraUrl(consulta)}$coords")
         ) {
             is Resultado.Ok -> Resultado.Ok(r.valor.sugerencias)
             is Resultado.Error -> r
