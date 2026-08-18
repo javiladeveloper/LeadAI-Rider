@@ -60,6 +60,8 @@ data class ClienteUiState(
     val tipo: String = TIPO_PASAJERO,
     /** Se está esperando al GPS para prellenar el origen. */
     val buscandoUbicacion: Boolean = false,
+    /** El tiempo se acabó y nadie tomó la carrera: hay que avisarlo. */
+    val carreraVencida: Boolean = false,
     val origen: String = "",
     val origenLat: Double? = null,
     val origenLng: Double? = null,
@@ -349,6 +351,11 @@ class ClienteViewModel(
      * y en un envío es la casa de quien manda el paquete — poner ahí la
      * ubicación del cliente manda al rider al lugar equivocado.
      */
+    /** El cliente cerró el aviso de "nadie tomó tu carrera". */
+    fun cerrarAvisoVencida() {
+        _estado.update { it.copy(carreraVencida = false) }
+    }
+
     fun usarMiUbicacion(loPidioElUsuario: Boolean = true) {
         if (_estado.value.tipo != TIPO_PASAJERO) return
         viewModelScope.launch(dispatcher) {
@@ -942,6 +949,26 @@ internal fun alLlegarLaCarrera(
     val anterior = actual.miCarrera
     // `aceptada`/`recogida` son justo los estados en que hay un rider asignado.
     val teniaRider = anterior != null && anterior.estado in ESTADOS_CON_RIDER
+
+    // SE ACABÓ EL TIEMPO Y NADIE LA TOMÓ.
+    //
+    // El backend deja de devolver la carrera al vencer, así que la pantalla
+    // volvía sola al formulario sin decir NADA: el cronómetro llegaba a cero,
+    // el radar seguía girando, y de golpe estaba de nuevo en el inicio. Se
+    // siente como si el pedido se hubiera perdido.
+    //
+    // Hay que decirlo, y decir qué hacer: casi siempre es que el flete quedó
+    // corto para la distancia.
+    val vencioSinRider =
+        !teniaRider && anterior != null && anterior.estado == "disponible" && nueva == null
+    if (vencioSinRider) {
+        return actual.copy(
+            miCarrera = null,
+            ofertas = emptyList(),
+            carreraVencida = true,
+        )
+    }
+
     val termino = teniaRider && (nueva == null || nueva.estado == "entregada")
     if (!termino) return actual.copy(miCarrera = nueva)
 

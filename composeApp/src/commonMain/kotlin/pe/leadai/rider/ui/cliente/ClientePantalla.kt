@@ -1,6 +1,7 @@
 package pe.leadai.rider.ui.cliente
 
 import androidx.compose.animation.animateColorAsState
+import pe.leadai.rider.ui.cliente.componentes.DialogoCarreraVencida
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -310,6 +311,21 @@ fun ClientePantalla(
                     viewModel.cancelar(motivo)
                 },
                 onCerrar = { pidiendoMotivo = false },
+            )
+        }
+
+        // Se acabó el tiempo y nadie la tomó. Sin esto, la pantalla volvía
+        // sola al formulario sin decir nada y parecía que el pedido se había
+        // perdido.
+        if (estado.carreraVencida) {
+            DialogoCarreraVencida(
+                onPedirDeNuevo = {
+                    viewModel.cerrarAvisoVencida()
+                    // Vuelve al formulario con las direcciones puestas: solo
+                    // hay que subir el monto y pedir otra vez.
+                    seccion = SeccionCliente.PEDIR
+                },
+                onCerrar = { viewModel.cerrarAvisoVencida() },
             )
         }
     }
