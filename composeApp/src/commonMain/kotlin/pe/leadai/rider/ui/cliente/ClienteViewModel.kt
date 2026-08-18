@@ -210,6 +210,11 @@ class ClienteViewModel(
         //
         // Es lo único de esta lista que el cliente NOTA que falta.
         usarMiUbicacion(loPidioElUsuario = false)
+        // En delivery y envio `usarMiUbicacion` corta (es solo de pasajero),
+        // asi que el buscador se quedaba sin punto de referencia y el backend
+        // caia a Lima: "jose olaya 110" devolvia un local de San Martin de
+        // Porres estando en Tacna.
+        precalentarUbicacion()
 
         viewModelScope.launch(dispatcher) {
             when (val r = api.miCarrera()) {
@@ -342,6 +347,9 @@ class ClienteViewModel(
         if (_estado.value.tipo != TIPO_PASAJERO) return
         viewModelScope.launch(dispatcher) {
             val u = obtenerUbicacion(loPidioElUsuario) ?: return@launch
+            // Le queda al buscador, que si no salía a pedir el GPS de nuevo
+            // —hasta 8s— en pleno tecleo.
+            ultimaUbicacionConocida = u.lat to u.lng
             _estado.update {
                 it.copy(
                     origenLat = u.lat,
@@ -378,17 +386,35 @@ class ClienteViewModel(
      */
     private var ultimaUbicacionConocida: Pair<Double, Double>? = null
 
-    private suspend fun ubicacionParaBuscar(a: ClienteUiState): Pair<Double, Double>? {
+    private fun ubicacionParaBuscar(a: ClienteUiState): Pair<Double, Double>? {
         val origen = a.origenLat to a.origenLng
         if (origen.first != null && origen.second != null) {
             @Suppress("UNCHECKED_CAST")
             return origen as Pair<Double, Double>
         }
-        ultimaUbicacionConocida?.let { return it }
-        val u = obtenerUbicacion(false) ?: return null
-        val punto = u.lat to u.lng
-        ultimaUbicacionConocida = punto
-        return punto
+        // Lo que YA se sabe, nunca se sale a pedirlo acá.
+        //
+        // Antes esta función esperaba al GPS —hasta 8s— y lo hacía DENTRO de
+        // la búsqueda: cada consulta cargaba con esa espera y el buscador se
+        // sentía lento. El GPS se pide una sola vez al abrir la pantalla
+        // (`precalentarUbicacion`) y acá solo se lee el resultado.
+        return ultimaUbicacionConocida
+    }
+
+    /**
+     * Pide el GPS UNA vez, apenas se abre la pantalla, y lo deja listo.
+     *
+     * Así la primera búsqueda ya lo encuentra cacheado en vez de esperarlo.
+     * Va aparte y sin bloquear a nadie: si el GPS tarda o falla, se puede
+     * escribir igual —la búsqueda sale sin coordenadas, que es peor que con
+     * ellas pero muchísimo mejor que un buscador trabado—.
+     */
+    fun precalentarUbicacion() {
+        if (ultimaUbicacionConocida != null) return
+        viewModelScope.launch(dispatcher) {
+            val u = obtenerUbicacion(false) ?: return@launch
+            ultimaUbicacionConocida = u.lat to u.lng
+        }
     }
 
     /** Busca direcciones con lo que lleva escrito. */
@@ -399,9 +425,18 @@ class ClienteViewModel(
             return
         }
         busquedaEnCurso = viewModelScope.launch(dispatcher) {
-            // Espera a que deje de tipear: 400 ms es el punto donde ya no se
-            // siente lento y se ahorran casi todas las llamadas.
-            kotlinx.coroutines.delay(400)
+            // Se busca cuando DEJA de escribir, no mientras escribe.
+            //
+            // Cada tecla cancela la búsqueda anterior y reinicia esta espera,
+            // así que sale una sola llamada: la de lo que terminó de escribir.
+            // Buscar a mitad de palabra ("jose ola") gasta una llamada en algo
+            // que no es lo que quiso pedir, y hace parpadear la lista con
+            // resultados que enseguida se reemplazan.
+            //
+            // 500 ms es la pausa que separa "sigo tecleando" de "ya está":
+            // entre tecla y tecla pasan bastante menos, incluso escribiendo
+            // despacio.
+            kotlinx.coroutines.delay(500)
             _estado.update { it.copy(buscandoDirecciones = true) }
             val a = _estado.value
             // Dónde está el cliente, para acotar la búsqueda a SU ciudad.
