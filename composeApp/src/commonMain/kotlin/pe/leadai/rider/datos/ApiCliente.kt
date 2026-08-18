@@ -24,6 +24,10 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 
 const val MENSAJE_SIN_CONEXION = "Sin conexión. Revisa tu internet 📶"
+
+/** El backend no reconoció la sesión: hay que volver a entrar. */
+const val CODIGO_SIN_SESION = 401
+const val MENSAJE_SESION_VENCIDA = "Tu sesión venció. Volvé a iniciar sesión."
 const val MENSAJE_ERROR_GENERICO = "Ocurrió un error. Intenta de nuevo."
 
 /**
@@ -188,6 +192,20 @@ class ApiCliente(
             val mensaje = runCatching {
                 json.decodeFromString(ErrorResponseDto.serializer(), textoBody).error
             }.getOrNull()
+
+            // El 401 lleva su propio mensaje SOLO si el backend no mandó uno.
+            //
+            // Un 401 significa dos cosas distintas: en el login es "contraseña
+            // incorrecta" —y ahí el backend manda el texto bueno, que hay que
+            // respetar—; en cualquier otro endpoint es "tu sesión no vale".
+            //
+            // Sin este mensaje, una sesión vencida dejaba pantallas vacías sin
+            // explicación: el buscador de direcciones "se quedaba buscando" y
+            // el origen no se prellenaba, porque cada pantalla se tragaba el
+            // error en silencio.
+            if (respuesta.status.value == CODIGO_SIN_SESION && mensaje == null) {
+                return Resultado.Error(MENSAJE_SESION_VENCIDA, codigo = CODIGO_SIN_SESION)
+            }
             return Resultado.Error(mensaje ?: MENSAJE_ERROR_GENERICO, codigo = respuesta.status.value)
         }
 

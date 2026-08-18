@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import pe.leadai.rider.datos.CarreraClienteDto
+import pe.leadai.rider.datos.CODIGO_SIN_SESION
 import pe.leadai.rider.datos.MensajeChatDto
 import pe.leadai.rider.datos.OfertaDto
 import pe.leadai.rider.datos.SugerenciaDireccionDto
@@ -414,10 +415,18 @@ class ClienteViewModel(
                 is Resultado.Ok -> _estado.update {
                     it.copy(sugerencias = r.valor, buscandoDirecciones = false)
                 }
-                is Resultado.Error -> _estado.update {
+                is Resultado.Error -> {
                     // Sin sugerencias igual puede escribir a mano: no se
                     // muestra un error por algo que es una ayuda.
-                    it.copy(sugerencias = emptyList(), buscandoDirecciones = false)
+                    //
+                    // SALVO que sea la sesión: ahí no falla la ayuda, falla
+                    // TODO. Callarlo dejaba al cliente escribiendo en un
+                    // buscador que nunca iba a devolver nada, sin saber por
+                    // qué —pasó al probar con el emulador recién borrado—.
+                    if (r.codigo == CODIGO_SIN_SESION) avisos.mostrar(r.mensaje)
+                    _estado.update {
+                        it.copy(sugerencias = emptyList(), buscandoDirecciones = false)
+                    }
                 }
             }
         }
