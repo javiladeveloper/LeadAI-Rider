@@ -1,6 +1,16 @@
 package pe.leadai.rider.ui.cliente
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.graphics.Color
+import pe.leadai.rider.ui.comunes.EncabezadoMarca
+import pe.leadai.rider.ui.comunes.TituloDeSeccion
+import pe.leadai.rider.ui.tema.Formas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,7 +60,10 @@ fun ViajesCliente(historial: List<CarreraClienteDto>) {
 
     if (historial.isEmpty()) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(32.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .windowInsetsPadding(WindowInsets.statusBars)
+                .padding(32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -74,7 +87,13 @@ fun ViajesCliente(historial: List<CarreraClienteDto>) {
     }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        // Inset propio: el Scaffold ya no reserva la barra de estado arriba
+        // —lo hace cada pantalla— para que el encabezado de marca de las
+        // otras pueda llegar al borde.
+        modifier = Modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
@@ -193,91 +212,144 @@ fun PerfilCliente(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
+            .verticalScroll(rememberScrollState()),
+        // El encabezado va de borde a borde: el padding lo pone cada sección.
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Spacer(Modifier.height(16.dp))
-
-        Text(
-            "Mi cuenta",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.ExtraBold,
-            ),
-            color = MaterialTheme.colorScheme.onSurface,
+        // La identidad sobre el degradado de marca. Antes era un título negro
+        // sobre gris y una pila de tarjetas blancas: correcta, pero podía ser
+        // de cualquier app —no tenía nada de Light Drive—.
+        EncabezadoMarca(
+            titulo = perfil?.nombre?.takeIf { it.isNotBlank() } ?: "Mi cuenta",
+            inicial = perfil?.nombre?.take(1)?.uppercase()?.takeIf { it.isNotBlank() } ?: "¡",
+            subtitulo = perfil?.telefono?.takeIf { it.isNotBlank() }?.let { "+51 $it" },
         )
 
-        // Mis datos. El celular vive acá y NO en cada pedido: es el dato con
-        // el que el motorizado consulta un pedido específico.
-        CardJala(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                "Mis datos",
-                style = MaterialTheme.typography.labelLarge,
-                color = colores.tintaSecundaria,
-            )
-            Spacer(Modifier.height(12.dp))
-            CampoJala(
-                valor = nombre,
-                onCambio = { nombre = it },
-                etiqueta = "Tu nombre",
-                placeholder = "Cómo te va a llamar el motorizado",
-            )
-            Spacer(Modifier.height(12.dp))
-            CampoJala(
-                valor = telefono,
-                onCambio = { telefono = it },
-                etiqueta = "Tu celular",
-                placeholder = "987 654 321",
-                tipoTeclado = KeyboardType.Phone,
-                prefijo = "+51",
-            )
-            Spacer(Modifier.height(12.dp))
-            CampoJala(
-                valor = direccion,
-                onCambio = { direccion = it },
-                etiqueta = "Mi dirección (opcional)",
-                placeholder = "Av. Bolognesi 500, Tacna",
-            )
-            Spacer(Modifier.height(16.dp))
-            BotonPrincipal(
-                texto = if (guardando) "GUARDANDO…" else "GUARDAR",
-                onClick = { onGuardar(nombre, telefono, direccion) },
-                habilitado = !guardando,
-            )
-        }
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            // Mis datos. El celular vive acá y NO en cada pedido: es el dato
+            // con el que el motorizado consulta un pedido específico.
+            TituloDeSeccion("Mis datos")
+            CardJala(modifier = Modifier.fillMaxWidth()) {
+                CampoJala(
+                    valor = nombre,
+                    onCambio = { nombre = it },
+                    etiqueta = "Tu nombre",
+                    placeholder = "Cómo te va a llamar el motorizado",
+                )
+                Spacer(Modifier.height(12.dp))
+                CampoJala(
+                    valor = telefono,
+                    onCambio = { telefono = it },
+                    etiqueta = "Tu celular",
+                    placeholder = "987 654 321",
+                    tipoTeclado = KeyboardType.Phone,
+                    prefijo = "+51",
+                )
+                Spacer(Modifier.height(12.dp))
+                CampoJala(
+                    valor = direccion,
+                    onCambio = { direccion = it },
+                    etiqueta = "Mi dirección (opcional)",
+                    placeholder = "Av. Bolognesi 500, Tacna",
+                )
+                Spacer(Modifier.height(16.dp))
+                BotonPrincipal(
+                    texto = if (guardando) "GUARDANDO…" else "GUARDAR",
+                    onClick = { onGuardar(nombre, telefono, direccion) },
+                    habilitado = !guardando,
+                )
+            }
 
-        // El cambio de modo es la acción principal de esta pestaña: quien
-        // entra acá suele venir a manejar.
-        CardJala(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                "🏍️ Quiero manejar",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
-                color = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.fillMaxWidth().clickable(onClick = onCambiarModo),
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                "Pasá a modo conductor y empezá a recibir carreras.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = colores.tintaSecundaria,
-            )
-        }
+            // El cambio de modo es la acción principal de esta pestaña: quien
+            // entra acá suele venir a manejar. Con el ícono en pastilla y la
+            // flecha se lee como algo que LLEVA a otro lado —antes era un
+            // título con texto debajo y no parecía tocable—.
+            TituloDeSeccion("Modo conductor")
+            CardJala(modifier = Modifier.fillMaxWidth(), paddingInterno = 0) {
+                FilaDeCuenta(
+                    icono = "🏍️",
+                    titulo = "Quiero manejar",
+                    detalle = "Pasá a modo conductor y empezá a recibir carreras.",
+                    colorIcono = colores.marcaAmarillo,
+                    onClick = onCambiarModo,
+                )
+            }
 
-        CardJala(modifier = Modifier.fillMaxWidth()) {
-            Text(
-                "Cerrar sesión",
-                style = MaterialTheme.typography.titleMedium,
-                color = colores.calor,
-                modifier = Modifier.fillMaxWidth().clickable(onClick = onCerrarSesion),
-            )
-        }
+            // Cerrar sesión aparte y en rojo: es destructivo, no debe estar
+            // junto a las opciones normales donde se toca por error.
+            CardJala(modifier = Modifier.fillMaxWidth(), paddingInterno = 0) {
+                FilaDeCuenta(
+                    icono = "🚪",
+                    titulo = "Cerrar sesión",
+                    detalle = null,
+                    colorIcono = colores.calor,
+                    onClick = onCerrarSesion,
+                    colorTexto = colores.calor,
+                )
+            }
 
-        Spacer(Modifier.height(16.dp))
+            PieDeVersion()
+        }
+        Spacer(Modifier.height(8.dp))
     }
+}
 
-    PieDeVersion()
+/**
+ * Una fila de la cuenta: ícono en pastilla de color, título, y la flecha.
+ *
+ * El emoji suelto sobre blanco se perdía y las opciones se leían como un
+ * bloque gris. En su pastilla cada una tiene identidad y se encuentra por
+ * color antes de leer el texto.
+ */
+@Composable
+private fun FilaDeCuenta(
+    icono: String,
+    titulo: String,
+    detalle: String?,
+    colorIcono: Color,
+    onClick: () -> Unit,
+    colorTexto: Color? = null,
+) {
+    val colores = ColoresJala.actuales
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                // Al 15%: el color se insinúa detrás del emoji sin taparlo ni
+                // competir con el texto de al lado.
+                .background(colorIcono.copy(alpha = 0.15f), Formas.chip),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(icono, style = MaterialTheme.typography.titleMedium)
+        }
+        Spacer(Modifier.size(14.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                titulo,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Medium,
+                ),
+                color = colorTexto ?: MaterialTheme.colorScheme.onSurface,
+            )
+            if (!detalle.isNullOrBlank()) {
+                Text(
+                    detalle,
+                    style = MaterialTheme.typography.labelSmall,
+                    color = colores.tintaSecundaria,
+                )
+            }
+        }
+        Text("›", style = MaterialTheme.typography.titleMedium, color = colores.tintaSecundaria)
+    }
 }
 
 /**

@@ -44,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.platform.LocalDensity
 import pe.leadai.rider.datos.Rutas
+import pe.leadai.rider.ui.comunes.EncabezadoMarcaSimple
 import pe.leadai.rider.ui.comunes.MapaQueSeMide
 import pe.leadai.rider.ui.comunes.ChatCarrera
 import androidx.compose.material3.ModalBottomSheet
@@ -191,7 +192,15 @@ fun ClientePantalla(
             }
         },
     ) { padding ->
-        Box(modifier = Modifier.padding(padding).fillMaxSize()) {
+        // Solo el padding de ABAJO (la barra de pestañas). Arriba lo maneja
+        // cada pantalla: aplicando el inset de la barra de estado acá, el
+        // encabezado de marca empezaba por debajo de ella y quedaba una franja
+        // clara sobre el degradado, detrás del reloj.
+        Box(
+            modifier = Modifier
+                .padding(bottom = padding.calculateBottomPadding())
+                .fillMaxSize(),
+        ) {
             when {
                 // 1) Carrera activa: manda sobre todo lo demás.
                 carrera != null -> SeguimientoCarrera(
@@ -351,14 +360,25 @@ private fun FormularioPedir(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
+            .verticalScroll(rememberScrollState()),
         // 18 y no 12: cada campo trae su etiqueta ARRIBA, así que con poco
         // espacio la etiqueta de uno queda pegada al campo del anterior y todo
         // se lee como un bloque. Con aire se distinguen los pasos del pedido.
         verticalArrangement = Arrangement.spacedBy(18.dp),
     ) {
-        Spacer(Modifier.height(4.dp))
+        // El degradado de marca arriba: la pantalla arrancaba directo en las
+        // pestañas sobre el gris del fondo y podía ser cualquier app. El
+        // encabezado va de borde a borde, por eso el padding lateral pasó al
+        // contenido de abajo.
+        EncabezadoMarcaSimple(
+            titulo = "¿Qué necesitás?",
+            subtitulo = "Pedí tu moto en segundos",
+        )
+
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(18.dp),
+        ) {
 
         // Qué necesita. "Delivery" y "Encomienda" van al backend igual (los
         // dos son `encomienda`), pero separados el cliente encuentra lo suyo:
@@ -473,7 +493,8 @@ private fun FormularioPedir(
         // "Quiero manejar" y "Cerrar sesión" se fueron a la pestaña Perfil:
         // acá competían con PEDIR MOTO, que es la única acción de esta
         // pantalla.
-        Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
+        }
     }
 }
 
