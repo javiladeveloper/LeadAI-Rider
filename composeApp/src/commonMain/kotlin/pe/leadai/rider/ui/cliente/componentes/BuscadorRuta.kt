@@ -51,6 +51,8 @@ fun BuscadorRuta(
     editandoOrigen: Boolean,
     sugerencias: List<SugerenciaDireccionDto>,
     buscando: Boolean,
+    /** Se está esperando al GPS para prellenar el origen. */
+    buscandoUbicacion: Boolean = false,
     onOrigenCambia: (String) -> Unit,
     onDestinoCambia: (String) -> Unit,
     onFoco: (esOrigen: Boolean) -> Unit,
@@ -68,9 +70,16 @@ fun BuscadorRuta(
     // eso no significa nada: el cliente no va a ningún lado — el rider recoge
     // el pedido en el local y se lo trae a su casa. Con las mismas palabras
     // para todo, los tres servicios se sentían el mismo formulario.
-    val etiquetaOrigen = when (tipo) {
-        TIPO_DELIVERY -> "¿De qué local lo recogemos?"
-        TIPO_ENCOMIENDA -> "¿Dónde recogemos el paquete?"
+    val etiquetaOrigen = when {
+        // Mientras se espera al GPS se dice que se está esperando.
+        //
+        // El campo se prellena solo con "Mi ubicación actual", pero el GPS
+        // tarda —y bajo techo a veces no llega—. Con la pregunta de siempre,
+        // ese hueco parecía una pantalla a medio cargar y no se sabía si
+        // convenía esperar o escribir.
+        buscandoUbicacion && tipo == TIPO_PASAJERO -> "Buscando tu ubicación…"
+        tipo == TIPO_DELIVERY -> "¿De qué local lo recogemos?"
+        tipo == TIPO_ENCOMIENDA -> "¿Dónde recogemos el paquete?"
         else -> "¿Desde dónde?"
     }
     val etiquetaDestino = when (tipo) {

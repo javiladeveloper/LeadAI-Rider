@@ -133,4 +133,35 @@ class BuscadorDireccionesTest {
         // un buscador que se queda cargando esperando un GPS que no viene—.
         assertEquals(1, pedidas.size, "debe buscar igual sin GPS: $pedidas")
     }
+
+    @Test
+    fun al_entrar_en_pasajero_el_origen_se_prellena_solo() = runTest {
+        val vm = ClienteViewModelPruebas.conGps(motorQueAnota(mutableListOf()), testDispatcher)
+
+        vm.cargar()
+        advanceUntilIdle()
+        flow { while (true) { emit(vm.estado.value.origen); delay(10) } }
+            .esperarCondicion { it.isNotBlank() }
+
+        // Es lo primero que se ve al abrir: si queda vacío, la pantalla
+        // parece a medio cargar y hay que escribir algo que la app ya sabe.
+        assertEquals("Mi ubicación actual", vm.estado.value.origen)
+        assertEquals(-17.99, vm.estado.value.origenLat)
+    }
+
+    @Test
+    fun sin_gps_el_origen_queda_libre_para_escribir_a_mano() = runTest {
+        // Bajo techo, con el GPS recién prendido, o un emulador sin posición.
+        val vm = ClienteViewModelPruebas.sinGps(motorQueAnota(mutableListOf()), testDispatcher)
+
+        vm.cargar()
+        advanceUntilIdle()
+        flow { while (true) { emit(vm.estado.value.buscandoUbicacion); delay(10) } }
+            .esperarCondicion { !it }
+
+        // Sin GPS no se inventa un origen —mandaría al rider a otro lado— pero
+        // tampoco se deja el campo "buscando" para siempre: se puede escribir.
+        assertTrue(vm.estado.value.origen.isBlank(), "no se inventa un origen")
+        assertTrue(!vm.estado.value.buscandoUbicacion, "deja de decir que busca")
+    }
 }

@@ -58,6 +58,8 @@ data class ClienteUiState(
     val miCarrera: CarreraClienteDto? = null,
     /** [TIPO_ENCOMIENDA] | [TIPO_PASAJERO]. */
     val tipo: String = TIPO_PASAJERO,
+    /** Se está esperando al GPS para prellenar el origen. */
+    val buscandoUbicacion: Boolean = false,
     val origen: String = "",
     val origenLat: Double? = null,
     val origenLng: Double? = null,
@@ -156,6 +158,10 @@ data class ClienteUiState(
     val calificando: Boolean = false,
 )
 
+// Dice qué hacer, no solo que falló: el cliente puede escribir la dirección a
+// mano y seguir pidiendo igual.
+private const val MENSAJE_SIN_UBICACION =
+    "No pudimos ubicarte. Escribí desde dónde salís 📍"
 private const val MENSAJE_SIN_ORIGEN = "Falta el origen"
 private const val MENSAJE_SIN_DESTINO = "Falta el destino"
 private const val MENSAJE_ERROR_PEDIR = "No pudimos pedir tu moto. Intenta de nuevo."
@@ -346,12 +352,26 @@ class ClienteViewModel(
     fun usarMiUbicacion(loPidioElUsuario: Boolean = true) {
         if (_estado.value.tipo != TIPO_PASAJERO) return
         viewModelScope.launch(dispatcher) {
-            val u = obtenerUbicacion(loPidioElUsuario) ?: return@launch
+            _estado.update { it.copy(buscandoUbicacion = it.origen.isBlank()) }
+            val u = obtenerUbicacion(loPidioElUsuario)
+            if (u == null) {
+                // El GPS no contestó. Antes esto era un `return` mudo: el campo
+                // quedaba vacío sin decir por qué y parecía que la pantalla no
+                // había terminado de cargar.
+                //
+                // Pasa de verdad —bajo techo, con el GPS recién prendido, o en
+                // un emulador sin posición cargada—, así que hay que decirlo y
+                // dejar escribir la dirección a mano.
+                _estado.update { it.copy(buscandoUbicacion = false) }
+                if (loPidioElUsuario) avisos.mostrar(MENSAJE_SIN_UBICACION)
+                return@launch
+            }
             // Le queda al buscador, que si no salía a pedir el GPS de nuevo
             // —hasta 8s— en pleno tecleo.
             ultimaUbicacionConocida = u.lat to u.lng
             _estado.update {
                 it.copy(
+                    buscandoUbicacion = false,
                     origenLat = u.lat,
                     origenLng = u.lng,
                     origen = if (it.origen.isBlank()) "Mi ubicación actual" else it.origen,

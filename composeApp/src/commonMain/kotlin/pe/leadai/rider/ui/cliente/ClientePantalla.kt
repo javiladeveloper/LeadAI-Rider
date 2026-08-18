@@ -384,6 +384,7 @@ private fun FormularioPedir(
             editandoOrigen = estado.editandoOrigen,
             sugerencias = estado.sugerencias,
             buscando = estado.buscandoDirecciones,
+            buscandoUbicacion = estado.buscandoUbicacion,
             onOrigenCambia = onOrigen,
             onDestinoCambia = onDestino,
             onFoco = onFoco,
