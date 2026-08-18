@@ -46,12 +46,24 @@ actual suspend fun obtenerUbicacionActual(loPidioElUsuario: Boolean): UbicacionR
         val manager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val proveedores = listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)
             .filter { runCatching { manager.isProviderEnabled(it) }.getOrDefault(false) }
-        // Primero un fix FRESCO (API 30+); si no, la última conocida sirve —
-        // el backend descarta posiciones de más de 10 minutos igual.
-        val fresca = proveedores.firstNotNullOfOrNull { ubicacionFresca(activity, manager, it) }
-        val ubicacion = fresca ?: proveedores
+        // La ÚLTIMA CONOCIDA primero, que es instantánea.
+        //
+        // Antes se pedía un fix fresco al GPS y recién después se caía a la
+        // última conocida. Pero `getCurrentLocation` no tiene timeout y puede
+        // tardar varios segundos —o no volver nunca bajo techo—, así que el
+        // campo "¿Desde dónde?" quedaba vacío mientras el cliente miraba.
+        //
+        // Una posición de hace un minuto alcanza de sobra para prellenar el
+        // origen: el cliente está en su casa, no en movimiento. Y si el fix
+        // fresco llega después, el ViewModel lo pisa igual.
+        val conocida = proveedores
             .mapNotNull { runCatching { manager.getLastKnownLocation(it) }.getOrNull() }
             .maxByOrNull { it.time }
+
+        // Si no hay ninguna guardada (emulador recién borrado, teléfono que
+        // nunca usó el GPS) sí se espera el fix fresco: es eso o nada.
+        val ubicacion = conocida
+            ?: proveedores.firstNotNullOfOrNull { ubicacionFresca(activity, manager, it) }
         ubicacion?.let { UbicacionRider(it.latitude, it.longitude) }
     } catch (e: SecurityException) {
         null

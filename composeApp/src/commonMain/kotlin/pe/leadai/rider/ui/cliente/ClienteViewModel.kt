@@ -199,6 +199,17 @@ class ClienteViewModel(
 
     fun cargar() {
         _estado.update { it.copy(cargando = true, error = null) }
+
+        // LA UBICACIÓN PRIMERO: es lo que el cliente ve apenas abre.
+        //
+        // Iba cuarta, después del perfil y el historial. Aunque cada una lanza
+        // su corrutina, todas compiten por el mismo dispatcher, así que el
+        // campo "¿Desde dónde?" quedaba vacío varios segundos mientras el
+        // cliente miraba una pantalla que parecía incompleta.
+        //
+        // Es lo único de esta lista que el cliente NOTA que falta.
+        usarMiUbicacion(loPidioElUsuario = false)
+
         viewModelScope.launch(dispatcher) {
             when (val r = api.miCarrera()) {
                 is Resultado.Ok -> _estado.update { it.copy(cargando = false, miCarrera = r.valor) }
@@ -208,7 +219,6 @@ class ClienteViewModel(
             }
         }
         registrarPush()
-        usarMiUbicacion(loPidioElUsuario = false)
         refrescarHistorial()
         refrescarPerfil()
     }
