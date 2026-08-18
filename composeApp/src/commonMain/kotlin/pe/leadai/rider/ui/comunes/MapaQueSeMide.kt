@@ -60,7 +60,24 @@ fun MapaQueSeMide(
         modifier = modifier
             .then(if (redondeado) Modifier.clip(RoundedCornerShape(16.dp)) else Modifier)
             .background(ColoresJala.actuales.marcaCarbon)
-            .onSizeChanged { altoDp = with(densidad) { it.height.toDp() }.value.toInt() },
+            .onSizeChanged { medido ->
+                val nuevo = with(densidad) { medido.height.toDp() }.value.toInt()
+                // Solo el PRIMER alto, o un cambio grande de verdad.
+                //
+                // El alto viaja en la URL, y si la URL cambia el WebView
+                // RECARGA la página: el radar volvía a empezar en 500 m cada
+                // vez. Como el contenedor se remide cuando llega una oferta
+                // —se apilan sobre el radar y le quitan alto—, el radar se
+                // reiniciaba solo y por eso se veía estático.
+                //
+                // La página ya reajusta su alto por JS (`ajustarAlto` corre a
+                // los 150 y 700 ms), así que unos dp de diferencia no
+                // justifican perder el estado. 48 dp: menos que eso es el
+                // acomodo normal del layout.
+                if (altoDp == 0 || kotlin.math.abs(nuevo - altoDp) > 48) {
+                    altoDp = nuevo
+                }
+            },
     ) {
         // Hasta saber cuánto mide no se carga: con alto 0 la página se dibuja
         // contra un tamaño equivocado y habría que recargarla igual.
