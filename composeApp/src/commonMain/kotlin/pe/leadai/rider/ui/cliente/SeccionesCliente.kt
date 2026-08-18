@@ -1,6 +1,7 @@
 package pe.leadai.rider.ui.cliente
 
 import androidx.compose.foundation.clickable
+import pe.leadai.rider.ui.comunes.SelectorDeTema
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.WindowInsets
@@ -277,6 +278,12 @@ fun PerfilCliente(
                     onClick = onCambiarModo,
                 )
             }
+
+            // El modo noche vivía SOLO en el perfil del rider: para un cliente
+            // la app no tenía forma de activarlo, aunque el tema ya estaba
+            // hecho y funcionando.
+            TituloDeSeccion("Apariencia")
+            SelectorDeTema()
 
             // Cerrar sesión aparte y en rojo: es destructivo, no debe estar
             // junto a las opciones normales donde se toca por error.

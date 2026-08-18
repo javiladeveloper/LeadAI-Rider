@@ -37,6 +37,7 @@ import pe.leadai.rider.ui.comunes.BadgeEstado
 import pe.leadai.rider.ui.comunes.CardJala
 import pe.leadai.rider.ui.comunes.EncabezadoMarca
 import pe.leadai.rider.ui.comunes.PieDeVersion
+import pe.leadai.rider.ui.comunes.SelectorDeTema
 import pe.leadai.rider.ui.comunes.TituloDeSeccion
 import pe.leadai.rider.ui.tema.ColoresJala
 import pe.leadai.rider.ui.tema.Formas
@@ -132,77 +133,6 @@ fun PerfilPantalla(
             PieDeVersion()
         }
         Spacer(Modifier.height(8.dp))
-    }
-}
-
-/**
- * Claro / Oscuro / Automático.
- *
- * Tres opciones y no un interruptor: "Automático" sigue al teléfono, pero un
- * rider que anda de día quiere poder forzar el claro aunque su Android esté en
- * oscuro. Con un binario esa elección se le pierde cuando el sistema cambia
- * solo al atardecer.
- */
-@Composable
-private fun SelectorDeTema() {
-    val temaRepo = koinInject<TemaRepositorio>()
-    val scope = rememberCoroutineScope()
-    val actual by temaRepo.observar().collectAsState(initial = TemaRepositorio.SISTEMA)
-
-    CardJala(modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            OpcionDeTema("☀️", "Claro", TemaRepositorio.CLARO, actual, Modifier.weight(1f)) {
-                scope.launch { temaRepo.guardar(it) }
-            }
-            OpcionDeTema("🌙", "Oscuro", TemaRepositorio.OSCURO, actual, Modifier.weight(1f)) {
-                scope.launch { temaRepo.guardar(it) }
-            }
-            OpcionDeTema("📱", "Auto", TemaRepositorio.SISTEMA, actual, Modifier.weight(1f)) {
-                scope.launch { temaRepo.guardar(it) }
-            }
-        }
-    }
-}
-
-/** Una de las tres opciones de tema. La elegida va con borde y fondo de marca. */
-@Composable
-private fun OpcionDeTema(
-    icono: String,
-    texto: String,
-    valor: String,
-    actual: String,
-    modifier: Modifier = Modifier,
-    onElegir: (String) -> Unit,
-) {
-    val elegida = valor == actual
-    val colores = ColoresJala.actuales
-    Column(
-        modifier = modifier
-            .clip(Formas.chip)
-            .background(
-                if (elegida) colores.marcaAmarillo.copy(alpha = 0.18f)
-                else MaterialTheme.colorScheme.surfaceContainerHigh,
-            )
-            .border(
-                width = if (elegida) 2.dp else 1.dp,
-                color = if (elegida) colores.marcaAmarillo
-                else MaterialTheme.colorScheme.outlineVariant,
-                shape = Formas.chip,
-            )
-            .clickable { onElegir(valor) }
-            .padding(vertical = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(icono, style = MaterialTheme.typography.titleMedium)
-        Spacer(Modifier.height(4.dp))
-        Text(
-            texto,
-            style = MaterialTheme.typography.labelSmall,
-            color = if (elegida) MaterialTheme.colorScheme.onSurface else colores.tintaSecundaria,
-        )
     }
 }
 
