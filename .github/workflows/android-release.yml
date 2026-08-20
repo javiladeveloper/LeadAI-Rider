@@ -34,6 +34,9 @@ concurrency:
 jobs:
   publicar:
     runs-on: ubuntu-latest
+    # Sin tope, un job colgado corre hasta las 6 HORAS de GitHub y se come
+    # la cuota. Un build de Android tarda ~8 min.
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
