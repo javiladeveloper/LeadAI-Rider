@@ -338,6 +338,7 @@ fun CarrerasPantalla(
                             ofertadas = estado.ofertadas,
                             onAceptar = viewModel::aceptar,
                             onOfertar = viewModel::ofertar,
+                            onEmpezoAEvaluar = viewModel::avisarQueEvaluo,
                             onEntregar = viewModel::entregar,
                             onRecogido = viewModel::marcarRecogido,
                             onLlegue = viewModel::avisarQueLlegue,
@@ -377,6 +378,7 @@ fun CarrerasPantalla(
                                 ofertadas = estado.ofertadas,
                                 onAceptar = viewModel::aceptar,
                                 onOfertar = viewModel::ofertar,
+                                onEmpezoAEvaluar = viewModel::avisarQueEvaluo,
                                 onEntregar = viewModel::entregar,
                                 onRecogido = viewModel::marcarRecogido,
                                 onLlegue = viewModel::avisarQueLlegue,
@@ -518,6 +520,8 @@ private fun ContenidoRider(
     ofertadas: Set<String>,
     onAceptar: (CarreraDto) -> Unit,
     onOfertar: (CarreraDto, Long) -> Unit,
+    /** El rider empezó a escribir un monto: avisa al cliente que la miran. */
+    onEmpezoAEvaluar: (CarreraDto) -> Unit = {},
     onEntregar: () -> Unit,
     onLlegue: () -> Unit,
     avisandoLlegada: Boolean,
@@ -648,6 +652,7 @@ private fun ContenidoRider(
                         onAceptar = { onAceptar(carrera) },
                         yaOfertaste = carrera.pedidoId in ofertadas,
                         onOfertar = { monto -> onOfertar(carrera, monto) },
+                        onEmpezoAEvaluar = { onEmpezoAEvaluar(carrera) },
                     )
                 }
             }

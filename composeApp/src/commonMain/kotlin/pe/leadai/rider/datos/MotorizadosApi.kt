@@ -121,6 +121,24 @@ class MotorizadosApi(private val api: ApiCliente) {
      * ofertar por ese mismo monto. Reofertar actualiza la propuesta anterior
      * en vez de duplicarla en la lista del cliente.
      */
+    /**
+     * "Estoy mirando esta carrera" — enciende las dos aspitas del cliente.
+     *
+     * Se manda mientras el rider tiene la solicitud abierta. El servidor la
+     * guarda con vencimiento corto, así que si el rider cierra la app sin
+     * ofertar el aviso se apaga solo: no hace falta avisar "ya cerré", que es
+     * justo lo que nadie hace.
+     *
+     * Silencioso: es un aviso para el OTRO. Si falla, el rider no tiene que
+     * enterarse de nada.
+     */
+    suspend fun avisarQueMiro(carreraId: String): Resultado<Unit> =
+        api.post<JsonObject, Unit>(
+            path = "/motorizados/carreras/$carreraId/mirando",
+            body = buildJsonObject { },
+            requiereSesion = true,
+        )
+
     suspend fun ofertarCarrera(
         carreraId: String,
         montoCentavos: Long,

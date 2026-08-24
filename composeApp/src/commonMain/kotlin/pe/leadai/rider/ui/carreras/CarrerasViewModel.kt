@@ -235,6 +235,19 @@ class CarrerasViewModel(
      * de nuevo pisa la propuesta anterior, así que el rider puede subir el
      * precio sin ensuciarle la lista al cliente.
      */
+    /**
+     * El rider empezó a evaluar una carrera: enciende las aspitas del cliente.
+     *
+     * SILENCIOSO. Es un aviso para el otro lado: si falla, el rider no tiene
+     * por qué enterarse —está por ofertar, no queremos interrumpirlo con un
+     * error de algo que no le sirve a él—.
+     */
+    fun avisarQueEvaluo(carrera: CarreraDto) {
+        viewModelScope.launch(dispatcher) {
+            motorizadosApi.avisarQueMiro(carrera.pedidoId)
+        }
+    }
+
     fun ofertar(carrera: CarreraDto, montoCentavos: Long) {
         if (_estado.value.accionEnCurso != null) return
         _estado.update { it.copy(accionEnCurso = carrera.pedidoId) }

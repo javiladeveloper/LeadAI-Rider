@@ -97,6 +97,8 @@ data class ClienteUiState(
      * motos y el texto dice otra cosa, el cliente deja de creerle a los dos.
      */
     val motosCerca: Int = 0,
+    /** Cuántos riders tienen la solicitud abierta ahora: las dos aspitas. */
+    val mirando: Int = 0,
     /** Dónde están esas motos: el radar las dibuja moviéndose. */
     val posicionesMotos: List<pe.leadai.rider.datos.MotoCercaDto> = emptyList(),
     /**
@@ -338,6 +340,7 @@ class ClienteViewModel(
                         // con eso es correcto.
                         ofertas = r.valor.ofertas,
                         motosCerca = r.valor.motosCerca.size,
+                        mirando = r.valor.mirando,
                         // Y DÓNDE están, no solo cuántas.
                         //
                         // Este polling es el que corre mientras se busca, así

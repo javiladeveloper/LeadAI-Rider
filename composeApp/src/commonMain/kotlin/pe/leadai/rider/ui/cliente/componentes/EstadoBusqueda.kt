@@ -62,6 +62,8 @@ private const val SEGUNDOS_BUSQUEDA = 2 * 60
 fun EstadoBusqueda(
     segundosRestantes: Int,
     motosCerca: Int,
+    /** Cuántos riders tienen la solicitud abierta ahora mismo. */
+    mirando: Int = 0,
     ofertas: Int,
     modifier: Modifier = Modifier,
     /** El contador llegó a cero: la búsqueda terminó. */
@@ -133,14 +135,14 @@ fun EstadoBusqueda(
             }
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    tituloDeLaBusqueda(ofertas, motosCerca),
+                    tituloDeLaBusqueda(ofertas, motosCerca, mirando),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                     ),
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
-                    detalleDeLaBusqueda(ofertas, motosCerca),
+                    detalleDeLaBusqueda(ofertas, motosCerca, mirando),
                     style = MaterialTheme.typography.labelSmall,
                     color = colores.tintaSecundaria,
                 )
@@ -182,14 +184,30 @@ fun EstadoBusqueda(
  * llegó una propuesta. Cada uno le dice al cliente algo que cambia lo que
  * puede hacer.
  */
-internal fun tituloDeLaBusqueda(ofertas: Int, motosCerca: Int): String = when {
+internal fun tituloDeLaBusqueda(
+    ofertas: Int,
+    motosCerca: Int,
+    mirando: Int = 0,
+): String = when {
     ofertas > 0 -> if (ofertas == 1) "1 motorizado te ofreció" else "$ofertas motorizados te ofrecieron"
+    // ALGUIEN ABRIÓ LA SOLICITUD. Es el paso previo a una oferta, y el que
+    // más tranquiliza: entre "nadie lo vio" y "lo están pensando" hay una
+    // diferencia enorme para quien decide si sube el monto o cancela.
+    mirando > 0 -> "👀 Están viendo tu solicitud"
     motosCerca > 0 -> "Ofreciendo tu tarifa"
     else -> "🔍 Buscando motorizado…"
 }
 
-internal fun detalleDeLaBusqueda(ofertas: Int, motosCerca: Int): String = when {
+internal fun detalleDeLaBusqueda(
+    ofertas: Int,
+    motosCerca: Int,
+    mirando: Int = 0,
+): String = when {
     ofertas > 0 -> "Elegí con quién querés ir"
+    // El plural importa: "2 la están mirando" dice que hay competencia por
+    // tomarla, que es una razón para NO subir el monto todavía.
+    mirando == 1 -> "1 motorizado la está mirando"
+    mirando > 1 -> "$mirando motorizados la están mirando"
     motosCerca == 1 -> "1 motorizado está cerca"
     motosCerca > 1 -> "$motosCerca motorizados están cerca"
     // Sin motos alrededor el radar sigue creciendo: decirlo evita que el

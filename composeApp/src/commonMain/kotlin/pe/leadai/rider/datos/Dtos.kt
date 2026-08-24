@@ -407,6 +407,15 @@ data class MiCarreraClienteDto(
     val ofertas: List<OfertaDto> = emptyList(),
     val motosCerca: List<MotoCercaDto> = emptyList(),
     /**
+     * Cuántos motorizados tienen la solicitud ABIERTA ahora mismo.
+     *
+     * Entre "nadie lo vio" y "lo están pensando" hay una diferencia enorme
+     * para quien decide si sube el monto o cancela. El servidor lo cuenta con
+     * marcas que vencen solas, así que un rider que cerró la app deja de
+     * contar sin tener que avisar nada.
+     */
+    val mirando: Int = 0,
+    /**
      * Mensajes del rider que el cliente todavía no vio.
      *
      * Viaja acá y no en una llamada aparte: es el globito del botón de chat,

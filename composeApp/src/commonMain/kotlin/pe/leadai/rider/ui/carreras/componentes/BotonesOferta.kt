@@ -1,6 +1,7 @@
 package pe.leadai.rider.ui.carreras.componentes
 
 import androidx.compose.foundation.background
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -59,10 +60,31 @@ fun BotonesOferta(
     enviando: Boolean,
     onOfertar: (montoCentavos: Long) -> Unit,
     modifier: Modifier = Modifier,
+    /**
+     * El rider empezó a EVALUAR esta carrera: enciende las dos aspitas del
+     * cliente.
+     *
+     * Se dispara al escribir el monto, no al ver la tarjeta en la lista. Un
+     * rider con la app abierta en el bolsillo tiene diez solicitudes a la
+     * vista y no está mirando ninguna; el que escribe un número sí está
+     * decidiendo. Si el aviso no fuera cierto, el cliente aprendería a
+     * ignorarlo y perderíamos el indicador.
+     */
+    onEmpezoAEvaluar: () -> Unit = {},
 ) {
     val colores = ColoresJala.actuales
     var texto by remember { mutableStateOf("") }
     val contraoferta = centavosDeTexto(texto)
+
+    // Una sola vez por carrera: el servidor renueva la marca solo, y avisar
+    // en cada tecla sería una request por dígito.
+    var yaAviso by remember { mutableStateOf(false) }
+    LaunchedEffect(texto.isNotBlank()) {
+        if (texto.isNotBlank() && !yaAviso) {
+            yaAviso = true
+            onEmpezoAEvaluar()
+        }
+    }
 
     Column(modifier = modifier.fillMaxWidth()) {
         if (gananciaCentavos != null && gananciaCentavos != montoOfrecidoCentavos) {

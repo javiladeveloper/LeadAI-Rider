@@ -40,6 +40,8 @@ fun CardCarrera(
     aceptando: Boolean,
     /** Ofertar: el monto va como parámetro porque puede ser el pedido o más. */
     onOfertar: (Long) -> Unit = {},
+    /** El rider empezó a escribir un monto: está evaluando esta carrera. */
+    onEmpezoAEvaluar: () -> Unit = {},
     /** Ya propuso y espera: sin botones, para no ofertar dos veces sin querer. */
     yaOfertaste: Boolean = false,
     habilitado: Boolean,
@@ -118,6 +120,7 @@ fun CardCarrera(
                 gananciaCentavos = carrera.gananciaCentavos,
                 enviando = aceptando,
                 onOfertar = onOfertar,
+                onEmpezoAEvaluar = onEmpezoAEvaluar,
             )
         }
     }

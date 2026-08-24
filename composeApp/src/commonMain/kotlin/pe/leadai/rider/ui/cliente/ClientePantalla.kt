@@ -217,6 +217,7 @@ fun ClientePantalla(
                     // verdad cambia la decisión del rider.
                     onSubirMonto = { viewModel.subirMonto(carrera.montoOfrecido + 200) },
                     motosCerca = estado.motosCerca,
+                    mirando = estado.mirando,
                     posicionesMotos = estado.posicionesMotos,
                     // Lo calcula el BACKEND: el reloj del teléfono puede
                     // estar corrido, y un contador que no coincide con el
@@ -599,6 +600,8 @@ private fun SeguimientoCarrera(
     onElegirOferta: (pe.leadai.rider.datos.OfertaDto) -> Unit = {},
     onSubirMonto: () -> Unit = {},
     motosCerca: Int = 0,
+    /** Riders con la solicitud abierta: las dos aspitas. */
+    mirando: Int = 0,
     /** Dónde están: el radar las dibuja para que se vea que hay gente cerca. */
     posicionesMotos: List<pe.leadai.rider.datos.MotoCercaDto> = emptyList(),
     segundosRestantes: Int = 0,
@@ -636,6 +639,7 @@ private fun SeguimientoCarrera(
                 segundosRestantes = segundosRestantes,
                 onSeAcabo = onSeAcaboElTiempo,
                 motosCerca = motosCerca,
+                mirando = mirando,
                 ofertas = ofertas.size,
                 modifier = Modifier.padding(
                     start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp,
