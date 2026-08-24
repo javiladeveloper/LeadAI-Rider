@@ -1,6 +1,10 @@
 package pe.leadai.rider.ui.cliente
 
 import androidx.compose.foundation.clickable
+import androidx.compose.ui.draw.clip
+import pe.leadai.rider.ui.cliente.componentes.SinViajesDelFiltro
+import pe.leadai.rider.ui.cliente.componentes.FiltrosDeViajes
+import pe.leadai.rider.ui.cliente.componentes.FiltroViajes
 import pe.leadai.rider.ui.comunes.SelectorDeTema
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.statusBars
@@ -87,6 +91,12 @@ fun ViajesCliente(historial: List<CarreraClienteDto>) {
         return
     }
 
+    var filtro by remember { mutableStateOf(FiltroViajes.TODOS) }
+    val visibles = remember(historial, filtro) { historial.filter(filtro::incluye) }
+    val conteos = remember(historial) {
+        FiltroViajes.entries.associateWith { f -> historial.count(f::incluye) }
+    }
+
     LazyColumn(
         // Inset propio: el Scaffold ya no reserva la barra de estado arriba
         // —lo hace cada pantalla— para que el encabezado de marca de las
@@ -106,8 +116,23 @@ fun ViajesCliente(historial: List<CarreraClienteDto>) {
                 ),
                 color = MaterialTheme.colorScheme.onSurface,
             )
+            Spacer(Modifier.height(12.dp))
+            // Los filtros, con el CONTEO al lado.
+            //
+            // La lista mezclaba los viajes que se hicieron con los que nadie
+            // tomó y los cancelados, todos con la misma cara. Quien entra acá
+            // casi siempre viene a ver lo que SÍ pasó —para un reclamo, o para
+            // acordarse de cuánto pagó—, y eso quedaba enterrado.
+            FiltrosDeViajes(
+                seleccionado = filtro,
+                conteos = conteos,
+                onElegir = { filtro = it },
+            )
         }
-        items(historial) { carrera -> CardViaje(carrera) }
+        items(visibles) { carrera -> CardViaje(carrera) }
+        if (visibles.isEmpty()) {
+            item { SinViajesDelFiltro(filtro) }
+        }
         item { Spacer(Modifier.height(16.dp)) }
     }
 }
@@ -170,14 +195,30 @@ private fun CardViaje(carrera: CarreraClienteDto) {
             )
         }
 
-        // Solo se avisa lo que NO salió como esperaba: marcar "entregada" en
-        // una lista donde casi todo se entregó es ruido.
-        if (carrera.estado != "entregada") {
-            Spacer(Modifier.height(6.dp))
+        // El estado, SIEMPRE y como pastilla.
+        //
+        // Antes solo se avisaba lo que salió mal, en texto chico al final: con
+        // la lista mezclada había que leer cada tarjeta entera para saber si
+        // ese viaje se hizo o no. La pastilla se ve de un vistazo, incluso
+        // scrolleando rápido.
+        Spacer(Modifier.height(8.dp))
+        val (textoEstado, colorEstado) = when (carrera.estado) {
+            "entregada" -> "Completado" to colores.exito
+            "cancelada" -> "Cancelado" to colores.calor
+            else -> "Nadie la tomó" to colores.espera
+        }
+        Box(
+            modifier = Modifier
+                .clip(Formas.chip)
+                .background(colorEstado.copy(alpha = 0.14f))
+                .padding(horizontal = 10.dp, vertical = 4.dp),
+        ) {
             Text(
-                if (carrera.estado == "cancelada") "Cancelada" else "Nadie la tomó a tiempo",
-                style = MaterialTheme.typography.labelSmall,
-                color = colores.calor,
+                textoEstado,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                ),
+                color = colorEstado,
             )
         }
     }

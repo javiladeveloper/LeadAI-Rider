@@ -168,6 +168,9 @@ private const val MENSAJE_SIN_UBICACION =
     "No pudimos ubicarte. Escribí desde dónde salís 📍"
 private const val MENSAJE_SIN_ORIGEN = "Falta el origen"
 private const val MENSAJE_SIN_DESTINO = "Falta el destino"
+// Dice DÓNDE cargarlo: "falta tu celular" a secas deja al cliente buscando.
+private const val MENSAJE_SIN_CELULAR =
+    "Cargá tu celular en Perfil: el motorizado lo necesita para coordinar"
 private const val MENSAJE_ERROR_PEDIR = "No pudimos pedir tu moto. Intenta de nuevo."
 private const val MENSAJE_ERROR_CARGAR = "No pudimos cargar tu carrera. Intenta de nuevo."
 
@@ -755,6 +758,18 @@ class ClienteViewModel(
         }
         if (a.destino.isBlank()) {
             _estado.update { it.copy(error = MENSAJE_SIN_DESTINO) }
+            return
+        }
+        // SIN CELULAR NO SE PIDE, en ninguno de los tres servicios.
+        //
+        // Es lo único que tiene el motorizado para coordinar: dónde esperar,
+        // qué timbre tocar, "ya estoy afuera". Sin número termina dando
+        // vueltas en la cuadra y cancelando.
+        //
+        // El backend también lo rechaza, pero avisar acá evita que el cliente
+        // llene todo el formulario para recién enterarse al final.
+        if (a.contacto.isBlank()) {
+            _estado.update { it.copy(error = MENSAJE_SIN_CELULAR) }
             return
         }
         // `calculandoPrecio` mientras no hay ruta: el popup muestra "calculando"
