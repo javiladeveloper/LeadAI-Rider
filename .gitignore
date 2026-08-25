@@ -37,3 +37,7 @@ play-store-key.json
 composeApp/build/generated/tokens/
 
 # Capturas y gráficos de la ficha de Play: se regeneran del emulador.
+
+# Volcados del navegador de Playwright: son de una sesion, no del proyecto.
+.playwright-mcp/
+*.md.playwright
