@@ -190,7 +190,11 @@ fun HojaCarreraActiva(
                     },
                 )
             }
-            Spacer(Modifier.height(10.dp))
+            // 6dp y no 10: los dos botones son del MISMO momento —llegué,
+            // ya subió— y separarlos los hacía leer como decisiones
+            // distintas. Juntos ocupan menos y la tarjeta deja de tapar la
+            // moto, que es lo que el rider necesita ver.
+            Spacer(Modifier.height(6.dp))
         }
 
         // La acción: texto a la izquierda, chevrons a la derecha en amarillo.
