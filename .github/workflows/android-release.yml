@@ -110,7 +110,22 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: ./gradlew :composeApp:bundleRelease
+          # SIN ESTO EL MAPA SALE EN BLANCO.
+          #
+          # `build.gradle.kts` la busca en local.properties (que no viaja al
+          # repo) y si no la encuentra usa "". En CI no existía ninguna de las
+          # dos, así que todo lo publicado salía con la clave vacía: el mapa
+          # nativo se veía gris y nadie entendía por qué —en local andaba—.
+          MAPS_API_KEY: ${{ secrets.MAPS_API_KEY }}
+        run: |
+          # Falla RUIDOSAMENTE si falta la clave. Un mapa en blanco en manos
+          # de un tester se ve como un bug de la app, no como un secreto sin
+          # configurar, y se pierden días buscando en el lugar equivocado.
+          if [ -z "$MAPS_API_KEY" ]; then
+            echo "::error::Falta el secreto MAPS_API_KEY — sin él el mapa se publica en blanco."
+            exit 1
+          fi
+          ./gradlew :composeApp:bundleRelease
 
       - name: Instalar Fastlane
         uses: ruby/setup-ruby@v1
