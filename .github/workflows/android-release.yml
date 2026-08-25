@@ -148,16 +148,6 @@ jobs:
       - name: Subir a Play Store
         env:
           PLAY_STORE_JSON_KEY_PATH: play-store-key.json
-          # Con qué estado se sube a Play.
-          #
-          # Play RECHAZA un release 'completed' mientras la app está en
-          # BORRADOR —hasta que se publique algo por primera vez—: "Only
-          # releases with status draft may be created on draft app".
-          #
-          # Mientras la app siga en borrador hay que dejarlo en 'draft' y
-          # publicar a mano desde la consola la primera vez. Después de eso,
-          # se borra esta línea y todo vuelve a publicarse solo.
-          PLAY_RELEASE_STATUS: draft
           CANAL: ${{ steps.canal.outputs.canal }}
         run: |
           case "$CANAL" in
