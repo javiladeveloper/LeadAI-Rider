@@ -46,7 +46,11 @@ val claveDeMapas: String = run {
         ?: ""
 }
 
-val VERSION_CODE_OFFSET = 200
+// 300 y no 200: un AAB subido A MANO ocupó el 240 mientras el contador de
+// corridas del CI iba por 34, así que el workflow generaba 234 y Play lo
+// descartaba en silencio —la versión buena no aparecía y quedaba la manual,
+// que no tenía el arreglo del mapa—. Con 300 el CI vuelve a ir por delante.
+val VERSION_CODE_OFFSET = 300
 // Los builds LOCALES (sin GITHUB_RUN_NUMBER) usan esto. Queda bajo a
 // propósito: un AAB local no debería poder pisar lo que publica el CI.
 val VERSION_CODE_BASE = 5
