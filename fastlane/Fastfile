@@ -11,6 +11,21 @@ PACKAGE = "pe.leadai.rider"
 AAB = "composeApp/build/outputs/bundle/release/composeApp-release.aab"
 
 platform :android do
+
+  # El estado con el que se sube.
+  #
+  # Play RECHAZA un release 'completed' mientras la app está en BORRADOR —o
+  # sea, hasta que se publique algo por primera vez—: "Only releases with
+  # status draft may be created on draft app". El primer envío tiene que ir
+  # como 'draft' y publicarse a mano desde la consola; después de eso, todos
+  # los siguientes pueden ir directos.
+  #
+  # Se controla con PLAY_RELEASE_STATUS para no tener que tocar este archivo
+  # cada vez que cambia la situación de la app.
+  def estado_de_publicacion
+    ENV["PLAY_RELEASE_STATUS"] || "completed"
+  end
+
   # Track "internal": hasta 100 testers de la lista, disponible en minutos.
   # Es donde se valida un build antes de mostrárselo a nadie más.
   desc "Publica en la prueba interna (el equipo)"
@@ -21,7 +36,7 @@ platform :android do
       aab: AAB,
       json_key: ENV["PLAY_STORE_JSON_KEY_PATH"],
       # 'completed' = les llega de una a los testers, no queda en borrador.
-      release_status: "completed",
+      release_status: estado_de_publicacion,
       # Solo sube las notas de versión: el título, la descripción y las
       # capturas ya configuradas en Play no se tocan desde acá.
       skip_upload_metadata: true,
@@ -41,7 +56,7 @@ platform :android do
       track: ENV["PLAY_TRACK_CERRADA"] || "alpha",
       aab: AAB,
       json_key: ENV["PLAY_STORE_JSON_KEY_PATH"],
-      release_status: "completed",
+      release_status: estado_de_publicacion,
       skip_upload_metadata: true,
       skip_upload_changelogs: false,
       skip_upload_images: true,
@@ -61,7 +76,7 @@ platform :android do
       track: "production",
       aab: AAB,
       json_key: ENV["PLAY_STORE_JSON_KEY_PATH"],
-      release_status: "completed",
+      release_status: estado_de_publicacion,
       skip_upload_metadata: true,
       skip_upload_changelogs: false,
       skip_upload_images: true,
