@@ -1,6 +1,10 @@
 package pe.leadai.rider.ui.carreras
 
 import androidx.compose.foundation.background
+import pe.leadai.rider.ui.carreras.componentes.SolicitudDetalle
+import pe.leadai.rider.ui.comunes.PuntoMapa
+import pe.leadai.rider.ui.comunes.MapaRuta
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -318,6 +322,8 @@ fun CarrerasPantalla(
                     // aceptó algo, lo que importa es llegar.
                     if (estado.miCarrera != null) {
                         ContenidoRider(
+                            miUbicacion = estado.miUbicacion,
+                            trazadoRuta = estado.trazadoRuta,
                             carrerasHoy = estado.carrerasHoy,
                             chatAbierto = estado.chatAbierto,
                             mensajesChat = estado.mensajes,
@@ -358,6 +364,8 @@ fun CarrerasPantalla(
                         // tocarlas no hacía nada.
                         when (seccion) {
                             SeccionRider.INICIO -> ContenidoRider(
+                                miUbicacion = estado.miUbicacion,
+                                trazadoRuta = estado.trazadoRuta,
                                 carrerasHoy = estado.carrerasHoy,
                             chatAbierto = estado.chatAbierto,
                             mensajesChat = estado.mensajes,
@@ -499,6 +507,10 @@ fun CarrerasPantalla(
 private fun ContenidoRider(
     nombreUsuario: String,
     perfil: PerfilMotorizadoDto,
+    /** Dónde está la moto, para el mapa nativo del viaje. */
+    miUbicacion: pe.leadai.rider.ui.carreras.UbicacionRider? = null,
+    /** El camino por calle hasta el recojo. Vacío dibuja la recta. */
+    trazadoRuta: List<List<Double>> = emptyList(),
     /** Lo ganado hoy: va en el encabezado, sin entrar a otra pantalla. */
     carrerasHoy: Int,
     gananciaHoyCentavos: Long,
@@ -548,16 +560,46 @@ private fun ContenidoRider(
         // El WebView reporta un viewport que NO coincide con su tamaño, así que
         // `100vh` allá adentro daba un mapa cuadrado y chico. Se mide acá y
         // viaja en la URL — mismo arreglo que ya tenían los otros mapas.
+        // Lo que ocupa la tarjeta del viaje, en dp. Arranca en 0: hasta la
+        // primera medición la página centra como antes.
+        var altoTarjetaDp by remember { mutableStateOf(0) }
+        val densidad = LocalDensity.current
+
         Box(modifier = Modifier.fillMaxSize()) {
-            // A sangre completa: sin redondeo, que el mapa toque los bordes.
-            MapaQueSeMide(
-                // `esRider = true`: el modo navegación (cámara pegada a la
-                // moto) es para el que MANEJA, y arranca recién cuando ya
-                // recogió. El cliente ve el mismo mapa sin ese modo.
-                url = { alto -> Rutas.Mapas.tracking(miCarrera.pedidoId, alto, esRider = true) },
-                modifier = Modifier.fillMaxSize(),
-                redondeado = false,
-            )
+            // EL MAPA DEL VIAJE, NATIVO.
+            //
+            // Antes era Leaflet dentro de un WebView, y ahí se acumularon
+            // bugs que no eran del mapa sino del contenedor: el WebView
+            // reporta un viewport que no coincide con su tamaño, el div
+            // quedaba corrido por un `top/left:50%` sin compensar, y el
+            // encuadre alejaba tanto que la moto se veía como un punto. El
+            // rider abría la pantalla y no se encontraba.
+            //
+            // Google Maps nativo —el mismo que ya usaba el radar del
+            // cliente— no tiene nada de eso: la cámara se pide en
+            // coordenadas y el sistema la dibuja.
+            val recojo = miCarrera.origenLat?.let { la ->
+                miCarrera.origenLng?.let { lo -> PuntoMapa(la, lo) }
+            }
+            val entrega = miCarrera.destinoLat?.let { la ->
+                miCarrera.destinoLng?.let { lo -> PuntoMapa(la, lo) }
+            }
+            val miMoto = miUbicacion?.let { PuntoMapa(it.lat, it.lng) }
+            if (recojo != null) {
+                // Ya con el pasajero arriba, el "origen" del tramo es donde
+                // esta la moto: el recojo quedo atras y mostrarlo confunde.
+                MapaRuta(
+                    origen = if (miCarrera.recogido) (miMoto ?: recojo) else recojo,
+                    destino = entrega ?: recojo,
+                    moto = miMoto,
+                    modoRider = true,
+                    tipoServicio = miCarrera.tipo,
+                    recorrido = trazadoRuta.mapNotNull { p ->
+                        if (p.size >= 2) PuntoMapa(p[0], p[1]) else null
+                    },
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
 
             // Cuánto gana, flotando arriba a la derecha.
             ChipMontoSobreMapa(
@@ -578,7 +620,14 @@ private fun ContenidoRider(
                 onWhatsApp = { abridor.openUri("https://wa.me/$it") },
                 onLlamar = { abridor.openUri("tel:+$it") },
                 telefonoCliente = telefonoCliente,
-                modifier = Modifier.align(Alignment.BottomCenter),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .onSizeChanged {
+                        val dp = with(densidad) { it.height.toDp().value.toInt() }
+                        // Solo cambios que muevan la cámara de verdad: recargar
+                        // la página por 2 dp reiniciaría el mapa a cada rato.
+                        if (kotlin.math.abs(dp - altoTarjetaDp) > 24) altoTarjetaDp = dp
+                    },
                 onCancelar = onCancelarCarrera,
                 sinLeer = mensajesSinLeer,
                 onAbrirChat = onAbrirChat,
@@ -606,12 +655,38 @@ private fun ContenidoRider(
     // El FEED, con la estructura del diseño: saludo + saldo arriba (en el
     // encabezado), y debajo la lista de solicitudes cercanas. El historial y
     // el perfil ya NO viven acá — tienen su propia pestaña.
+    // El padding lateral NO va en el LazyColumn: va item por item.
+    //
+    // En el contenedor, el degradado del encabezado quedaba con 16.dp de aire
+    // a los costados y sin llegar al borde de arriba —se leía como una
+    // tarjeta suelta, no como el marco de la pantalla—. Y como además
+    // reservaba adentro el alto del status bar que ya estaba esquivando, el
+    // hueco se contaba dos veces.
+    // Cual solicitud esta abierta a pantalla completa. Null = el feed.
+    var solicitudAbierta by remember { mutableStateOf<String?>(null) }
+    val abierta = carreras.firstOrNull { it.pedidoId == solicitudAbierta }
+    if (abierta != null) {
+        SolicitudDetalle(
+            carrera = abierta,
+            miUbicacion = miUbicacion?.let { PuntoMapa(it.lat, it.lng) },
+            recorrido = trazadoRuta.mapNotNull { p ->
+                if (p.size >= 2) PuntoMapa(p[0], p[1]) else null
+            },
+            aceptando = accionEnCurso == abierta.pedidoId,
+            habilitado = accionEnCurso == null,
+            yaOfertaste = abierta.pedidoId in ofertadas,
+            onAceptar = { onAceptar(abierta); solicitudAbierta = null },
+            onOfertar = { monto -> onOfertar(abierta, monto); solicitudAbierta = null },
+            onCerrar = { solicitudAbierta = null },
+        )
+        return
+    }
+
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item(key = "encabezado") {
-            Spacer(Modifier.height(8.dp))
             EncabezadoRider(
                 nombreUsuario = nombreUsuario,
                 perfil = perfil,
@@ -630,12 +705,13 @@ private fun ContenidoRider(
                 "📋 Solicitudes cercanas",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
         }
 
         if (carreras.isEmpty()) {
             item(key = "sin-carreras") {
-                SalaDeEspera()
+                SalaDeEspera(modifier = Modifier.padding(horizontal = 16.dp))
             }
         } else {
             itemsIndexed(carreras, key = { _, c -> c.pedidoId }) { posicion, carrera ->
@@ -644,7 +720,7 @@ private fun ContenidoRider(
                 // Es el momento más importante de la pantalla del rider:
                 // apareció trabajo. Una card que solo se desliza se confunde
                 // con el refresco del polling.
-                AparecerSolicitud(posicion) {
+                AparecerSolicitud(posicion, modifier = Modifier.padding(horizontal = 16.dp)) {
                     CardCarrera(
                         carrera = carrera,
                         aceptando = accionEnCurso == carrera.pedidoId,
@@ -653,6 +729,12 @@ private fun ContenidoRider(
                         yaOfertaste = carrera.pedidoId in ofertadas,
                         onOfertar = { monto -> onOfertar(carrera, monto) },
                         onEmpezoAEvaluar = { onEmpezoAEvaluar(carrera) },
+                        // Tocar la tarjeta abre el mapa: el rider decide
+                        // mirando el recorrido, no leyendo dos direcciones.
+                        onVerDetalle = {
+                            onEmpezoAEvaluar(carrera)
+                            solicitudAbierta = carrera.pedidoId
+                        },
                     )
                 }
             }
@@ -664,10 +746,10 @@ private fun ContenidoRider(
 
 /** Sin carreras a la vista: el mensaje de siempre, con algo de personalidad. */
 @Composable
-private fun SalaDeEspera() {
+private fun SalaDeEspera(modifier: Modifier = Modifier) {
     val colores = ColoresJala.actuales
     Column(
-        modifier = Modifier.fillMaxWidth().padding(vertical = 40.dp),
+        modifier = modifier.fillMaxWidth().padding(vertical = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text("🛵", style = MaterialTheme.typography.displayLarge)

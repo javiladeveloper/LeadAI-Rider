@@ -1,6 +1,7 @@
 package pe.leadai.rider.ui.carreras.componentes
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,11 +47,23 @@ fun CardCarrera(
     yaOfertaste: Boolean = false,
     habilitado: Boolean,
     onAceptar: () -> Unit,
+    /** Abre la solicitud con el mapa. Sin esto la tarjeta no es tocable. */
+    onVerDetalle: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val colores = ColoresJala.actuales
 
-    CardJala(modifier = modifier.fillMaxWidth()) {
+    CardJala(
+        modifier = modifier
+            .fillMaxWidth()
+            .then(
+                if (onVerDetalle != null) {
+                    Modifier.clickable(enabled = habilitado) { onVerDetalle() }
+                } else {
+                    Modifier
+                },
+            ),
+    ) {
         // Fila 1: qué tipo de carrera es y cuánto GANA. Nada más.
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(

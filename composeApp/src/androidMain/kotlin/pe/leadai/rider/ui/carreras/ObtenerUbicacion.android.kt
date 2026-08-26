@@ -33,6 +33,22 @@ private var permisoYaPedido = false
  */
 private const val ESPERA_MAXIMA_MS = 8_000L
 
+/**
+ * Hasta cuándo una posición guardada sigue sirviendo.
+ *
+ * 30 segundos: a velocidad de moto son unas pocas cuadras —un error que no
+ * cambia el encuadre del mapa—, y alcanza para que el caso normal (la app
+ * reportando cada 5s) responda con la cacheada sin esperar al GPS.
+ */
+private const val VIGENCIA_CACHE_MS = 30_000L
+
+/** Si la posición guardada es lo bastante nueva como para reportarla. */
+private fun esReciente(ubicacion: Location): Boolean {
+    val edad = System.currentTimeMillis() - ubicacion.time
+    // Un `time` en el futuro (reloj corrido) no puede contar como vencido.
+    return edad < VIGENCIA_CACHE_MS
+}
+
 /** Cuántas veces se pidió, para que cada registro tenga una clave distinta. */
 private var pedidosDePermiso = 0
 
@@ -82,9 +98,20 @@ actual suspend fun obtenerUbicacionActual(loPidioElUsuario: Boolean): UbicacionR
                 val fresca = async {
                     proveedores.firstNotNullOfOrNull { ubicacionFresca(activity, manager, it) }
                 }
-                // La conocida vuelve enseguida si existe; si es null, se espera
-                // a la fresca en vez de rendirse.
-                conocida.await() ?: fresca.await()
+                // La conocida solo vale si es RECIENTE.
+                //
+                // Antes se usaba siempre que existiera, y el fix fresco solo
+                // entraba si era null. Con una `lastKnownLocation` vieja
+                // guardada —un emulador al que le cambiaron el GPS, un
+                // teléfono que estuvo bajo techo— se reportaba esa posición
+                // para siempre: el rider mandó durante todo un viaje una
+                // ubicación a un kilómetro de donde estaba, y en su propio
+                // mapa no veía ni su moto ni hacia dónde ir.
+                //
+                // Sigue habiendo carrera entre las dos: si la cacheada es
+                // fresca se responde al instante, que es el caso normal.
+                val guardada = conocida.await()
+                if (guardada != null && esReciente(guardada)) guardada else fresca.await() ?: guardada
             }
         }
         ubicacion?.let { UbicacionRider(it.latitude, it.longitude) }

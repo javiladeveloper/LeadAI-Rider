@@ -1,6 +1,7 @@
 package pe.leadai.rider.ui.carreras
 
 import android.app.Notification
+import pe.leadai.rider.R
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -170,7 +171,9 @@ class ServicioCarreraActiva : Service(), KoinComponent {
                 if (enCarrera) "Rumbo a $destino"
                 else "Te avisamos apenas haya una carrera cerca",
             )
-            .setSmallIcon(android.R.drawable.ic_menu_mylocation)
+            // La marca, no el pin genérico de Android: esta notificación vive
+            // fija en la barra mientras dura la carrera.
+            .setSmallIcon(R.drawable.ic_launcher_monochrome)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setContentIntent(intentAlAbrir())

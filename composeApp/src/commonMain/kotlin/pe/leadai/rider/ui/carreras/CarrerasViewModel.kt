@@ -34,6 +34,17 @@ data class CarrerasUiState(
     val carreras: List<CarreraDto> = emptyList(),
     /** La carrera EN CURSO del rider (aceptada, aún no entregada) — manda sobre la lista. */
     val miCarrera: CarreraDto? = null,
+    /**
+     * Dónde está la moto, para el mapa NATIVO del viaje.
+     *
+     * Ya se leía el GPS para reportarlo al backend, pero se tiraba: el mapa
+     * vivía en un WebView que se la pedía al servidor por su cuenta. El
+     * nativo la necesita acá, y de paso se dibuja sin esperar la ida y
+     * vuelta.
+     */
+    val miUbicacion: UbicacionRider? = null,
+    /** El camino por calle hasta el punto de recojo, para dibujarlo. */
+    val trazadoRuta: List<List<Double>> = emptyList(),
     /** `pedidoId` con aceptar/entregar en vuelo (deshabilita su botón). */
     val accionEnCurso: String? = null,
     /** Historial del rider: resumen de HOY (carreras/km/total) + últimas entregas. */
@@ -224,7 +235,60 @@ class CarrerasViewModel(
     /** Silencioso como el feed: sin GPS (permiso denegado, sin fix) no pasa nada. */
     private suspend fun reportarPosicion() {
         val ubicacion = obtenerUbicacion() ?: return
+        _estado.update { it.copy(miUbicacion = ubicacion) }
         motorizadosApi.reportarPosicion(ubicacion.lat, ubicacion.lng)
+        refrescarTrazado(ubicacion)
+    }
+
+    /**
+     * El camino hasta el recojo, para que el rider vea por dónde entrar.
+     *
+     * Se pide de nuevo solo si el rider se movió lo suficiente: el backend
+     * cachea por tramo, pero una llamada por cada refresco del GPS sería
+     * gastar red para redibujar la misma linea.
+     */
+    private suspend fun refrescarTrazado(desde: UbicacionRider) {
+        val carrera = _estado.value.miCarrera ?: return
+        // DOS TRAMOS, y el rider maneja UNO a la vez.
+        //
+        // Yendo a buscar, lo único que necesita es por dónde llegar al
+        // pasajero; el camino al destino recien importa cuando ya lo levanto.
+        // Dibujar los dos juntos obliga a alejar el mapa —el destino puede
+        // estar a un kilometro— y la moto vuelve a ser un punto perdido.
+        val hacia = if (carrera.recogido) {
+            carrera.destinoLat to carrera.destinoLng
+        } else {
+            carrera.origenLat to carrera.origenLng
+        }
+        val haciaLat = hacia.first ?: return
+        val haciaLng = hacia.second ?: return
+        // Al recoger hay que redibujar SI O SI aunque no se haya movido: la
+        // meta cambio y la linea vieja apuntaria al lugar equivocado.
+        val cambioElTramo = tramoDibujado != carrera.recogido
+        if (!cambioElTramo && _estado.value.trazadoRuta.isNotEmpty() && !seMovioBastante(desde)) return
+        val r = motorizadosApi.trazadoDeRuta(desde.lat, desde.lng, haciaLat, haciaLng)
+        if (r is Resultado.Ok && r.valor.puntos.isNotEmpty()) {
+            _estado.update { it.copy(trazadoRuta = r.valor.puntos) }
+            ultimoTrazadoDesde = desde
+            tramoDibujado = carrera.recogido
+        }
+    }
+
+    /** Desde dónde se pidio el ultimo trazado. */
+    private var ultimoTrazadoDesde: UbicacionRider? = null
+
+    /** Que tramo esta dibujado: false = al recojo, true = al destino. */
+    private var tramoDibujado: Boolean? = null
+
+    /**
+     * ~80 m: menos que eso el dibujo no cambia de forma visible y solo
+     * gastaria red.
+     */
+    private fun seMovioBastante(ahora: UbicacionRider): Boolean {
+        val antes = ultimoTrazadoDesde ?: return true
+        val dLat = (ahora.lat - antes.lat) * 111_320
+        val dLng = (ahora.lng - antes.lng) * 105_000
+        return dLat * dLat + dLng * dLng > 80.0 * 80.0
     }
 
     /**

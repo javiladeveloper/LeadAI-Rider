@@ -220,6 +220,7 @@ private const val DURACION_CONTADOR_MS = 250
 @Composable
 fun AparecerSolicitud(
     posicion: Int = 0,
+    modifier: Modifier = Modifier,
     contenido: @Composable () -> Unit,
 ) {
     var visible by remember { mutableStateOf(false) }
@@ -228,6 +229,7 @@ fun AparecerSolicitud(
         visible = true
     }
     AnimatedVisibility(
+        modifier = modifier,
         visible = visible,
         enter = fadeIn(tween(Movimiento.NORMAL_MS)) +
             scaleIn(

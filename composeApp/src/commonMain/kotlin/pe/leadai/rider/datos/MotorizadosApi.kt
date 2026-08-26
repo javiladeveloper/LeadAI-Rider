@@ -168,6 +168,21 @@ class MotorizadosApi(private val api: ApiCliente) {
             requiereSesion = true,
         )
 
+    /**
+     * `GET /ruta` — el TRAZADO por calle, para dibujarlo en el mapa.
+     *
+     * Sin esto el rider ve dos pines y tiene que adivinar por dónde entrar.
+     * Si OSRM no responde vuelve vacío y el mapa cae a la recta: peor dibujo,
+     * pero el rider nunca se queda sin mapa.
+     */
+    suspend fun trazadoDeRuta(
+        oLat: Double,
+        oLng: Double,
+        dLat: Double,
+        dLng: Double,
+    ): Resultado<TrazadoRutaDto> =
+        api.get("/ruta?oLat=$oLat&oLng=$oLng&dLat=$dLat&dLng=$dLng")
+
     /** `GET /motorizados/historial` — entregas del rider con km reales + resumen de hoy. */
     suspend fun historial(): Resultado<HistorialRiderResponseDto> =
         api.get("/motorizados/historial")

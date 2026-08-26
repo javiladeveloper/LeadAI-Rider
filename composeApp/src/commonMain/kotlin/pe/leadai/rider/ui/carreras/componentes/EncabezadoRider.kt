@@ -1,6 +1,9 @@
 package pe.leadai.rider.ui.carreras.componentes
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.ui.graphics.Color
+import pe.leadai.rider.ui.comunes.BadgeEstado
+import pe.leadai.rider.ui.comunes.EncabezadoMarca
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.material3.Switch
@@ -59,102 +62,104 @@ fun EncabezadoRider(
     val colores = ColoresJala.actuales
 
     Column(modifier = modifier.fillMaxWidth()) {
-        Text(
-            text = if (nombreUsuario.isNotBlank()) "Hola, $nombreUsuario 🏍️" else "Hola 🏍️",
-            style = MaterialTheme.typography.headlineMedium.copy(
-                fontWeight = FontWeight.ExtraBold,
-            ),
-            color = MaterialTheme.colorScheme.onSurface,
+        // EL MISMO DEGRADADO DE MARCA QUE EL LADO CLIENTE.
+        //
+        // El saludo era texto negro sobre gris: correcto, pero podía ser
+        // cualquier app. Con el degradado carbón→amarillo —los dos colores
+        // del logo— la pantalla se reconoce como Light Drive antes de leer
+        // una palabra, y las dos mitades del producto se ven de la misma
+        // familia.
+        //
+        // Se reusa `EncabezadoMarca` en vez de copiar el degradado: con dos
+        // implementaciones, la próxima vez que cambie el color quedaría una
+        // desactualizada.
+        val (textoEstadoRider, colorEstadoRider) = colorDeEstadoRider(perfil.estado)
+        EncabezadoMarca(
+            titulo = if (nombreUsuario.isNotBlank()) nombreUsuario else "Motorizado",
+            inicial = nombreUsuario.take(1).uppercase().ifBlank { "M" },
+            subtitulo = perfil.distrito.takeIf { it.isNotBlank() }?.let { "📍 $it" },
+            insignia = { BadgeEstado(texto = textoEstadoRider, color = colorEstadoRider) },
+            // EL INTERRUPTOR VA DENTRO DEL DEGRADADO.
+            //
+            // Suelto abajo empujaba todo: entre saludo, turno y saldo, la
+            // lista de solicitudes —que es a lo que el rider entra— arrancaba
+            // pasada la mitad de la pantalla. Adentro no cuesta una fila
+            // propia y sigue estando arriba de todo.
+            pie = {
+                InterruptorDeTurno(
+                    enTurno = perfil.disponible,
+                    cambiando = cambiandoTurno,
+                    onCambiar = onCambiarTurno,
+                )
+            },
         )
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(10.dp))
 
-        // EL INTERRUPTOR DE TURNO. Va arriba de todo y siempre visible porque
-        // determina si al rider le llegan avisos: el backend solo notifica a
-        // quien está disponible, y antes no había forma de encenderlo desde
-        // la app — ningún rider recibía nada.
-        InterruptorDeTurno(
-            enTurno = perfil.disponible,
-            cambiando = cambiandoTurno,
-            onCambiar = onCambiarTurno,
-        )
+        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+            // De acá para abajo vuelve el margen lateral: solo el degradado
+            // sangra hasta el borde.
 
-        // LO GANADO HOY, arriba y sin entrar a ningún lado.
-        //
-        // Es el dato que hace que un motorizado deje la app abierta: saber que
-        // lleva S/47 en el día. Enterrado en la pantalla de ganancias no lo
-        // mira nadie.
-        //
-        // Solo cuando ya trabajó: un "S/0.00" a primera hora desanima en vez
-        // de motivar.
-        if (carrerasHoy > 0) {
-            Spacer(Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .clip(Formas.card)
-                    // Degradado SUTIL, no un bloque de color plano.
-                    //
-                    // Es la plata que ganó: merece verse como algo, pero un
-                    // verde saturado a todo lo ancho competiría con el
-                    // interruptor de turno, que es la acción de la pantalla.
-                    // Un degradado que se apaga hacia la derecha destaca el
-                    // monto sin robarse la atención.
-                    .background(
-                        Brush.horizontalGradient(
-                            listOf(
-                                colores.exito.copy(alpha = 0.16f),
-                                colores.exito.copy(alpha = 0.02f),
+            // EL INTERRUPTOR DE TURNO. Va arriba de todo y siempre visible porque
+            // determina si al rider le llegan avisos: el backend solo notifica a
+            // quien está disponible, y antes no había forma de encenderlo desde
+            // la app — ningún rider recibía nada.
+
+            // LO GANADO HOY, arriba y sin entrar a ningún lado.
+            //
+            // Es el dato que hace que un motorizado deje la app abierta: saber que
+            // lleva S/47 en el día. Enterrado en la pantalla de ganancias no lo
+            // mira nadie.
+            //
+            // Solo cuando ya trabajó: un "S/0.00" a primera hora desanima en vez
+            // de motivar.
+            if (carrerasHoy > 0) {
+                Spacer(Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clip(Formas.card)
+                        // Degradado SUTIL, no un bloque de color plano.
+                        //
+                        // Es la plata que ganó: merece verse como algo, pero un
+                        // verde saturado a todo lo ancho competiría con el
+                        // interruptor de turno, que es la acción de la pantalla.
+                        // Un degradado que se apaga hacia la derecha destaca el
+                        // monto sin robarse la atención.
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(
+                                    colores.exito.copy(alpha = 0.16f),
+                                    colores.exito.copy(alpha = 0.02f),
+                                ),
                             ),
+                        )
+                        .padding(horizontal = 12.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        // CUENTA hasta el valor nuevo: al entregar una carrera el
+                        // rider ve el número subir, que es la recompensa del
+                        // viaje. Saltando de golpe se lee como un parpadeo.
+                        "💰 Hoy: ${centavosASoles(centavosAnimados(gananciaHoyCentavos))}",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
                         ),
+                        color = colores.exito,
                     )
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
-            ) {
-                Text(
-                    // CUENTA hasta el valor nuevo: al entregar una carrera el
-                    // rider ve el número subir, que es la recompensa del
-                    // viaje. Saltando de golpe se lee como un parpadeo.
-                    "💰 Hoy: ${centavosASoles(centavosAnimados(gananciaHoyCentavos))}",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                    ),
-                    color = colores.exito,
-                )
-                Spacer(Modifier.size(8.dp))
-                Text(
-                    if (carrerasHoy == 1) "1 carrera" else "$carrerasHoy carreras",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = colores.tintaSecundaria,
-                )
+                    Spacer(Modifier.size(8.dp))
+                    Text(
+                        if (carrerasHoy == 1) "1 carrera" else "$carrerasHoy carreras",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = colores.tintaSecundaria,
+                    )
+                }
             }
-        }
 
-        Spacer(Modifier.height(8.dp))
 
-        // Ciudad · estado, separados por un punto — como en el diseño.
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                "📍 ${perfil.distrito}",
-                style = MaterialTheme.typography.labelSmall,
-                color = colores.tintaSecundaria,
-            )
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .size(4.dp)
-                    .background(colores.tintaSecundaria.copy(alpha = 0.5f), CircleShape),
-            )
-            val (textoEstado, colorEstado) = colorDeEstadoRider(perfil.estado)
-            Text(
-                textoEstado,
-                style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                color = colorEstado,
-            )
-        }
-
-        if (monedero != null) {
-            Spacer(Modifier.height(16.dp))
-            CardSaldoAmarilla(monedero = monedero, onRecargar = onRecargar)
+            if (monedero != null) {
+                Spacer(Modifier.height(16.dp))
+                CardSaldoAmarilla(monedero = monedero, onRecargar = onRecargar)
+            }
         }
     }
 }
@@ -177,55 +182,34 @@ private fun CardSaldoAmarilla(
     val colores = ColoresJala.actuales
     val sinSaldo = monedero.carrerasDisponibles <= 0
 
-    Column(
+    // UNA SOLA FILA: monto a la izquierda, "Recargar" a la derecha.
+    //
+    // Antes era una tarjeta de tres pisos —rótulo, monto gigante y una franja
+    // interna con el botón— que se comía un cuarto de la pantalla. El saldo
+    // es un dato de CONSULTA: el rider lo mira de reojo y sigue. Lo que venía
+    // abajo —las solicitudes— es a lo que entra.
+    //
+    // Sin saldo sí cambia de color: ahí deja de ser un dato y pasa a ser lo
+    // que le impide trabajar.
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                // Sin saldo la card se apaga: deja de ser una buena noticia y
-                // pasa a ser lo que le impide trabajar.
                 color = if (sinSaldo) colores.calor.copy(alpha = 0.12f) else colores.marcaAmarillo,
                 shape = RoundedCornerShape(16.dp),
             )
-            .padding(20.dp),
+            .padding(start = 16.dp, end = 8.dp, top = 10.dp, bottom = 10.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.Top,
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    "TU SALDO ACTUAL",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = if (sinSaldo) colores.tintaSecundaria else colores.marcaCarbon.copy(alpha = 0.75f),
-                )
-                Spacer(Modifier.height(2.dp))
-                Text(
-                    centavosASoles(monedero.saldoCentavos),
-                    style = MaterialTheme.typography.displayLarge.copy(
-                        fontWeight = FontWeight.ExtraBold,
-                    ),
-                    color = if (sinSaldo) colores.calor else colores.marcaCarbon,
-                )
-            }
-            Text("💳", style = MaterialTheme.typography.headlineMedium)
-        }
-
-        Spacer(Modifier.height(14.dp))
-
-        // Franja interna con el detalle y el botón: separa "cuánto tengo" de
-        // "qué hago con eso".
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(
-                    color = colores.marcaCarbon.copy(alpha = if (sinSaldo) 0.06f else 0.12f),
-                    shape = Formas.chip,
-                )
-                .padding(start = 14.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                centavosASoles(monedero.saldoCentavos),
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.ExtraBold,
+                ),
+                color = if (sinSaldo) colores.calor else colores.marcaCarbon,
+            )
             Text(
                 if (sinSaldo) {
                     "Recargá para tomar carreras"
@@ -233,23 +217,22 @@ private fun CardSaldoAmarilla(
                     "Te alcanza para ~${monedero.carrerasDisponibles} carreras"
                 },
                 style = MaterialTheme.typography.labelSmall,
-                color = if (sinSaldo) colores.calor else colores.marcaCarbon,
-                modifier = Modifier.weight(1f),
+                color = if (sinSaldo) colores.calor else colores.marcaCarbon.copy(alpha = 0.75f),
             )
-            TextButton(
-                onClick = onRecargar,
-                modifier = Modifier
-                    .background(
-                        color = if (sinSaldo) colores.calor else colores.marcaCarbon,
-                        shape = RoundedCornerShape(50),
-                    ),
-            ) {
-                Text(
-                    "Recargar",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = if (sinSaldo) colores.superficieCard else colores.marcaAmarillo,
-                )
-            }
+        }
+        TextButton(
+            onClick = onRecargar,
+            modifier = Modifier
+                .background(
+                    color = if (sinSaldo) colores.calor else colores.marcaCarbon,
+                    shape = RoundedCornerShape(50),
+                ),
+        ) {
+            Text(
+                "Recargar",
+                style = MaterialTheme.typography.labelLarge,
+                color = if (sinSaldo) colores.superficieCard else colores.marcaAmarillo,
+            )
         }
     }
 }
@@ -269,7 +252,14 @@ private fun InterruptorDeTurno(
 ) {
     val colores = ColoresJala.actuales
     val fondo by animateColorAsState(
-        targetValue = if (enTurno) colores.exito.copy(alpha = 0.14f) else MaterialTheme.colorScheme.surfaceVariant,
+        // Va DENTRO del degradado: los colores del tema —pensados para el
+        // fondo de la página— acá se lavan. Carbón sólido contrasta tanto
+        // contra el amarillo como contra el carbón del propio degradado.
+        targetValue = if (enTurno) {
+            colores.marcaCarbon.copy(alpha = 0.55f)
+        } else {
+            colores.marcaCarbon.copy(alpha = 0.38f)
+        },
         animationSpec = tween(200),
         label = "fondoTurno",
     )
@@ -286,7 +276,7 @@ private fun InterruptorDeTurno(
             modifier = Modifier
                 .size(8.dp)
                 .background(
-                    if (enTurno) colores.exito else colores.tintaSecundaria,
+                    if (enTurno) colores.exito else Color.White.copy(alpha = 0.6f),
                     CircleShape,
                 ),
         )
@@ -295,7 +285,7 @@ private fun InterruptorDeTurno(
             Text(
                 if (enTurno) "En turno" else "Fuera de turno",
                 style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurface,
+                color = Color.White,
             )
             Text(
                 if (enTurno) {
@@ -304,7 +294,7 @@ private fun InterruptorDeTurno(
                     "Tocá para empezar a recibir carreras"
                 },
                 style = MaterialTheme.typography.labelSmall,
-                color = colores.tintaSecundaria,
+                color = Color.White.copy(alpha = 0.75f),
             )
         }
         // El Switch NO maneja el toque: lo maneja la fila que lo contiene.

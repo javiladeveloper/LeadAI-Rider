@@ -46,6 +46,14 @@ fun EncabezadoMarca(
     subtitulo: String? = null,
     /** El estado —"Activo", "Pendiente"— como pastilla sobre el degradado. */
     insignia: (@Composable () -> Unit)? = null,
+    /**
+     * Una fila propia debajo del saludo, ya dentro del degradado.
+     *
+     * Para lo que el usuario tiene que poder tocar SIEMPRE —el turno del
+     * rider—: afuera cuesta una tarjeta entera de alto y empuja abajo el
+     * contenido real de la pantalla.
+     */
+    pie: (@Composable () -> Unit)? = null,
 ) {
     val colores = ColoresJala.actuales
     Box(
@@ -65,8 +73,9 @@ fun EncabezadoMarca(
             // El color sube hasta el borde, pero el contenido baja: sin esto
             // el nombre quedaba pisado por el reloj y la señal.
             .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 24.dp),
+            .padding(start = 20.dp, end = 20.dp, top = 2.dp, bottom = 12.dp),
     ) {
+        Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
             // La inicial sobre blanco translúcido: el amarillo del degradado ya
             // ocupa esa esquina y un círculo amarillo encima se perdería.
@@ -75,7 +84,7 @@ fun EncabezadoMarca(
             // ve gris sucio, y el amarillo ata el avatar al logo.
             Box(
                 modifier = Modifier
-                    .size(60.dp)
+                    .size(48.dp)
                     .background(colores.marcaAmarillo, CircleShape),
                 contentAlignment = Alignment.Center,
             ) {
@@ -107,10 +116,15 @@ fun EncabezadoMarca(
                     )
                 }
                 if (insignia != null) {
-                    Spacer(Modifier.height(10.dp))
+                    Spacer(Modifier.height(8.dp))
                     insignia()
                 }
             }
+        }
+        if (pie != null) {
+            Spacer(Modifier.height(12.dp))
+            pie()
+        }
         }
     }
 }

@@ -56,9 +56,23 @@ object Rutas {
          * así que el backend no podía distinguirlos y metía al cliente en modo
          * navegación sin razón.
          */
-        fun tracking(pedidoId: String, altoDp: Int, esRider: Boolean = false): String =
+        fun tracking(
+            pedidoId: String,
+            altoDp: Int,
+            esRider: Boolean = false,
+            /**
+             * Lo que tapa la tarjeta del viaje, en dp.
+             *
+             * La dibuja la app POR ENCIMA del mapa, así que la página no
+             * tiene forma de saber su alto: sin esto centraba la moto en el
+             * medio del div y quedaba escondida detrás. En 0 la página usa
+             * su estimación vieja.
+             */
+            altoTarjetaDp: Int = 0,
+        ): String =
             "$BASE/track/$pedidoId?embebido=1&alto=$altoDp" +
-                (if (esRider) "&modo=rider" else "")
+                (if (esRider) "&modo=rider" else "") +
+                (if (altoTarjetaDp > 0) "&tarjeta=$altoTarjetaDp" else "")
 
         private fun siOscuro(oscuro: Boolean) = if (oscuro) "&oscuro=1" else ""
     }

@@ -111,15 +111,38 @@ actual fun MapaRuta(
     destino: PuntoMapa,
     modifier: Modifier,
     recorrido: List<PuntoMapa>,
+    moto: PuntoMapa?,
+    modoRider: Boolean,
+    tapadoAbajoPx: Int,
+    tipoServicio: String,
 ) {
     val estadoCamara = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(origen.aLatLng(), 14f)
+        // El rider nace SOBRE su moto y en zoom de calle.
+        val centro = if (modoRider) (moto ?: origen) else origen
+        position = CameraPosition.fromLatLngZoom(centro.aLatLng(), if (modoRider) 17f else 14f)
     }
 
     // El encuadre se ajusta cuando cambian los puntos o llega la ruta real.
     // `padding` en píxeles: deja aire para que los pines no queden pegados al
     // borde, donde se leen mal.
-    LaunchedEffect(origen, destino, recorrido.size) {
+    // EL RIDER NO ENCUADRA: sigue a su moto de cerca.
+    //
+    // Encuadrar obliga a abarcar dos puntos y por lo tanto a alejarse: con el
+    // destino a casi un kilómetro, la moto quedaba como un punto perdido. Lo
+    // que guía al que maneja es su propia posición en primer plano.
+    if (modoRider) {
+        LaunchedEffect(moto) {
+            val donde = moto ?: return@LaunchedEffect
+            runCatching {
+                // Con duración: el salto instantáneo se lee como un parpadeo y
+                // el rider pierde la referencia de hacia dónde se movio el mapa.
+                estadoCamara.animate(
+                    CameraUpdateFactory.newLatLngZoom(donde.aLatLng(), 17f),
+                    durationMs = 900,
+                )
+            }
+        }
+    } else LaunchedEffect(origen, destino, recorrido.size) {
         val limites = LatLngBounds.builder()
             .include(origen.aLatLng())
             .include(destino.aLatLng())
@@ -131,7 +154,15 @@ actual fun MapaRuta(
     }
 
     Box(modifier = modifier) {
-        MapaBase(estadoCamara = estadoCamara, modifier = Modifier.fillMaxSize()) {
+        // SE PUEDE MOVER. Estaba clavado porque `interactivo` es false por
+        // defecto —pensado para los mapas de formulario, que son una foto—.
+        // Acá el rider necesita mirar la esquina siguiente o ver por dónde
+        // entrar, y después volver a su moto.
+        MapaBase(
+            estadoCamara = estadoCamara,
+            interactivo = true,
+            modifier = Modifier.fillMaxSize(),
+        ) {
             val linea = remember(recorrido, origen, destino) {
                 if (recorrido.isNotEmpty()) recorrido.map { it.aLatLng() }
                 else listOf(origen.aLatLng(), destino.aLatLng())
@@ -140,19 +171,43 @@ actual fun MapaRuta(
 
             // Círculos y no marcadores con ícono: se leen igual y no dependen
             // de ningún recurso gráfico que pueda faltar.
-            Circle(
-                center = origen.aLatLng(),
-                radius = 40.0,
-                fillColor = VERDE_ORIGEN,
-                strokeColor = Color.White,
-                strokeWidth = 6f,
+            // LA MOTO, el recojo y la entrega, con ícono propio.
+            //
+            // Antes eran discos de color: se leían como manchas y el rider
+            // tenía que adivinar cuál era cuál. Con el emoji sobre el disco se
+            // reconocen de un vistazo, sin leer la tarjeta.
+            val oscuro = isSystemInDarkTheme()
+            moto?.let {
+                Marker(
+                    state = rememberMarkerState(position = it.aLatLng()),
+                    icon = remember(oscuro) { iconoEmoji("🛵", oscuro) },
+                    anchor = Offset(0.5f, 0.5f),
+                    title = "Tu moto",
+                    zIndex = 3f,
+                )
+            }
+            // EL RECOJO. En pasajero ahí espera una PERSONA parada en la
+            // vereda; en delivery o encomienda es un local o una dirección.
+            val esPasajero = tipoServicio == "pasajero"
+            Marker(
+                state = rememberMarkerState(position = origen.aLatLng()),
+                icon = remember(oscuro, esPasajero) {
+                    iconoEmoji(if (esPasajero) "🙋" else "🏪", oscuro)
+                },
+                anchor = Offset(0.5f, 0.5f),
+                title = if (esPasajero) "Acá te espera" else "Punto de recojo",
+                zIndex = 2f,
             )
-            Circle(
-                center = destino.aLatLng(),
-                radius = 40.0,
-                fillColor = ROJO_DESTINO,
-                strokeColor = Color.White,
-                strokeWidth = 6f,
+            // LA ENTREGA: casa para delivery y encomienda, bandera para un
+            // viaje de pasajero —ahí no se entrega nada, se llega—.
+            Marker(
+                state = rememberMarkerState(position = destino.aLatLng()),
+                icon = remember(oscuro, esPasajero) {
+                    iconoEmoji(if (esPasajero) "🏁" else "🏠", oscuro)
+                },
+                anchor = Offset(0.5f, 0.5f),
+                title = if (esPasajero) "Destino" else "Punto de entrega",
+                zIndex = 2f,
             )
         }
     }
@@ -232,9 +287,18 @@ actual fun MapaRadar(
 
     // La moto late: la distingue de un pin fijo del mapa. Dice que está EN
     // LÍNEA ahora, no que es una posición vieja guardada.
+    // Late por OPACIDAD, no por tamaño.
+    //
+    // Antes la escala entraba a `iconoDeMoto`, así que el bitmap se volvía a
+    // dibujar en cada frame —crear el canvas, pintar el disco y el emoji, y
+    // que Maps suba la textura de nuevo, 60 veces por segundo—. No daba
+    // abasto y la moto aparecía y desaparecía en vez de latir.
+    //
+    // La opacidad la aplica Maps sobre una textura que ya tiene subida: sale
+    // casi gratis y queda fluido.
     val latidoMoto by animacion.animateFloat(
-        initialValue = 0.9f,
-        targetValue = 1.1f,
+        initialValue = 0.65f,
+        targetValue = 1f,
         animationSpec = infiniteRepeatable(
             animation = tween(1100, easing = LinearEasing),
             repeatMode = RepeatMode.Reverse,
@@ -284,13 +348,13 @@ actual fun MapaRadar(
             // Antes era un círculo gris oscuro: sobre el mapa se leía como un
             // punto de suciedad, no como "hay alguien ahí".
             val temaOscuro = isSystemInDarkTheme()
-            val icono = remember(latidoMoto, temaOscuro) {
-                iconoDeMoto(latidoMoto, temaOscuro)
-            }
+            // Solo se regenera si cambia el tema, no en cada frame.
+            val icono = remember(temaOscuro) { iconoDeMoto(temaOscuro) }
             motos.forEach { moto ->
                 Marker(
                     state = rememberMarkerState(position = moto.aLatLng()),
                     icon = icono,
+                    alpha = latidoMoto,
                     anchor = Offset(0.5f, 0.5f),
                     zIndex = 2f,
                 )
@@ -303,11 +367,21 @@ actual fun MapaRadar(
  * El icono de una moto disponible: el emoji dibujado en un bitmap.
  *
  * Google Maps no acepta un composable como marcador, así que el emoji se pinta
- * en un canvas y se pasa como imagen. `escala` viene de la animación: al
- * cambiar, el icono se regenera y la moto parece latir.
+ * en un canvas y se pasa como imagen.
+ *
+ * NO recibe la escala de la animación: regenerar el bitmap por frame hacía
+ * parpadear la moto. El latido va por la opacidad del marcador.
  */
-private fun iconoDeMoto(escala: Float, oscuro: Boolean): BitmapDescriptor {
-    val lado = (96 * escala).toInt().coerceAtLeast(1)
+private fun iconoDeMoto(oscuro: Boolean): BitmapDescriptor = iconoEmoji("🛵", oscuro)
+
+/**
+ * Un emoji sobre un disco que contrasta con el mapa.
+ *
+ * Se comparte entre la moto, el recojo y la entrega: así los tres pines se
+ * ven de la misma familia y basta cambiar el emoji para cada caso.
+ */
+private fun iconoEmoji(emoji: String, oscuro: Boolean): BitmapDescriptor {
+    val lado = 96
     val bitmap = createBitmap(lado, lado)
     val canvas = AndroidCanvas(bitmap)
 
@@ -338,7 +412,7 @@ private fun iconoDeMoto(escala: Float, oscuro: Boolean): BitmapDescriptor {
     // emoji queda corrido hacia abajo.
     val medio = lado / 2f
     val base = medio - (pincel.descent() + pincel.ascent()) / 2f
-    canvas.drawText("🛵", medio, base, pincel)
+    canvas.drawText(emoji, medio, base, pincel)
     return BitmapDescriptorFactory.fromBitmap(bitmap)
 }
 

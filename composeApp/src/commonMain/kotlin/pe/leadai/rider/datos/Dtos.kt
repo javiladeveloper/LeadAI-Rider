@@ -157,6 +157,11 @@ data class CarreraDto(
     val negocioDistrito: String? = null,
     /** De dónde sale: el local del negocio, o una dirección libre. */
     val origenTexto: String? = null,
+    /** Coordenadas para el mapa NATIVO del viaje. */
+    val origenLat: Double? = null,
+    val origenLng: Double? = null,
+    val destinoLat: Double? = null,
+    val destinoLng: Double? = null,
     /** A dónde va. */
     val destinoTexto: String? = null,
     val direccion: String? = null,
@@ -630,4 +635,12 @@ data class ChatCarreraDto(
 @Serializable
 data class EnviarMensajeResponseDto(
     val mensaje: MensajeChatDto = MensajeChatDto(),
+)
+
+/** El trazado de una ruta: pares [lat, lng] listos para la Polyline. */
+@Serializable
+data class TrazadoRutaDto(
+    val puntos: List<List<Double>> = emptyList(),
+    /** "osrm", "cache" o "sin_ruta" — útil para saber si hubo linea real. */
+    val origen: String = "sin_ruta",
 )

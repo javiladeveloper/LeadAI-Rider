@@ -1,6 +1,7 @@
 package pe.leadai.rider.push
 
 import android.app.PendingIntent
+import pe.leadai.rider.R
 import android.content.Intent
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -115,7 +116,15 @@ class LeadAIFirebaseService : FirebaseMessagingService(), KoinComponent {
             CANAL_NOTIFICACIONES_PEDIDOS
         }
         val notificacion = NotificationCompat.Builder(this, canal)
-            .setSmallIcon(android.R.drawable.sym_def_app_icon)
+            // EL ÍCONO DE LA MARCA, no el androide genérico.
+            //
+            // `sym_def_app_icon` es el muñeco de Android: en la barra de
+            // estado la notificación no se distinguía de ninguna otra app.
+            //
+            // Va la variante MONOCROMA y no el launcher a color: Android
+            // tiñe el ícono de notificación con un color plano y descarta
+            // el resto, asi que un ícono a color sale como un cuadrado gris.
+            .setSmallIcon(R.drawable.ic_launcher_monochrome)
             .setContentTitle(titulo)
             .setContentText(cuerpo)
             .setAutoCancel(true)
