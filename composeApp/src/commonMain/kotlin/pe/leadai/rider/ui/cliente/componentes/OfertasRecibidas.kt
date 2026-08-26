@@ -67,6 +67,8 @@ fun OfertasRecibidas(
     montoOfrecido: Long,
     eligiendo: String?,
     onElegir: (OfertaDto) -> Unit,
+    /** Descartar una propuesta que no le sirve. */
+    onRechazar: (OfertaDto) -> Unit = {},
     onSubirMonto: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -100,6 +102,7 @@ fun OfertasRecibidas(
                     eligiendo = eligiendo == oferta.id,
                     habilitado = eligiendo == null,
                     onElegir = { onElegir(oferta) },
+                    onRechazar = { onRechazar(oferta) },
                 )
             }
         }
@@ -123,6 +126,7 @@ private fun CardOferta(
     eligiendo: Boolean,
     habilitado: Boolean,
     onElegir: () -> Unit,
+    onRechazar: () -> Unit = {},
 ) {
     val colores = ColoresJala.actuales
     val pideMas = oferta.montoCentavos > montoOfrecido
@@ -193,6 +197,28 @@ private fun CardOferta(
             }
 
             Spacer(Modifier.size(8.dp))
+            // DESCARTAR: una ✕ discreta al lado del boton principal.
+            //
+            // Sin esto la lista era de una sola direccion: una oferta cara
+            // —o de alguien con quien no quiere ir— se quedaba en pantalla
+            // hasta que la carrera expiraba.
+            //
+            // Chica y sin color de alerta: descartar es un gesto comun en una
+            // negociacion, no un error. El peso visual queda en ELEGIR, que
+            // es lo que cierra el viaje.
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clickable(enabled = habilitado) { onRechazar() },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    "✕",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Spacer(Modifier.size(4.dp))
             Box(
                 modifier = Modifier
                     .size(width = 96.dp, height = 40.dp)

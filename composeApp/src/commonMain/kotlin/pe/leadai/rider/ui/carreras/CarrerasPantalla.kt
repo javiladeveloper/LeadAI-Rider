@@ -324,6 +324,7 @@ fun CarrerasPantalla(
                         ContenidoRider(
                             miUbicacion = estado.miUbicacion,
                             trazadoRuta = estado.trazadoRuta,
+                            onPedirRuta = { a, b, c, d -> viewModel.rutaEntre(a, b, c, d) },
                             carrerasHoy = estado.carrerasHoy,
                             chatAbierto = estado.chatAbierto,
                             mensajesChat = estado.mensajes,
@@ -366,6 +367,7 @@ fun CarrerasPantalla(
                             SeccionRider.INICIO -> ContenidoRider(
                                 miUbicacion = estado.miUbicacion,
                                 trazadoRuta = estado.trazadoRuta,
+                                onPedirRuta = { a, b, c, d -> viewModel.rutaEntre(a, b, c, d) },
                                 carrerasHoy = estado.carrerasHoy,
                             chatAbierto = estado.chatAbierto,
                             mensajesChat = estado.mensajes,
@@ -511,6 +513,9 @@ private fun ContenidoRider(
     miUbicacion: pe.leadai.rider.ui.carreras.UbicacionRider? = null,
     /** El camino por calle hasta el recojo. Vacío dibuja la recta. */
     trazadoRuta: List<List<Double>> = emptyList(),
+    /** Trae el camino entre dos puntos, para la solicitud que se abre. */
+    onPedirRuta: suspend (Double, Double, Double, Double) -> List<List<Double>> =
+        { _, _, _, _ -> emptyList() },
     /** Lo ganado hoy: va en el encabezado, sin entrar a otra pantalla. */
     carrerasHoy: Int,
     gananciaHoyCentavos: Long,
@@ -678,6 +683,10 @@ private fun ContenidoRider(
             onAceptar = { onAceptar(abierta); solicitudAbierta = null },
             onOfertar = { monto -> onOfertar(abierta, monto); solicitudAbierta = null },
             onCerrar = { solicitudAbierta = null },
+            pedirRuta = { desde, hasta ->
+                onPedirRuta(desde.lat, desde.lng, hasta.lat, hasta.lng)
+                    .mapNotNull { p -> if (p.size >= 2) PuntoMapa(p[0], p[1]) else null }
+            },
         )
         return
     }

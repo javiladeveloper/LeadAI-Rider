@@ -1,6 +1,11 @@
 package pe.leadai.rider.ui.carreras.componentes
 
 import androidx.compose.foundation.background
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,7 +55,14 @@ fun SolicitudDetalle(
     carrera: CarreraDto,
     /** Dónde está la moto: sin esto no se puede ver cuánto falta. */
     miUbicacion: PuntoMapa?,
-    /** El camino por calle hasta el recojo. Vacío dibuja la recta. */
+    /**
+     * El camino por calle del viaje.
+     *
+     * Vacío dibuja la RECTA entre los dos puntos, y una diagonal cruzando la
+     * ciudad se lee como un error —ninguna calle va así—. Se pide al abrir la
+     * solicitud: el trazado del viaje en curso no sirve acá, porque va de la
+     * moto al recojo y esto muestra otro viaje.
+     */
     recorrido: List<PuntoMapa>,
     aceptando: Boolean,
     habilitado: Boolean,
@@ -58,6 +70,13 @@ fun SolicitudDetalle(
     onAceptar: () -> Unit,
     onOfertar: (Long) -> Unit,
     onCerrar: () -> Unit,
+    /**
+     * Trae el camino por calle entre dos puntos.
+     *
+     * Lo pide esta pantalla y no el feed: el trazado del viaje en curso va de
+     * la moto al recojo, y acá se muestra OTRO viaje.
+     */
+    pedirRuta: suspend (PuntoMapa, PuntoMapa) -> List<PuntoMapa> = { _, _ -> emptyList() },
     modifier: Modifier = Modifier,
 ) {
     val colores = ColoresJala.actuales
@@ -68,6 +87,15 @@ fun SolicitudDetalle(
         carrera.destinoLng?.let { lo -> PuntoMapa(la, lo) }
     }
 
+    // El recorrido del viaje que se esta mirando: del recojo al destino, que
+    // es lo que el rider quiere evaluar antes de aceptar.
+    var rutaPropia by remember(carrera.pedidoId) { mutableStateOf(recorrido) }
+    LaunchedEffect(carrera.pedidoId) {
+        if (recojo != null && entrega != null && rutaPropia.isEmpty()) {
+            rutaPropia = pedirRuta(recojo, entrega)
+        }
+    }
+
     Column(modifier = modifier.fillMaxSize()) {
         Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
             if (recojo != null) {
@@ -75,7 +103,9 @@ fun SolicitudDetalle(
                     origen = recojo,
                     destino = entrega ?: recojo,
                     moto = miUbicacion,
-                    recorrido = recorrido,
+                    // Sin trazado real no se dibuja nada: la recta cruzando
+                    // la ciudad se lee como un error del mapa.
+                    recorrido = rutaPropia,
                     tipoServicio = carrera.tipo,
                     // NO es modo rider: acá todavía no maneja, está
                     // decidiendo. Lo que necesita ver es el viaje ENTERO

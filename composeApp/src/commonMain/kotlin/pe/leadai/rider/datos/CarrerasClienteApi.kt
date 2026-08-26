@@ -169,6 +169,22 @@ class CarrerasClienteApi(private val api: ApiCliente) {
         )
 
     /**
+     * `POST /carreras/:id/rechazar-oferta` — esa propuesta no le sirve.
+     *
+     * No penaliza al rider ni le cierra la carrera: puede volver a ofertar
+     * mas barato. Solo saca ESA propuesta de la lista.
+     */
+    suspend fun rechazarOferta(
+        carreraId: String,
+        ofertaId: String,
+    ): Resultado<AvanzarEstadoResponseDto> =
+        api.post<JsonObject, AvanzarEstadoResponseDto>(
+            path = "/carreras/$carreraId/rechazar-oferta",
+            body = buildJsonObject { put("ofertaId", ofertaId) },
+            requiereSesion = true,
+        )
+
+    /**
      * `POST /carreras/:id/monto` — subir lo que ofrece porque nadie le ofertó.
      *
      * Sin esto solo podría cancelar y volver a pedir, perdiendo las ofertas

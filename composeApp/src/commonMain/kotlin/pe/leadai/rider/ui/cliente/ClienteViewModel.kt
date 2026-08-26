@@ -601,6 +601,30 @@ class ClienteViewModel(
     }
 
     /** El cliente elige a un rider: esa oferta gana y la carrera se le asigna. */
+    /**
+     * El cliente descarta una oferta que no le sirve.
+     *
+     * Se saca de la lista AL TOQUE, sin esperar al servidor: la respuesta ya
+     * se sabe —no la quiere— y dejarla medio segundo mas se siente como que
+     * el boton no anduvo. Si el backend rechaza, `refrescarOfertas` la
+     * devuelve a su lugar.
+     */
+    fun rechazarOferta(oferta: OfertaDto) {
+        val carrera = _estado.value.miCarrera ?: return
+        _estado.update { e -> e.copy(ofertas = e.ofertas.filterNot { it.id == oferta.id }) }
+        viewModelScope.launch(dispatcher) {
+            when (api.rechazarOferta(carrera.id, oferta.id)) {
+                is Resultado.Ok -> Unit
+                is Resultado.Error -> {
+                    // No se avisa: rechazar es un gesto de descarte y un
+                    // error tecnico aca no cambia nada para el cliente. Se
+                    // recarga por si la oferta sigue viva.
+                    refrescarOfertas()
+                }
+            }
+        }
+    }
+
     fun elegirOferta(oferta: OfertaDto) {
         val carrera = _estado.value.miCarrera ?: return
         if (_estado.value.eligiendoOferta != null) return

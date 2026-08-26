@@ -213,6 +213,7 @@ fun ClientePantalla(
                     ofertas = estado.ofertas,
                     eligiendoOferta = estado.eligiendoOferta,
                     onElegirOferta = viewModel::elegirOferta,
+                    onRechazarOferta = viewModel::rechazarOferta,
                     // +S/2 sobre lo ofrecido: en Tacna es el salto que de
                     // verdad cambia la decisión del rider.
                     onSubirMonto = { viewModel.subirMonto(carrera.montoOfrecido + 200) },
@@ -598,6 +599,8 @@ private fun SeguimientoCarrera(
     ofertas: List<pe.leadai.rider.datos.OfertaDto> = emptyList(),
     eligiendoOferta: String? = null,
     onElegirOferta: (pe.leadai.rider.datos.OfertaDto) -> Unit = {},
+    /** Descartar una oferta que no le sirve al cliente. */
+    onRechazarOferta: (pe.leadai.rider.datos.OfertaDto) -> Unit = {},
     onSubirMonto: () -> Unit = {},
     motosCerca: Int = 0,
     /** Riders con la solicitud abierta: las dos aspitas. */
@@ -688,6 +691,7 @@ private fun SeguimientoCarrera(
                         montoOfrecido = carrera.montoOfrecido,
                         eligiendo = eligiendoOferta,
                         onElegir = onElegirOferta,
+                        onRechazar = onRechazarOferta,
                         onSubirMonto = onSubirMonto,
                     )
                 }

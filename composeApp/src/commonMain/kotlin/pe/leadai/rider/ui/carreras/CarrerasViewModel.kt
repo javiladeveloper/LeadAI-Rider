@@ -274,6 +274,23 @@ class CarrerasViewModel(
         }
     }
 
+    /**
+     * El camino entre dos puntos, para la solicitud que se esta mirando.
+     *
+     * La pantalla de detalle muestra OTRO viaje que el que se esta haciendo,
+     * asi que necesita su propio trazado: sin el, el mapa caia a una recta
+     * cruzando la ciudad.
+     */
+    suspend fun rutaEntre(
+        oLat: Double,
+        oLng: Double,
+        dLat: Double,
+        dLng: Double,
+    ): List<List<Double>> {
+        val r = motorizadosApi.trazadoDeRuta(oLat, oLng, dLat, dLng)
+        return if (r is Resultado.Ok) r.valor.puntos else emptyList()
+    }
+
     /** Desde dónde se pidio el ultimo trazado. */
     private var ultimoTrazadoDesde: UbicacionRider? = null
 

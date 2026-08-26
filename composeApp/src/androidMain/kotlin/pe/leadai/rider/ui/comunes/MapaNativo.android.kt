@@ -164,10 +164,17 @@ actual fun MapaRuta(
             modifier = Modifier.fillMaxSize(),
         ) {
             val linea = remember(recorrido, origen, destino) {
-                if (recorrido.isNotEmpty()) recorrido.map { it.aLatLng() }
-                else listOf(origen.aLatLng(), destino.aLatLng())
+                recorrido.map { it.aLatLng() }
             }
-            Polyline(points = linea, color = TRAZO_RUTA, width = 12f)
+            // SIN ruta real no se dibuja NADA.
+            //
+            // Antes caía a la recta entre los dos puntos: una diagonal negra
+            // cruzando la ciudad por encima de las manzanas, que se lee como
+            // un error del mapa —ninguna calle va así—. Los dos pines solos
+            // dicen la verdad: de aca hasta aca, el camino todavia no se sabe.
+            if (linea.size >= 2) {
+                Polyline(points = linea, color = TRAZO_RUTA, width = 12f)
+            }
 
             // Círculos y no marcadores con ícono: se leen igual y no dependen
             // de ningún recurso gráfico que pueda faltar.
