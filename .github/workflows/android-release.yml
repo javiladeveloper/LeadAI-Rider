@@ -150,6 +150,19 @@ jobs:
           PLAY_STORE_JSON_KEY_PATH: play-store-key.json
           CANAL: ${{ steps.canal.outputs.canal }}
         run: |
+          # CERRADA VA COMO BORRADOR mientras la app no se haya publicado.
+          #
+          # Play rechaza cualquier otro estado sobre una app en borrador:
+          # "Only releases with status draft may be created on draft app".
+          # El AAB queda cargado en Play Console y se publica a mano desde
+          # ahi; una vez que la app salga por primera vez, se quita esta
+          # linea y cerrada vuelve a publicar sola.
+          #
+          # Solo cerrada: interna ya funciona y produccion no debe subir
+          # nunca como borrador sin querer.
+          if [ "$CANAL" = "cerrada" ]; then
+            export PLAY_RELEASE_STATUS=draft
+          fi
           case "$CANAL" in
             produccion) bundle exec fastlane android production ;;
             cerrada)    bundle exec fastlane android cerrada ;;
