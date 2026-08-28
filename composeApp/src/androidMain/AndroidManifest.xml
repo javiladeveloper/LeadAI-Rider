@@ -8,12 +8,24 @@
          ve el cliente. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!-- Ubicación con la app en segundo plano: el rider maneja con el celular
-         en el bolsillo o la pantalla bloqueada. Sin esto, al bloquear el
-         teléfono el cliente ve la moto CONGELADA en el mapa. Desde Android 11
-         este permiso no se puede pedir por diálogo — hay que mandar al
-         usuario a Configuración (ver ui/permisos/). -->
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- ACCESS_BACKGROUND_LOCATION: QUITADO a proposito (2026-08-28).
+
+         Estaba declarado pero el codigo NUNCA lo pedia: `AbrirAjustes` existe
+         y no lo llama nadie, asi que Android jamas lo concedia. Un permiso
+         muerto que igual disparaba la revision manual mas estricta de Play
+         —video demostrativo y justificacion, con rechazo frecuente—.
+
+         No hace falta para lo que la app hace hoy: mientras hay carrera,
+         ServicioCarreraActiva llama a startForeground con su notificacion
+         ANTES de reportar (y si eso falla, se corta). Con notificacion visible
+         Android lo cuenta como primer plano, asi que el rastreo sigue
+         funcionando con la app minimizada y la pantalla apagada.
+
+         Lo unico que no cubre es la app CERRADA del todo. Si algun dia se
+         quiere eso —Jonathan lo pidio para mas adelante— hay que: pedir el
+         permiso desde el codigo (dialogo aparte, "Permitir todo el tiempo",
+         que desde Android 11 obliga a pasar por Configuracion), volver a
+         declararlo aca, y grabar el video que Google exige. -->
     <!-- El foreground service que mantiene vivo ese reporte mientras dura la
          carrera. FOREGROUND_SERVICE_LOCATION es obligatorio desde Android 14
          para el tipo "location". -->
