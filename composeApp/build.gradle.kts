@@ -185,7 +185,7 @@ kotlin {
 
 android {
     namespace = "pe.leadai.rider"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         // App SEPARADA de `pe.leadai.app`: en Play son dos apps del mismo
@@ -193,7 +193,7 @@ android {
         // pegado a la app del restaurante.
         applicationId = "pe.leadai.rider"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         // En CI cada corrida incrementa solo; en local queda fijo en BASE.
         manifestPlaceholders["MAPS_API_KEY"] = claveDeMapas
         versionCode = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()?.plus(VERSION_CODE_OFFSET)
