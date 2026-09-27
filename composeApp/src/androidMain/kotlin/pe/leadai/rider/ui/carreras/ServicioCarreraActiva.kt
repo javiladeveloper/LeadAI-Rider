@@ -173,7 +173,7 @@ class ServicioCarreraActiva : Service(), KoinComponent {
             )
             // La marca, no el pin genérico de Android: esta notificación vive
             // fija en la barra mientras dura la carrera.
-            .setSmallIcon(R.drawable.ic_launcher_monochrome)
+            .setSmallIcon(R.drawable.ic_notificacion)
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setContentIntent(intentAlAbrir())

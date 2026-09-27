@@ -124,7 +124,7 @@ class LeadAIFirebaseService : FirebaseMessagingService(), KoinComponent {
             // Va la variante MONOCROMA y no el launcher a color: Android
             // tiñe el ícono de notificación con un color plano y descarta
             // el resto, asi que un ícono a color sale como un cuadrado gris.
-            .setSmallIcon(R.drawable.ic_launcher_monochrome)
+            .setSmallIcon(R.drawable.ic_notificacion)
             .setContentTitle(titulo)
             .setContentText(cuerpo)
             .setAutoCancel(true)

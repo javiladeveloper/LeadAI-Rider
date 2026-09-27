@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Fondo del ícono: BLANCO, como el logo. El amarillo y el carbón están
-         en los chevrones (ver ic_launcher_foreground.xml) — sobre fondo
-         amarillo el chevron amarillo del frente no se vería. -->
+    <!-- Fondo del ícono: BLANCO. Encima va la moto carbón con la caja amarilla
+         y el chevron (ver ic_launcher_foreground.xml, 2026-09-27): sobre fondo
+         amarillo la caja no se vería. -->
     <color name="ic_launcher_background">#FFFFFF</color>
 </resources>
